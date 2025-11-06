@@ -1,34 +1,10 @@
-import { Client, GatewayIntentBits, Collection, Events } from 'discord.js';
+import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { config } from './config';
-import { Command } from './types/command';
-import fs from 'fs';
-import path from 'path';
-
-// Create a collection to store commands
-const commands = new Collection<string, Command>();
-
-// Load commands
-function loadCommands() {
-  console.log('[BOT] Loading commands...');
-  const commandsPath = path.join(__dirname, 'commands');
-  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
-
-  for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command: Command = require(filePath).default;
-
-    if ('data' in command && 'execute' in command) {
-      commands.set(command.data.name, command);
-      console.log(`[BOT] ✓ Loaded command: ${command.data.name}`);
-    } else {
-      console.log(`[BOT] ✗ Warning: ${filePath} is missing required "data" or "execute" property.`);
-    }
-  }
-  console.log(`[BOT] Successfully loaded ${commands.size} command(s)\n`);
-}
+import Logger from './utils/logger';
+import { commandManager } from './managers/command-manager';
 
 // Create Discord client
-export function createClient(): Client {
+export async function createClient(): Promise<Client> {
   const client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
@@ -38,35 +14,52 @@ export function createClient(): Client {
     ],
   });
 
-  // Load commands on initialization
-  loadCommands();
+  // Initialize command manager (with lazy loading)
+  await commandManager.initialize();
 
   // Event: Bot is ready
   client.once(Events.ClientReady, (readyClient) => {
-    console.log(`[BOT] ✓ Bot is online! Logged in as ${readyClient.user.tag}`);
-    console.log(`[BOT] ✓ Serving ${client.guilds.cache.size} guild(s)`);
-    console.log(`[BOT] ✓ Ready to handle commands!\n`);
-    console.log('========================================');
-    console.log('  Bot is now fully operational!');
-    console.log('========================================\n');
+    Logger.success(`Bot logged in as ${readyClient.user.tag}`);
+    Logger.info(`Serving ${client.guilds.cache.size} guild(s)`);
+    Logger.success('Ready to handle commands!');
   });
 
   // Event: Handle slash commands
   client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    const command = commands.get(interaction.commandName);
-
-    if (!command) {
-      console.error(`[BOT ERROR] No command matching ${interaction.commandName} was found.`);
-      return;
-    }
-
     try {
-      await command.execute(interaction);
-      console.log(`[BOT] Command "${interaction.commandName}" executed by ${interaction.user.tag}`);
+      // Lazy load command
+      const command = commandManager.getSlashCommand(interaction.commandName);
+
+      if (!command) {
+        // Command might not be loaded yet, try to load it
+        await commandManager.getCommand(interaction.commandName);
+        const retryCommand = commandManager.getSlashCommand(interaction.commandName);
+
+        if (!retryCommand) {
+          Logger.error(`No command matching ${interaction.commandName} was found`);
+          return;
+        }
+
+        // Execute with newly loaded command
+        if ('executeSlash' in retryCommand) {
+          await retryCommand.executeSlash(interaction);
+        } else {
+          await retryCommand.execute(interaction);
+        }
+      } else {
+        // Execute with cached command
+        if ('executeSlash' in command) {
+          await command.executeSlash(interaction);
+        } else {
+          await command.execute(interaction);
+        }
+      }
+
+      Logger.debug(`Slash command "/${interaction.commandName}" executed by ${interaction.user.tag}`);
     } catch (error) {
-      console.error(`[BOT ERROR] Error executing command ${interaction.commandName}:`, error);
+      Logger.error(`Error executing slash command ${interaction.commandName}`, error);
 
       const errorMessage = {
         content: 'There was an error while executing this command!',
@@ -81,19 +74,71 @@ export function createClient(): Client {
     }
   });
 
+  // Event: Handle prefix commands
+  client.on(Events.MessageCreate, async (message) => {
+    // Ignore messages from bots
+    if (message.author.bot) return;
+
+    // Check if message starts with prefix
+    if (!message.content.startsWith(config.prefix)) return;
+
+    // Parse command and arguments
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/);
+    const commandName = args.shift()?.toLowerCase();
+
+    if (!commandName) return;
+
+    try {
+      // Lazy load command
+      let command = commandManager.getPrefixCommand(commandName);
+
+      if (!command) {
+        // Command might not be loaded yet, try to load it
+        await commandManager.getCommand(commandName);
+        command = commandManager.getPrefixCommand(commandName);
+
+        if (!command) {
+          // Command doesn't exist
+          return;
+        }
+      }
+
+      // Execute command
+      if ('executePrefix' in command) {
+        // Hybrid command
+        await command.executePrefix(message, args);
+      } else {
+        // Prefix-only command
+        await command.execute(message, args);
+      }
+
+      Logger.debug(`Prefix command "${config.prefix}${commandName}" executed by ${message.author.tag}`);
+    } catch (error) {
+      Logger.error(`Error executing prefix command ${commandName}`, error);
+
+      try {
+        await message.reply({
+          content: 'There was an error while executing this command!',
+        });
+      } catch (replyError) {
+        Logger.error('Failed to send error message', replyError);
+      }
+    }
+  });
+
   // Event: Guild joined
   client.on(Events.GuildCreate, (guild) => {
-    console.log(`[BOT] Joined new guild: ${guild.name} (${guild.id})`);
+    Logger.success(`Joined new guild: ${guild.name} (ID: ${guild.id})`);
   });
 
   // Event: Guild left
   client.on(Events.GuildDelete, (guild) => {
-    console.log(`[BOT] Left guild: ${guild.name} (${guild.id})`);
+    Logger.info(`Left guild: ${guild.name} (ID: ${guild.id})`);
   });
 
   // Error handling
   client.on(Events.Error, (error) => {
-    console.error('[BOT ERROR] Discord client error:', error);
+    Logger.error('Discord client error', error);
   });
 
   return client;
@@ -101,15 +146,15 @@ export function createClient(): Client {
 
 // Start the bot
 export async function startBot(): Promise<Client> {
-  console.log('[STEP 3/3] Starting Discord bot...');
+  Logger.bot('Connecting to Discord...');
 
-  const client = createClient();
+  const client = await createClient();
 
   try {
     await client.login(config.token);
     return client;
   } catch (error) {
-    console.error('[BOT ERROR] ✗ Failed to login to Discord:', error);
+    Logger.error('Failed to login to Discord', error);
     throw error;
   }
 }

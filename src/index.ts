@@ -10,35 +10,40 @@
 import { Client } from 'discord.js';
 import { testConnection, closePool } from './database/pool';
 import { startBot } from './bot';
+import Logger from './utils/logger';
 
 // Store references to services
 let discordClient: Client | null = null;
 
 process.on('unhandledRejection', (error) => {
-  console.error('[ERROR] Unhandled promise rejection:', error);
+  Logger.error('Unhandled promise rejection', error);
 });
 
 // Graceful shutdown handler
 async function gracefulShutdown(signal: string) {
-  console.log(`\n[SHUTDOWN] Received ${signal}, shutting down gracefully...\n`);
+  Logger.blank();
+  Logger.system(`Received ${signal}, shutting down gracefully...`);
+  Logger.blank();
 
   // Close Discord bot
   if (discordClient) {
-    console.log('[SHUTDOWN] Destroying Discord client...');
+    Logger.bot('Destroying Discord client...');
     discordClient.destroy();
-    console.log('[SHUTDOWN] ✓ Discord client destroyed');
+    Logger.success('Discord client destroyed');
   }
 
   // Close database connection
   try {
-    console.log('[SHUTDOWN] Closing database connection...');
+    Logger.database('Closing database connection...');
     await closePool();
-    console.log('[SHUTDOWN] ✓ Database connection closed');
+    Logger.success('Database connection closed');
   } catch (error) {
-    console.error('[SHUTDOWN ERROR] Error closing database:', error);
+    Logger.error('Error closing database', error);
   }
 
-  console.log('[SHUTDOWN] ✓ Graceful shutdown complete\n');
+  Logger.blank();
+  Logger.success('Graceful shutdown complete');
+  Logger.blank();
   process.exit(0);
 }
 
@@ -50,21 +55,23 @@ process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
  * Database is REQUIRED - if connection fails, the application will not start
  */
 async function initializeDatabase(): Promise<void> {
-  console.log('[STEP 1/3] Initializing database connection...');
+  Logger.section('Step 1/3: Database Connection');
 
   try {
+    Logger.database('Testing connection...');
     const isConnected = await testConnection();
 
     if (!isConnected) {
-      console.error('[DATABASE] ✗ Failed to connect to database');
-      console.error('[DATABASE] ✗ Database connection is REQUIRED for this application');
+      Logger.error('Failed to connect to database');
+      Logger.error('Database connection is REQUIRED for this application');
       throw new Error('Database connection failed');
     }
 
-    console.log('[DATABASE] ✓ Connection pool initialized successfully\n');
+    Logger.success('Connection pool initialized successfully');
+    Logger.blank();
   } catch (error) {
-    console.error('[DATABASE] ✗ Error during database initialization:', error);
-    console.error('[DATABASE] ✗ Application cannot start without database');
+    Logger.error('Error during database initialization', error);
+    Logger.error('Application cannot start without database');
     throw error;
   }
 }
@@ -73,12 +80,13 @@ async function initializeDatabase(): Promise<void> {
  * Initialize Discord Bot
  */
 async function initializeBot(): Promise<void> {
-  console.log('[STEP 2/3] Initializing Discord bot...\n');
+  Logger.section('Step 2/3: Discord Bot');
+  Logger.blank();
 
   try {
     discordClient = await startBot();
   } catch (error) {
-    console.error('[BOT] ✗ Failed to start Discord bot');
+    Logger.error('Failed to start Discord bot', error);
     throw error;
   }
 }
@@ -98,9 +106,10 @@ async function initializeBot(): Promise<void> {
  * Main Application Entry Point
  */
 async function main() {
-  console.log('\n========================================');
-  console.log('  Application Starting...');
-  console.log('========================================\n');
+  // Display startup banner
+  Logger.banner();
+  Logger.separator();
+  Logger.blank();
 
   try {
     // Step 1: Initialize Database (REQUIRED)
@@ -110,13 +119,35 @@ async function main() {
     await initializeBot();
 
     // Step 3: Initialize other services (future)
+    // Logger.section('Step 3/3: Additional Services');
     // await initializeWebServer();
     // await initializeFFmpeg();
     // await initializeRenderService();
 
-    console.log('[SUCCESS] All services started successfully!\n');
+    // Success summary
+    Logger.blank();
+    Logger.separator();
+    Logger.success('All services started successfully!');
+    Logger.separator();
+    Logger.blank();
+
+    // Display info
+    Logger.table({
+      'Status': 'Online',
+      'Version': '1.0.0',
+      'Node.js': process.version,
+      'Platform': process.platform,
+    });
+
+    Logger.blank();
+    Logger.separator();
+    Logger.blank();
+
   } catch (error) {
-    console.error('\n[FATAL ERROR] Failed to start application:', error);
+    Logger.blank();
+    Logger.separator();
+    Logger.error('Failed to start application', error);
+    Logger.separator();
 
     // Cleanup on failure
     if (discordClient) {

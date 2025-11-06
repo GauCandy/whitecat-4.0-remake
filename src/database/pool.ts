@@ -1,5 +1,6 @@
 import { Pool, PoolConfig } from 'pg';
 import dotenv from 'dotenv';
+import Logger from '../utils/logger';
 
 dotenv.config();
 
@@ -47,20 +48,20 @@ export function getPool(): Pool {
 
     // Handle pool errors
     pool.on('error', (err: Error) => {
-      console.error('[DATABASE ERROR] Unexpected error on idle client:', err);
+      Logger.error('Unexpected error on idle client', err);
     });
 
-    // Log successful connection
+    // Log successful connection (only in debug mode)
     pool.on('connect', () => {
-      console.log('[DATABASE] New client connected to the pool');
+      Logger.debug('New client connected to the pool');
     });
 
-    // Log when client is removed
+    // Log when client is removed (only in debug mode)
     pool.on('remove', () => {
-      console.log('[DATABASE] Client removed from pool');
+      Logger.debug('Client removed from pool');
     });
 
-    console.log('[DATABASE] Connection pool created successfully');
+    Logger.debug('Connection pool created successfully');
   }
 
   return pool;
@@ -73,10 +74,10 @@ export async function testConnection(): Promise<boolean> {
     const client = await pool.connect();
     const result = await client.query('SELECT NOW()');
     client.release();
-    console.log('[DATABASE] Connection test successful:', result.rows[0].now);
+    Logger.success(`Connection test successful (${result.rows[0].now})`);
     return true;
   } catch (error) {
-    console.error('[DATABASE ERROR] Connection test failed:', error);
+    Logger.error('Connection test failed', error);
     return false;
   }
 }
@@ -93,18 +94,11 @@ export async function query<T = any>(
     const result = await pool.query(text, params);
     const duration = Date.now() - start;
 
-    console.log('[DATABASE QUERY]', {
-      text,
-      duration: `${duration}ms`,
-      rows: result.rowCount,
-    });
+    Logger.debug(`Query executed in ${duration}ms (${result.rowCount} rows)`);
 
     return result.rows;
   } catch (error) {
-    console.error('[DATABASE ERROR] Query failed:', {
-      text,
-      error,
-    });
+    Logger.error(`Query failed: ${text}`, error);
     throw error;
   }
 }
@@ -120,11 +114,11 @@ export async function transaction<T>(
     await client.query('BEGIN');
     const result = await callback(client);
     await client.query('COMMIT');
-    console.log('[DATABASE] Transaction committed successfully');
+    Logger.debug('Transaction committed successfully');
     return result;
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('[DATABASE ERROR] Transaction rolled back:', error);
+    Logger.error('Transaction rolled back', error);
     throw error;
   } finally {
     client.release();
@@ -136,6 +130,6 @@ export async function closePool(): Promise<void> {
   if (pool) {
     await pool.end();
     pool = null;
-    console.log('[DATABASE] Connection pool closed');
+    Logger.debug('Connection pool closed');
   }
 }
