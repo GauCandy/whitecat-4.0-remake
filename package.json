@@ -1,0 +1,37 @@
+{
+  "name": "discord-bot-typescript",
+  "version": "1.0.0",
+  "description": "A Discord bot built with TypeScript and discord.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "watch": "tsc --watch",
+    "dev:watch": "nodemon --exec ts-node src/index.ts",
+    "deploy": "ts-node src/deploy-commands.ts",
+    "deploy:build": "npm run build && node dist/deploy-commands.js",
+    "db:init": "ts-node src/database/init.ts init",
+    "db:drop": "ts-node src/database/init.ts drop",
+    "db:reset": "ts-node src/database/init.ts reset"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/pg": "^8.10.9",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
