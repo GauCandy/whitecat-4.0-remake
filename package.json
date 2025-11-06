@@ -1,8 +1,16 @@
 {
-  "name": "discord-bot-typescript",
+  "name": "whitecat-discord-bot",
   "version": "1.0.0",
-  "description": "A Discord bot built with TypeScript and discord.js",
+  "description": "WhiteCat - A modern Discord bot built with TypeScript, discord.js v14, and PostgreSQL",
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GauCandy/whitecat-remake.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GauCandy/whitecat-remake/issues"
+  },
+  "homepage": "https://github.com/GauCandy/whitecat-remake#readme",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
@@ -18,10 +26,12 @@
   "keywords": [
     "discord",
     "bot",
-    "typescript"
+    "typescript",
+    "postgresql",
+    "open-source"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Gấu Kẹo (GauCandy) <gaulollipop@gmail.com>",
+  "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",

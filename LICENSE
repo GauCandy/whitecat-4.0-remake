@@ -1,0 +1,186 @@
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+## với Điều khoản Bổ sung về Sử dụng Không Cạnh tranh
+
+Copyright (c) 2024 Gấu Kẹo (GauCandy)
+
+---
+
+## TÓM TẮT GIẤY PHÉP
+
+Bạn được tự do:
+- ✅ **Chia sẻ** — Sao chép và phân phối lại tài liệu này dưới mọi hình thức
+- ✅ **Chỉnh sửa** — Thay đổi, biến đổi và xây dựng dựa trên tài liệu này
+- ✅ **Học tập** — Sử dụng cho mục đích học tập và nghiên cứu
+
+Theo các điều kiện sau:
+
+- ⚠️ **Attribution (BY)** — Bạn phải ghi công cho tác giả gốc, cung cấp link đến giấy phép, và ghi rõ nếu có thay đổi.
+
+- ⚠️ **NonCommercial (NC)** — Bạn không được sử dụng tài liệu này cho mục đích thương mại.
+
+- ⚠️ **ShareAlike (SA)** — Nếu bạn thay đổi, biến đổi hoặc xây dựng dựa trên tài liệu này, bạn phải phân phối sản phẩm đó theo cùng giấy phép này.
+
+- ⚠️ **Non-Competitive Use** — Bạn không được sử dụng tài liệu này trong bất kỳ sản phẩm hoặc dịch vụ nào cạnh tranh trực tiếp với dự án gốc.
+
+---
+
+## ĐIỀU KHOẢN CHI TIẾT
+
+### 1. Giấy phép Cơ bản
+
+Dự án này được cấp phép theo **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License**.
+
+Để xem bản sao đầy đủ của giấy phép này, truy cập:
+https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+### 2. Điều khoản Attribution (BY) - Ghi công
+
+Khi sử dụng, chia sẻ hoặc chỉnh sửa dự án này, bạn PHẢI:
+
+- Ghi rõ tên tác giả gốc
+- Cung cấp link đến repository gốc: https://github.com/GauCandy/whitecat-remake
+- Cung cấp link đến giấy phép này
+- Ghi rõ nếu bạn đã thực hiện bất kỳ thay đổi nào
+
+**Ví dụ ghi công:**
+```
+Based on WhiteCat Discord Bot by Gấu Kẹo (GauCandy)
+Original: https://github.com/GauCandy/whitecat-remake
+Licensed under CC BY-NC-SA 4.0 with Non-Competitive Use clause
+```
+
+### 3. Điều khoản NonCommercial (NC) - Phi thương mại
+
+Bạn KHÔNG ĐƯỢC phép:
+
+- ❌ Bán dự án này hoặc các phiên bản phát sinh
+- ❌ Sử dụng trong sản phẩm/dịch vụ có thu phí
+- ❌ Sử dụng để tạo ra lợi nhuận trực tiếp hoặc gián tiếp
+- ❌ Sử dụng trong môi trường doanh nghiệp để tạo ra giá trị thương mại
+
+Bạn ĐƯỢC PHÉP:
+
+- ✅ Sử dụng cho mục đích học tập cá nhân
+- ✅ Sử dụng cho nghiên cứu học thuật
+- ✅ Chia sẻ miễn phí trong cộng đồng
+- ✅ Sử dụng trong dự án cá nhân không thu phí
+
+### 4. Điều khoản ShareAlike (SA) - Chia sẻ tương tự
+
+Nếu bạn thay đổi, biến đổi, hoặc xây dựng dựa trên dự án này, bạn PHẢI:
+
+- Phân phối sản phẩm phát sinh theo CÙNG giấy phép này (CC BY-NC-SA 4.0)
+- Công khai mã nguồn (open source)
+- Áp dụng các điều khoản tương tự cho người dùng tiếp theo
+
+Điều này đảm bảo rằng:
+- Tất cả các phiên bản phát sinh đều phải là open source
+- Không ai có thể "đóng mã nguồn" lại
+- Cộng đồng luôn được hưởng lợi từ các cải tiến
+
+### 5. Điều khoản Non-Competitive Use - Không cạnh tranh
+
+**ĐIỀU KHOẢN BỔ SUNG:**
+
+Bạn KHÔNG ĐƯỢC phép sử dụng dự án này (bao gồm cả các phiên bản đã chỉnh sửa) trong bất kỳ sản phẩm, dịch vụ hoặc ứng dụng nào có tính cạnh tranh trực tiếp với dự án gốc.
+
+**Định nghĩa "Cạnh tranh trực tiếp":**
+
+Một sản phẩm/dịch vụ được coi là cạnh tranh trực tiếp nếu:
+- Cung cấp các tính năng chính tương tự hoặc thay thế được dự án gốc
+- Nhắm đến cùng đối tượng người dùng
+- Được marketing/quảng bá như một giải pháp thay thế cho dự án gốc
+- Sử dụng phần lớn code base (>50%) từ dự án gốc mà không có sự đóng góp đáng kể
+
+**Ví dụ cụ thể:**
+
+❌ **KHÔNG được phép:**
+- Fork dự án này, đổi tên và chạy như một bot Discord cạnh tranh
+- Tích hợp vào sản phẩm thương mại cung cấp dịch vụ tương tự
+- Tạo dịch vụ hosting/SaaS dựa trên code này
+
+✅ **ĐƯỢC phép:**
+- Sử dụng một phần code cho dự án có mục đích khác biệt
+- Học hỏi và áp dụng kiến trúc cho dự án của riêng bạn
+- Đóng góp cải tiến về lại dự án gốc (pull request)
+- Tạo tutorial hoặc tài liệu học tập
+
+### 6. Ngoại lệ và Cấp phép Đặc biệt
+
+Nếu bạn muốn:
+- Sử dụng cho mục đích thương mại
+- Sử dụng trong sản phẩm cạnh tranh
+- Sử dụng theo điều khoản khác với giấy phép này
+
+Vui lòng liên hệ với tác giả để được cấp giấy phép riêng.
+
+**Liên hệ:** gaulollipop@gmail.com
+
+### 7. Miễn trừ trách nhiệm
+
+```
+PHẦN MỀM NÀY ĐƯỢC CUNG CẤP "NGUYÊN TRẠNG", KHÔNG CÓ BẤT KỲ BẢO ĐẢM NÀO,
+RÕ RÀNG HAY NGỤ Ý, BAO GỒM NHƯNG KHÔNG GIỚI HẠN BẢO ĐẢM VỀ KHẢ NĂNG
+THƯƠNG MẠI, PHÙ HỢP CHO MỤC ĐÍCH CỤ THỂ VÀ KHÔNG VI PHẠM.
+
+TRONG MỌI TRƯỜNG HỢP, TÁC GIẢ HOẶC CHỦ SỞ HỮU BẢN QUYỀN KHÔNG CHỊU TRÁCH
+NHIỆM VỀ BẤT KỲ YÊU CẦU, THIỆT HẠI HAY TRÁCH NHIỆM PHÁP LÝ NÀO, DÙ TRONG
+HỢP ĐỒNG, HOẶC CÁCH KHÁC, PHÁT SINH TỪ, NGOÀI HAY LIÊN QUAN ĐẾN PHẦN MỀM
+HAY VIỆC SỬ DỤNG HOẶC GIAO DỊCH KHÁC TRONG PHẦN MỀM.
+```
+
+---
+
+## TÓM TẮT QUYỀN VÀ NGHĨA VỤ
+
+### ✅ Bạn CÓ QUYỀN:
+- Tải xuống và sử dụng miễn phí
+- Nghiên cứu cách hoạt động của code
+- Chỉnh sửa và cải tiến
+- Chia sẻ với người khác
+- Sử dụng cho học tập và nghiên cứu
+
+### ⚠️ Bạn PHẢI:
+- Ghi công tác giả gốc
+- Giữ nguyên giấy phép này
+- Open source các phiên bản chỉnh sửa
+- Chia sẻ các cải tiến theo cùng giấy phép
+
+### ❌ Bạn KHÔNG ĐƯỢC:
+- Sử dụng cho mục đích thương mại
+- Tạo sản phẩm cạnh tranh trực tiếp
+- Đóng mã nguồn (closed source)
+- Xóa thông tin về tác giả gốc
+
+---
+
+## CÂU HỎI THƯỜNG GẶP (FAQ)
+
+**Q: Tôi có thể sử dụng code này để học không?**
+A: Có! Đây chính là mục đích chính của giấy phép này.
+
+**Q: Tôi có thể fork và chỉnh sửa không?**
+A: Có, nhưng bạn phải open source lại và ghi công tác giả.
+
+**Q: Tôi có thể dùng trong công ty không?**
+A: Chỉ được nếu không phục vụ mục đích thương mại và không cạnh tranh.
+
+**Q: Tôi muốn tạo bot tương tự để bán, được không?**
+A: Không. Điều này vi phạm cả NC (phi thương mại) và Non-Competitive Use.
+
+**Q: Tôi có thể đóng góp code về dự án gốc không?**
+A: Có! Pull requests luôn được chào đón!
+
+**Q: Làm sao để xin giấy phép thương mại?**
+A: Liên hệ với tác giả qua email: gaulollipop@gmail.com
+
+---
+
+**Ngày cấp phép:** 2024-11-06
+**Phiên bản giấy phép:** 1.0
+**Dự án:** WhiteCat Discord Bot
+**Repository:** https://github.com/GauCandy/whitecat-remake
+
+---
+
+*Giấy phép này là sự kết hợp giữa Creative Commons BY-NC-SA 4.0 và điều khoản Non-Competitive Use. Trong trường hợp có xung đột, điều khoản bổ sung sẽ được ưu tiên.*

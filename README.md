@@ -1,6 +1,15 @@
-# Discord Bot - TypeScript
+# WhiteCat Discord Bot 🐱
+
+[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![Discord.js](https://img.shields.io/badge/discord.js-v14-7289DA.svg)](https://discord.js.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-12+-316192.svg)](https://www.postgresql.org/)
+[![GitHub](https://img.shields.io/badge/GitHub-GauCandy-181717.svg?logo=github)](https://github.com/GauCandy)
 
 A modern, scalable Discord bot built with TypeScript and discord.js v14, featuring slash commands, PostgreSQL database, and modular architecture designed for expansion.
+
+**Created by:** [Gấu Kẹo (GauCandy)](https://github.com/GauCandy)
+**Repository:** https://github.com/GauCandy/whitecat-remake
 
 ## Features
 
@@ -340,7 +349,45 @@ npm run db:init
 - [Discord.js Guide](https://discordjs.guide/)
 - [Discord Developer Portal](https://discord.com/developers/docs/)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 
 ## License
 
-ISC
+This project is licensed under **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)** with **Non-Competitive Use** clause.
+
+### 📜 What this means:
+
+✅ **You CAN:**
+- Use for learning and education
+- Fork and modify the code
+- Share with others
+- Use for personal projects
+
+⚠️ **You MUST:**
+- Give credit to the original author
+- Keep the same license (open source)
+- Share your modifications
+
+❌ **You CANNOT:**
+- Use for commercial purposes
+- Create competing products/services
+- Close the source code
+
+### 📄 Full License
+
+See the [LICENSE](LICENSE) file for complete terms and conditions.
+
+For commercial licensing or special permissions, please contact: **gaulollipop@gmail.com**
+
+---
+
+## Contact & Support
+
+- **Author:** Gấu Kẹo (GauCandy)
+- **Email:** gaulollipop@gmail.com
+- **GitHub:** [@GauCandy](https://github.com/GauCandy)
+- **Issues:** [Report bugs or request features](https://github.com/GauCandy/whitecat-remake/issues)
+
+---
+
+**Made with ❤️ using TypeScript and Discord.js**
