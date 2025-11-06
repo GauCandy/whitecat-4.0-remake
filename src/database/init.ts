@@ -17,22 +17,30 @@ async function initializeDatabase(): Promise<void> {
       throw new Error('Failed to connect to database');
     }
 
-    // Read schema file
+    const pool = getPool();
+
     const schemaPath = path.join(__dirname, '../../database/schema.sql');
     console.log('[DATABASE INIT] Reading schema from:', schemaPath);
 
     if (!fs.existsSync(schemaPath)) {
-      throw new Error(`Schema file not found at: ${schemaPath}`);
+      console.log('[DATABASE INIT] Schema file not found. Skipping execution.');
+    } else {
+      const schemaRaw = fs.readFileSync(schemaPath, 'utf-8');
+      const executableSql = schemaRaw
+        .split(/\r?\n/)
+        .map(line => line.trim().startsWith('--') ? '' : line)
+        .join('\n')
+        .trim();
+
+      if (executableSql.length === 0) {
+        console.log('[DATABASE INIT] Schema file is empty. Skipping execution.');
+      } else {
+        console.log('[DATABASE INIT] Executing schema...');
+        await pool.query(schemaRaw);
+        console.log('[DATABASE INIT] Schema executed successfully!');
+      }
     }
 
-    const schema = fs.readFileSync(schemaPath, 'utf-8');
-
-    // Execute schema
-    console.log('[DATABASE INIT] Executing schema...');
-    const pool = getPool();
-    await pool.query(schema);
-
-    console.log('[DATABASE INIT] Schema executed successfully!');
     console.log('[DATABASE INIT] Database initialization completed!');
 
     // Display table information

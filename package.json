@@ -33,11 +33,16 @@
   "author": "Gấu Kẹo (GauCandy) <gaulollipop@gmail.com>",
   "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
+    "cors": "^2.8.5",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
     "pg": "^8.11.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.5",
     "@types/node": "^20.10.6",
     "@types/pg": "^8.10.9",
     "nodemon": "^3.0.2",

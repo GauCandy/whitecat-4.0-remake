@@ -41,6 +41,7 @@ const icons = {
   database: '🗄',
   bot: '🤖',
   web: '🌐',
+  api: '🔌',
   system: '⚡',
 };
 
@@ -132,6 +133,13 @@ export class Logger {
    */
   static web(message: string): void {
     formatLog('WEB', colors.cyan, icons.web, message);
+  }
+
+  /**
+   * API log - API related messages
+   */
+  static api(message: string): void {
+    formatLog('API', colors.green, icons.api, message);
   }
 
   /**

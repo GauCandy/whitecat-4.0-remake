@@ -71,16 +71,20 @@ export function getPool(): Pool {
 }
 
 // Test database connection
-export async function testConnection(): Promise<boolean> {
+export async function testConnection(silent = false): Promise<boolean> {
   try {
     const pool = getPool();
     const client = await pool.connect();
     const result = await client.query('SELECT NOW()');
     client.release();
-    Logger.success(`Connection test successful (${result.rows[0].now})`);
+    if (!silent) {
+      Logger.success(`Connection test successful (${result.rows[0].now})`);
+    }
     return true;
   } catch (error) {
-    Logger.error('Connection test failed', error);
+    if (!silent) {
+      Logger.error('Connection test failed', error);
+    }
     return false;
   }
 }

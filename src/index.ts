@@ -1,19 +1,23 @@
 /**
  * Main Entry Point
  *
- * This file orchestrates the initialization of all services:
- * - Database connection
- * - Discord bot
- * - Future: Web API, ffmpeg, render services, etc.
+ * This file orchestrates the initialization of all services in order:
+ * 1. Database connection (REQUIRED)
+ * 2. Internal API Server (for bot to use)
+ * 3. Discord bot
+ * 4. Connect bot to public API
+ * Future: ffmpeg, render services, etc.
  */
 
 import { Client } from 'discord.js';
 import { testConnection, closePool } from './database/pool';
 import { startBot } from './bot';
+import APIServer from './api/server';
 import Logger from './utils/logger';
 
 // Store references to services
 let discordClient: Client | null = null;
+let apiServer: APIServer | null = null;
 
 process.on('unhandledRejection', (error) => {
   Logger.error('Unhandled promise rejection', error);
@@ -30,6 +34,16 @@ async function gracefulShutdown(signal: string) {
     Logger.bot('Destroying Discord client...');
     discordClient.destroy();
     Logger.success('Discord client destroyed');
+  }
+
+  // Close API server
+  if (apiServer) {
+    try {
+      Logger.api('Stopping API server...');
+      await apiServer.stop();
+    } catch (error) {
+      Logger.error('Error stopping API server', error);
+    }
   }
 
   // Close database connection
@@ -77,10 +91,27 @@ async function initializeDatabase(): Promise<void> {
 }
 
 /**
+ * Initialize Internal API Server (for bot usage)
+ */
+async function initializeInternalAPI(): Promise<void> {
+  Logger.section('Step 2/4: Internal API Server');
+  Logger.blank();
+
+  try {
+    apiServer = new APIServer();
+    await apiServer.start();
+    Logger.blank();
+  } catch (error) {
+    Logger.error('Failed to start internal API server', error);
+    throw error;
+  }
+}
+
+/**
  * Initialize Discord Bot
  */
 async function initializeBot(): Promise<void> {
-  Logger.section('Step 2/3: Discord Bot');
+  Logger.section('Step 3/4: Discord Bot');
   Logger.blank();
 
   try {
@@ -92,15 +123,25 @@ async function initializeBot(): Promise<void> {
 }
 
 /**
- * Initialize Web Services (Future)
- * Uncomment when ready to add web API
+ * Connect Bot to Public API
  */
-// async function initializeWebServer(): Promise<void> {
-//   console.log('[STEP 4/4] Initializing web server...');
-//   // TODO: Add Express/Fastify server here
-//   // TODO: Add API routes
-//   console.log('[WEB] ✓ Web server started on port 3000\n');
-// }
+async function connectBotToAPI(): Promise<void> {
+  Logger.section('Step 4/4: Connect Bot to Public API');
+  Logger.blank();
+
+  try {
+    if (discordClient && apiServer) {
+      apiServer.setDiscordClient(discordClient);
+      Logger.success('Bot connected to public API');
+    } else {
+      throw new Error('Bot or API server not initialized');
+    }
+    Logger.blank();
+  } catch (error) {
+    Logger.error('Failed to connect bot to API', error);
+    throw error;
+  }
+}
 
 /**
  * Main Application Entry Point
@@ -115,12 +156,16 @@ async function main() {
     // Step 1: Initialize Database (REQUIRED)
     await initializeDatabase();
 
-    // Step 2: Initialize Discord Bot
+    // Step 2: Initialize Internal API Server (for bot usage)
+    await initializeInternalAPI();
+
+    // Step 3: Initialize Discord Bot
     await initializeBot();
 
-    // Step 3: Initialize other services (future)
-    // Logger.section('Step 3/3: Additional Services');
-    // await initializeWebServer();
+    // Step 4: Connect Bot to Public API
+    await connectBotToAPI();
+
+    // Future services
     // await initializeFFmpeg();
     // await initializeRenderService();
 
@@ -152,6 +197,9 @@ async function main() {
     // Cleanup on failure
     if (discordClient) {
       discordClient.destroy();
+    }
+    if (apiServer) {
+      await apiServer.stop();
     }
     await closePool();
 
