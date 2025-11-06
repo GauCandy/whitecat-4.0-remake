@@ -19,14 +19,17 @@ function getDatabaseConfig(): PoolConfig {
     );
   }
 
+  const maxConnections = poolMax ? parseInt(poolMax, 10) : 10;
+  const minConnections = poolMin ? parseInt(poolMin, 10) : 2;
+
   return {
     host,
     port: parseInt(port, 10),
     database,
     user,
     password,
-    min: poolMin ? parseInt(poolMin, 10) : 2,
-    max: poolMax ? parseInt(poolMax, 10) : 10,
+    min: minConnections,
+    max: maxConnections,
     // Connection timeout
     connectionTimeoutMillis: 5000,
     // Idle timeout
