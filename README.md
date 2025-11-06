@@ -1,24 +1,28 @@
 # Discord Bot - TypeScript
 
-A modern Discord bot built with TypeScript and discord.js v14, featuring slash commands and environment variable configuration.
+A modern, scalable Discord bot built with TypeScript and discord.js v14, featuring slash commands, PostgreSQL database, and modular architecture designed for expansion.
 
 ## Features
 
-- Written in TypeScript for type safety
-- Slash commands support
-- PostgreSQL database integration with connection pooling
-- Environment variables for secure configuration
-- Command handler system for easy command management
-- Error handling and logging
-- Hot reload support during development
-- Database migrations and initialization scripts
+- ✅ Written in TypeScript for type safety
+- ✅ Slash commands support
+- ✅ **PostgreSQL database integration with connection pooling (REQUIRED)**
+- ✅ Environment variables for secure configuration
+- ✅ Modular architecture - easy to add Web API, ffmpeg, render services
+- ✅ Command handler system for easy command management
+- ✅ Comprehensive error handling and logging
+- ✅ Hot reload support during development
+- ✅ Database migrations and initialization scripts
+- ✅ Graceful shutdown handling
 
 ## Prerequisites
 
 - Node.js 16.9.0 or higher
 - npm or yarn
-- PostgreSQL 12 or higher
+- **PostgreSQL 12 or higher (REQUIRED)**
 - A Discord Bot Token
+
+**Important:** This application REQUIRES a PostgreSQL database connection. The bot will not start without a valid database connection.
 
 ## Getting Started
 
@@ -144,12 +148,13 @@ npm start
 │   ├── database/         # Database related files
 │   │   ├── pool.ts       # PostgreSQL connection pool
 │   │   ├── init.ts       # Database initialization script
-│   │   └── index.ts      # Database helper functions
+│   │   └── index.ts      # Database helper functions & exports
 │   ├── types/            # TypeScript type definitions
 │   │   └── command.ts    # Command interface
+│   ├── index.ts          # 🔥 Main entry point (orchestrates all services)
+│   ├── bot.ts            # 🤖 Discord bot logic
 │   ├── config.ts         # Environment configuration
-│   ├── deploy-commands.ts # Command deployment script
-│   └── index.ts          # Main bot file
+│   └── deploy-commands.ts # Command deployment script
 ├── database/             # SQL files
 │   └── schema.sql        # Database schema
 ├── .env                  # Environment variables (create this)
@@ -159,6 +164,27 @@ npm start
 ├── tsconfig.json        # TypeScript configuration
 └── README.md            # This file
 ```
+
+### Architecture Overview
+
+**Modular Design** - The application is designed with a modular architecture for easy expansion:
+
+- **[src/index.ts](src/index.ts)** - Main entry point that orchestrates initialization of all services
+  - Initializes database (REQUIRED)
+  - Starts Discord bot
+  - Ready for future services: Web API, ffmpeg, render, etc.
+
+- **[src/bot.ts](src/bot.ts)** - Discord bot logic completely separated from main entry
+  - Command loading and handling
+  - Event listeners
+  - Bot-specific logic
+
+- **[src/database/](src/database/)** - Database module
+  - Connection pooling
+  - Helper functions
+  - Initialization scripts
+
+This structure makes it easy to add new services without touching existing code!
 
 ## Available Commands
 
