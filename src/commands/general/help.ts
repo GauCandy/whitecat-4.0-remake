@@ -6,8 +6,7 @@ const helpCommand: SlashCommand = {
     .setName('help')
     .setDescription('Hiển thị hướng dẫn sử dụng bot'),
 
-  // KHÔNG yêu cầu đồng ý điều khoản - ai cũng có thể xem help
-  requireTerms: false,
+  // Default: 'basic' verification (requires terms agreement)
 
   async execute(interaction: ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
@@ -15,22 +14,22 @@ const helpCommand: SlashCommand = {
       .setTitle('📖 Hướng Dẫn Sử Dụng WhiteCat Bot')
       .setDescription(
         'WhiteCat là một Discord bot hiện đại được xây dựng với TypeScript và PostgreSQL.\n\n' +
-        '**Lưu ý quan trọng:**\n' +
-        'Hầu hết các lệnh yêu cầu bạn phải đồng ý với điều khoản sử dụng trước khi có thể sử dụng.'
+        '**Hệ thống xác thực 2 cấp:**\n' +
+        '• **Basic:** Chỉ cần đồng ý điều khoản (cho lệnh cơ bản)\n' +
+        '• **Verified:** Cần xác thực email qua OAuth (cho lệnh nâng cao)'
       )
       .addFields(
         {
-          name: '📋 Điều khoản sử dụng',
+          name: '🎯 Lệnh cơ bản (Basic)',
           value:
-            '`/terms` - Xem điều khoản sử dụng\n' +
-            '`/terms agree` - Đồng ý với điều khoản\n' +
-            '`/terms status` - Kiểm tra trạng thái đồng ý',
+            '`/help` - Hiển thị menu help này\n' +
+            '`/ping` - Kiểm tra độ trễ của bot',
         },
         {
-          name: '🎯 Lệnh cơ bản',
+          name: '🔐 Lệnh nâng cao (Verified)',
           value:
-            '`/help` - Hiển thị menu help này (không cần đồng ý điều khoản)\n' +
-            '`/ping` - Kiểm tra độ trễ của bot (cần đồng ý điều khoản)',
+            'Các lệnh nâng cao yêu cầu xác thực email qua Discord OAuth.\n' +
+            'Sẽ được bổ sung trong các phiên bản sau.',
         },
         {
           name: '📊 Trạng thái bot',

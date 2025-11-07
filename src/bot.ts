@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { config } from './config';
 import Logger from './utils/logger';
 import { commandManager } from './managers/command-manager';
-import { checkTermsForSlashCommand, checkTermsForPrefixCommand } from './middleware/terms-check';
+import { checkVerificationForSlashCommand, checkVerificationForPrefixCommand } from './middleware/terms-check';
 
 // Create Discord client
 export async function createClient(): Promise<Client> {
@@ -43,8 +43,8 @@ export async function createClient(): Promise<Client> {
           return;
         }
 
-        // Check terms before executing
-        const canExecute = await checkTermsForSlashCommand(interaction, retryCommand.requireTerms);
+        // Check verification before executing (default: 'basic')
+        const canExecute = await checkVerificationForSlashCommand(interaction, retryCommand.verificationLevel ?? 'basic');
         if (!canExecute) return;
 
         // Execute with newly loaded command
@@ -54,8 +54,8 @@ export async function createClient(): Promise<Client> {
           await retryCommand.execute(interaction);
         }
       } else {
-        // Check terms before executing
-        const canExecute = await checkTermsForSlashCommand(interaction, command.requireTerms);
+        // Check verification before executing (default: 'basic')
+        const canExecute = await checkVerificationForSlashCommand(interaction, command.verificationLevel ?? 'basic');
         if (!canExecute) return;
 
         // Execute with cached command
@@ -112,9 +112,9 @@ export async function createClient(): Promise<Client> {
         }
       }
 
-      // Check terms before executing
-      const requireTerms = 'requireTerms' in command ? (command.requireTerms ?? true) : true;
-      const canExecute = await checkTermsForPrefixCommand(message, requireTerms);
+      // Check verification before executing (default: 'basic')
+      const verificationLevel = 'verificationLevel' in command ? (command.verificationLevel ?? 'basic') : 'basic';
+      const canExecute = await checkVerificationForPrefixCommand(message, verificationLevel);
       if (!canExecute) return;
 
       // Execute command

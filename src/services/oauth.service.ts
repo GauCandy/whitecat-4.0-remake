@@ -97,7 +97,7 @@ export class OAuthService {
   }
 
   /**
-   * Complete OAuth flow and save user to database
+   * Complete OAuth flow and save user email to database
    * @param code - Authorization code
    * @param discordUserId - Discord user ID from state parameter
    * @returns Created/updated user
@@ -117,43 +117,21 @@ export class OAuthService {
         throw new Error('Discord user ID mismatch');
       }
 
-      // Step 3: Check if user exists
-      const existingUser = await userRepository.getUserByDiscordId(discordUserId);
+      // Step 3: Get or create user
+      const user = await userRepository.getOrCreateUser({
+        discord_id: discordUserId,
+      });
 
-      if (existingUser) {
-        // Update existing user
-        Logger.debug(`Updating existing user ${discordUserId}`);
-        const updatedUser = await userRepository.updateUser({
-          discord_id: discordUserId,
-          email: discordUser.email,
-          access_token: tokenResponse.access_token,
-          refresh_token: tokenResponse.refresh_token,
-          account_status: AccountStatus.ACTIVE, // Activate account via OAuth
-          agreed_terms_at: new Date(), // Record OAuth completion time
-        });
+      // Step 4: Update user with email and agree to terms
+      Logger.debug(`Updating user ${discordUserId} with email and terms agreement`);
+      const updatedUser = await userRepository.updateUser({
+        discord_id: discordUserId,
+        email: discordUser.email,
+        agreed_terms: 1, // User agreed to terms via OAuth
+      });
 
-        Logger.success(`OAuth completed for existing user ${discordUser.username}#${discordUser.discriminator}`);
-        return updatedUser;
-      } else {
-        // Create new user
-        Logger.debug(`Creating new user ${discordUserId}`);
-        const newUser = await userRepository.createUser({
-          discord_id: discordUserId,
-          email: discordUser.email,
-          access_token: tokenResponse.access_token,
-          refresh_token: tokenResponse.refresh_token,
-          account_status: AccountStatus.ACTIVE, // Activate account via OAuth
-        });
-
-        // Set agreed_terms_at
-        await userRepository.updateUser({
-          discord_id: discordUserId,
-          agreed_terms_at: new Date(),
-        });
-
-        Logger.success(`OAuth completed for new user ${discordUser.username}#${discordUser.discriminator}`);
-        return newUser;
-      }
+      Logger.success(`OAuth completed for user ${discordUser.username}#${discordUser.discriminator} (verified)`);
+      return updatedUser;
     } catch (error) {
       Logger.error(`OAuth error for user ${discordUserId}`, error);
       throw error;

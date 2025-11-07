@@ -6,11 +6,14 @@ import {
   Message
 } from 'discord.js';
 
+// Verification level for commands
+export type VerificationLevel = 'basic' | 'verified';
+
 // Slash Command Interface
 export interface SlashCommand {
   data: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
   execute: (interaction: ChatInputCommandInteraction<CacheType>) => Promise<void>;
-  requireTerms?: boolean; // If true, user must agree to terms before using this command
+  verificationLevel?: VerificationLevel; // Default: 'basic' (requires terms only). Set to 'verified' for email verification
 }
 
 // Prefix Command Interface
@@ -21,7 +24,7 @@ export interface PrefixCommand {
   usage?: string;
   category?: string;
   execute: (message: Message, args: string[]) => Promise<void>;
-  requireTerms?: boolean; // If true, user must agree to terms before using this command
+  verificationLevel?: VerificationLevel; // Default: 'basic' (requires terms only). Set to 'verified' for email verification
 }
 
 // Hybrid Command Interface (supports both slash and prefix)
@@ -41,7 +44,7 @@ export interface HybridCommand {
   // Execution methods
   executeSlash: (interaction: ChatInputCommandInteraction<CacheType>) => Promise<void>;
   executePrefix: (message: Message, args: string[]) => Promise<void>;
-  requireTerms?: boolean; // If true, user must agree to terms before using this command
+  verificationLevel?: VerificationLevel; // Default: 'basic' (requires terms only). Set to 'verified' for email verification
 }
 
 // Legacy support - keep the old Command type for backward compatibility

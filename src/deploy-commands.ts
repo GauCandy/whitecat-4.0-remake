@@ -5,13 +5,36 @@ import path from 'path';
 
 const commands = [];
 
-// Load all command files
+/**
+ * Recursively scan directory for command files
+ * @param dir - Directory to scan
+ * @returns Array of command file paths
+ */
+function getCommandFiles(dir: string): string[] {
+  const files: string[] = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      // Recursively scan subdirectories
+      files.push(...getCommandFiles(fullPath));
+    } else if (entry.isFile() && (entry.name.endsWith('.js') || entry.name.endsWith('.ts'))) {
+      // Add command files
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
+// Load all command files from commands directory and subdirectories
 const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js') || file.endsWith('.ts'));
+const commandFiles = getCommandFiles(commandsPath);
 
 // Get the JSON representation of each command
-for (const file of commandFiles) {
-  const filePath = path.join(commandsPath, file);
+for (const filePath of commandFiles) {
   const command = require(filePath).default;
 
   if ('data' in command && 'execute' in command) {
