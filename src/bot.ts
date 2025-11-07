@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { config } from './config';
 import Logger from './utils/logger';
 import { commandManager } from './managers/command-manager';
+import { checkTermsForSlashCommand, checkTermsForPrefixCommand } from './middleware/terms-check';
 
 // Create Discord client
 export async function createClient(): Promise<Client> {
@@ -42,6 +43,10 @@ export async function createClient(): Promise<Client> {
           return;
         }
 
+        // Check terms before executing
+        const canExecute = await checkTermsForSlashCommand(interaction, retryCommand.requireTerms);
+        if (!canExecute) return;
+
         // Execute with newly loaded command
         if ('executeSlash' in retryCommand) {
           await retryCommand.executeSlash(interaction);
@@ -49,6 +54,10 @@ export async function createClient(): Promise<Client> {
           await retryCommand.execute(interaction);
         }
       } else {
+        // Check terms before executing
+        const canExecute = await checkTermsForSlashCommand(interaction, command.requireTerms);
+        if (!canExecute) return;
+
         // Execute with cached command
         if ('executeSlash' in command) {
           await command.executeSlash(interaction);
@@ -102,6 +111,11 @@ export async function createClient(): Promise<Client> {
           return;
         }
       }
+
+      // Check terms before executing
+      const requireTerms = 'requireTerms' in command ? (command.requireTerms ?? true) : true;
+      const canExecute = await checkTermsForPrefixCommand(message, requireTerms);
+      if (!canExecute) return;
 
       // Execute command
       if ('executePrefix' in command) {

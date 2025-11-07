@@ -7,6 +7,7 @@ import Logger from '../utils/logger';
 // Import routes
 import healthRouter from './routes/health';
 import pingRouter from './routes/ping';
+import authRouter from './routes/auth';
 
 export class APIServer {
   private app: Application;
@@ -69,6 +70,7 @@ export class APIServer {
         endpoints: {
           ping: '/api/ping',
           health: '/api/health',
+          auth: '/api/auth',
         },
       });
     });
@@ -76,6 +78,7 @@ export class APIServer {
     // API routes
     this.app.use('/api/ping', pingRouter);
     this.app.use('/api/health', healthRouter);
+    this.app.use('/api/auth', authRouter);
 
     // 404 handler
     this.app.use((req: Request, res: Response) => {

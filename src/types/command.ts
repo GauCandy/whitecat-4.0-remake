@@ -10,6 +10,7 @@ import {
 export interface SlashCommand {
   data: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
   execute: (interaction: ChatInputCommandInteraction<CacheType>) => Promise<void>;
+  requireTerms?: boolean; // If true, user must agree to terms before using this command
 }
 
 // Prefix Command Interface
@@ -20,6 +21,7 @@ export interface PrefixCommand {
   usage?: string;
   category?: string;
   execute: (message: Message, args: string[]) => Promise<void>;
+  requireTerms?: boolean; // If true, user must agree to terms before using this command
 }
 
 // Hybrid Command Interface (supports both slash and prefix)
@@ -39,6 +41,7 @@ export interface HybridCommand {
   // Execution methods
   executeSlash: (interaction: ChatInputCommandInteraction<CacheType>) => Promise<void>;
   executePrefix: (message: Message, args: string[]) => Promise<void>;
+  requireTerms?: boolean; // If true, user must agree to terms before using this command
 }
 
 // Legacy support - keep the old Command type for backward compatibility
