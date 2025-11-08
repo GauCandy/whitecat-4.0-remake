@@ -73,7 +73,11 @@ export class CommandManager {
       if (!fs.statSync(categoryPath).isDirectory()) continue;
 
       const files = fs.readdirSync(categoryPath)
-        .filter(f => f.endsWith('.js') || f.endsWith('.ts'));
+        .filter((file) => {
+          const ext = path.extname(file);
+          const isDeclaration = file.endsWith('.d.ts');
+          return !isDeclaration && (ext === '.ts' || ext === '.js');
+        });
 
       for (const file of files) {
         const commandName = file.replace(/\.(ts|js)$/, '');
