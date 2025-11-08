@@ -18,8 +18,6 @@ export interface User {
   email: string | null;
   agreed_terms: number;  // 0 = not agreed, 1 = agreed
   account_status: AccountStatus;
-  ban_expires_at: Date | null;  // NULL = permanent ban
-  banned_at: Date | null;
   created_at: Date;
   updated_at: Date;
 }
@@ -38,8 +36,6 @@ export interface UpdateUserInput {
   email?: string;
   agreed_terms?: number;
   account_status?: AccountStatus;
-  ban_expires_at?: Date | null;
-  banned_at?: Date | null;
 }
 
 export class UserRepository {
@@ -145,65 +141,6 @@ export class UserRepository {
     );
 
     return result[0] || null;
-  }
-
-  /**
-   * Ban user (permanently or temporarily)
-   * @param discord_id - Discord user ID
-   * @param expiresAt - Ban expiration time (NULL for permanent)
-   */
-  async banUser(discord_id: string, expiresAt: Date | null = null): Promise<User | null> {
-    const result = await query<User>(
-      `UPDATE users
-       SET account_status = $1, banned_at = NOW(), ban_expires_at = $2
-       WHERE discord_id = $3
-       RETURNING *`,
-      [AccountStatus.BANNED, expiresAt, discord_id]
-    );
-
-    return result[0] || null;
-  }
-
-  /**
-   * Unban user
-   */
-  async unbanUser(discord_id: string): Promise<User | null> {
-    const result = await query<User>(
-      `UPDATE users
-       SET account_status = $1, ban_expires_at = NULL, banned_at = NULL
-       WHERE discord_id = $2
-       RETURNING *`,
-      [AccountStatus.NORMAL, discord_id]
-    );
-
-    return result[0] || null;
-  }
-
-  /**
-   * Check if user is currently banned
-   * Returns true if banned and ban hasn't expired
-   */
-  async isUserBanned(discord_id: string): Promise<boolean> {
-    const user = await this.getUserByDiscordId(discord_id);
-
-    if (!user || user.account_status !== AccountStatus.BANNED) {
-      return false;
-    }
-
-    // If ban has no expiration, it's permanent
-    if (!user.ban_expires_at) {
-      return true;
-    }
-
-    // Check if ban has expired
-    const now = new Date();
-    if (user.ban_expires_at < now) {
-      // Ban expired, unban user automatically
-      await this.unbanUser(discord_id);
-      return false;
-    }
-
-    return true;
   }
 
   /**

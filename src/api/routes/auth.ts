@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { oauthService } from '../../services/oauth.service';
 import { userRepository } from '../../database/repositories/user.repository';
+import { banRepository } from '../../database/repositories/ban.repository';
 import Logger from '../../utils/logger';
 
 const router = Router();
@@ -281,13 +282,20 @@ router.get('/status/:userId', async (req: Request, res: Response) => {
       });
     }
 
+    // Get ban info if user is banned
+    let banExpiresAt = null;
+    if (user.account_status === 1) {
+      const activeBan = await banRepository.getActiveBan(userId);
+      banExpiresAt = activeBan?.expires_at || null;
+    }
+
     res.json({
       success: true,
       agreedTerms: user.agreed_terms === 1,
       verified: !!user.email,
       status: user.account_status === 0 ? 'normal' : 'banned',
       banned: user.account_status === 1,
-      banExpiresAt: user.ban_expires_at,
+      banExpiresAt: banExpiresAt,
     });
   } catch (error) {
     Logger.error('Error checking auth status', error);

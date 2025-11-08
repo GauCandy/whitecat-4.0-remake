@@ -6,6 +6,7 @@ interface Config {
   token: string;
   clientId: string;
   clientSecret: string;
+  botOwnerId: string;
   redirectUri: string;
   guildId: string;
   prefix: string;
@@ -16,6 +17,7 @@ function validateEnv(): Config {
   const token = process.env.DISCORD_TOKEN;
   const clientId = process.env.CLIENT_ID;
   const clientSecret = process.env.CLIENT_SECRET;
+  const botOwnerId = process.env.BOT_OWNER_ID;
   const redirectUri = process.env.REDIRECT_URI;
   const guildId = process.env.GUILD_ID;
   const prefix = process.env.BOT_PREFIX || '!'; // Default to '!' if not specified
@@ -31,6 +33,10 @@ function validateEnv(): Config {
 
   if (!clientSecret) {
     throw new Error('CLIENT_SECRET is not defined in environment variables');
+  }
+
+  if (!botOwnerId) {
+    throw new Error('BOT_OWNER_ID is not defined in environment variables');
   }
 
   if (!redirectUri) {
@@ -49,6 +55,7 @@ function validateEnv(): Config {
     token,
     clientId,
     clientSecret,
+    botOwnerId,
     redirectUri,
     guildId,
     prefix,

@@ -23,6 +23,7 @@ All configuration is done through the `.env` file in the root directory.
 DISCORD_TOKEN=your_bot_token_here
 CLIENT_ID=your_client_id_here
 CLIENT_SECRET=your_client_secret_here
+BOT_OWNER_ID=your_discord_user_id_here
 GUILD_ID=your_guild_id_here
 PREFIX=!
 
@@ -87,6 +88,26 @@ CLIENT_SECRET=AbCdEfGhIjKlMnOpQrStUvWxYz1234567890
 ```
 
 ⚠️ **Never share this secret!** Required for OAuth flow.
+
+### BOT_OWNER_ID
+- **Type:** String (required)
+- **Description:** Discord user ID of the bot owner (has highest permissions)
+- **How to get:**
+  1. Enable Developer Mode in Discord (Settings → Advanced → Developer Mode)
+  2. Right-click your username/profile
+  3. Click "Copy ID"
+
+**Example:**
+```env
+BOT_OWNER_ID=123456789012345678
+```
+
+**Usage:** Commands with `ownerOnly: true` can only be executed by this user.
+
+**Use cases:**
+- Bot moderation commands (`/botban`, `/botunban`)
+- System administration commands
+- Sensitive configuration commands
 
 ### GUILD_ID
 - **Type:** String (required)

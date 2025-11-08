@@ -6,8 +6,6 @@ const pingCommand: SlashCommand = {
     .setName('ping')
     .setDescription('Kiểm tra độ trễ của bot'),
 
-  // Mặc định yêu cầu đồng ý điều khoản (không cần khai báo requireTerms: true)
-
   async execute(interaction: ChatInputCommandInteraction) {
     // Measure API latency
     const sent = await interaction.deferReply({ fetchReply: true });

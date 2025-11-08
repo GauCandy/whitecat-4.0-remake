@@ -5,6 +5,7 @@ Guide to creating and managing Discord commands for WhiteCat Bot.
 ## Table of Contents
 - [Command Types](#command-types)
 - [Verification Levels](#verification-levels)
+- [Owner-Only Commands](#owner-only-commands)
 - [Creating Slash Commands](#creating-slash-commands)
 - [Command Organization](#command-organization)
 - [Best Practices](#best-practices)
@@ -46,6 +47,80 @@ Commands can require different verification levels:
 | `'verified'` | OAuth email | Discord ID + Email | Premium features |
 
 **Default:** `'basic'` (if not specified)
+
+---
+
+## Owner-Only Commands
+
+Commands can be restricted to the bot owner only using the `ownerOnly` flag.
+
+### Configuration
+
+The bot owner is defined by the `BOT_OWNER_ID` environment variable in `.env`:
+
+```env
+BOT_OWNER_ID=your_discord_user_id_here
+```
+
+### Usage
+
+Add `ownerOnly: true` to restrict a command to the bot owner:
+
+```typescript
+const botbanCommand: SlashCommand = {
+  data: new SlashCommandBuilder()
+    .setName('botban')
+    .setDescription('Ban user from using the bot'),
+
+  ownerOnly: true, // Only bot owner can use this command
+
+  async execute(interaction: ChatInputCommandInteraction) {
+    // Command logic...
+  },
+};
+```
+
+### Behavior
+
+- If a non-owner tries to use the command, they will see:
+  - **Slash commands:** `❌ This command can only be used by the bot owner!` (ephemeral)
+  - **Prefix commands:** `❌ This command can only be used by the bot owner!`
+
+- The owner check happens **before** verification checks
+- Works with both slash commands and prefix commands
+
+### Use Cases
+
+Owner-only commands are perfect for:
+- Bot moderation commands (`/botban`, `/botunban`)
+- System administration (`/reload`, `/shutdown`)
+- Sensitive data access (`/stats`, `/logs`)
+- Configuration management
+
+### Example: Moderation Command
+
+```typescript
+const botbanCommand: SlashCommand = {
+  data: new SlashCommandBuilder()
+    .setName('botban')
+    .setDescription('Ban user from using the bot (bot-specific ban)')
+    .addUserOption(option =>
+      option
+        .setName('user')
+        .setDescription('User to ban from bot')
+        .setRequired(true)
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+    .setDMPermission(false),
+
+  ownerOnly: true, // Only bot owner
+
+  async execute(interaction: ChatInputCommandInteraction) {
+    const targetUser = interaction.options.getUser('user', true);
+    // Ban logic...
+  },
+};
+```
 
 ---
 
@@ -418,6 +493,7 @@ export interface SlashCommand {
   data: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder;
   execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
   verificationLevel?: 'basic' | 'verified'; // Optional, default: 'basic'
+  ownerOnly?: boolean; // Optional, default: false - restricts to bot owner only
 }
 ```
 
@@ -432,6 +508,7 @@ export interface PrefixCommand {
   category?: string;
   execute: (message: Message, args: string[]) => Promise<void>;
   verificationLevel?: 'basic' | 'verified';
+  ownerOnly?: boolean; // Optional, default: false - restricts to bot owner only
 }
 ```
 

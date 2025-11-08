@@ -43,6 +43,15 @@ export async function createClient(): Promise<Client> {
           return;
         }
 
+        // Check if command is owner only
+        if (retryCommand.ownerOnly && interaction.user.id !== config.botOwnerId) {
+          await interaction.reply({
+            content: '❌ This command can only be used by the bot owner!',
+            ephemeral: true,
+          });
+          return;
+        }
+
         // Check verification before executing (default: 'basic')
         const canExecute = await checkVerificationForSlashCommand(interaction, retryCommand.verificationLevel ?? 'basic');
         if (!canExecute) return;
@@ -54,6 +63,15 @@ export async function createClient(): Promise<Client> {
           await retryCommand.execute(interaction);
         }
       } else {
+        // Check if command is owner only
+        if (command.ownerOnly && interaction.user.id !== config.botOwnerId) {
+          await interaction.reply({
+            content: '❌ This command can only be used by the bot owner!',
+            ephemeral: true,
+          });
+          return;
+        }
+
         // Check verification before executing (default: 'basic')
         const canExecute = await checkVerificationForSlashCommand(interaction, command.verificationLevel ?? 'basic');
         if (!canExecute) return;
@@ -110,6 +128,13 @@ export async function createClient(): Promise<Client> {
           // Command doesn't exist
           return;
         }
+      }
+
+      // Check if command is owner only
+      const isOwnerOnly = 'ownerOnly' in command ? command.ownerOnly : false;
+      if (isOwnerOnly && message.author.id !== config.botOwnerId) {
+        await message.reply('❌ This command can only be used by the bot owner!');
+        return;
       }
 
       // Check verification before executing (default: 'basic')

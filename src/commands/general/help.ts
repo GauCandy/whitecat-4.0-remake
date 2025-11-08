@@ -6,8 +6,6 @@ const helpCommand: SlashCommand = {
     .setName('help')
     .setDescription('Hiển thị hướng dẫn sử dụng bot'),
 
-  // Default: 'basic' verification (requires terms agreement)
-
   async execute(interaction: ChatInputCommandInteraction) {
     const embed = new EmbedBuilder()
       .setColor(0x00AE86)

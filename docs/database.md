@@ -6,6 +6,7 @@ Complete guide to WhiteCat Bot's PostgreSQL database schema and repositories.
 - [Overview](#overview)
 - [Schema](#schema)
 - [User Repository](#user-repository)
+- [Ban Repository](#ban-repository)
 - [Common Operations](#common-operations)
 - [Direct Queries](#direct-queries)
 - [Best Practices](#best-practices)
@@ -16,18 +17,22 @@ Complete guide to WhiteCat Bot's PostgreSQL database schema and repositories.
 
 WhiteCat Bot uses PostgreSQL for persistent data storage:
 - **User management** - Discord IDs, emails, verification status
-- **Ban system** - Temporary and permanent bans
+- **Ban system** - Separate table for ban history with detailed information
 - **Milestone tracking** - Auto-increment IDs for events
 
 **Connection:** Uses `pg-pool` for connection pooling
 **Schema File:** `database/schema.sql`
-**Repository:** `src/database/repositories/user.repository.ts`
+**Repositories:**
+- `src/database/repositories/user.repository.ts` - User operations
+- `src/database/repositories/ban.repository.ts` - Ban operations
 
 ---
 
 ## Schema
 
 ### Users Table
+
+Stores basic user information. Ban details are in separate `user_bans` table.
 
 ```sql
 CREATE TABLE users (
@@ -46,26 +51,67 @@ CREATE TABLE users (
   -- Account status: 0 = normal, 1 = banned
   account_status SMALLINT NOT NULL DEFAULT 0 CHECK (account_status IN (0, 1)),
 
-  -- Ban expiration (NULL = permanent ban)
-  ban_expires_at TIMESTAMP WITH TIME ZONE,
-
-  -- Timestamp when user was banned
-  banned_at TIMESTAMP WITH TIME ZONE,
-
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 ```
 
+### User Bans Table
+
+Stores detailed ban information separately to save space. Most users never get banned, so this avoids NULL columns.
+
+```sql
+CREATE TABLE user_bans (
+  -- Primary key
+  id SERIAL PRIMARY KEY,
+
+  -- Foreign key to users table
+  discord_id TEXT NOT NULL REFERENCES users(discord_id) ON DELETE CASCADE,
+
+  -- Ban reason (e.g., "Spam", "Harassment")
+  reason TEXT,
+
+  -- Discord ID of moderator who issued ban
+  banned_by TEXT,
+
+  -- Timestamp when ban was issued
+  banned_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+  -- Ban expiration time (NULL = permanent ban)
+  expires_at TIMESTAMP WITH TIME ZONE,
+
+  -- Whether this ban is currently active
+  is_active BOOLEAN NOT NULL DEFAULT true,
+
+  -- Timestamp when ban was lifted
+  unbanned_at TIMESTAMP WITH TIME ZONE,
+
+  -- Discord ID of moderator who lifted ban
+  unbanned_by TEXT,
+
+  -- Timestamp when record was created
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+```
+
 ### Indexes
 
+**Users table:**
 ```sql
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_account_status ON users(account_status);
 CREATE INDEX idx_users_agreed_terms ON users(agreed_terms);
 CREATE INDEX idx_users_created_at ON users(created_at);
 CREATE INDEX idx_users_id ON users(id);
+```
+
+**User bans table:**
+```sql
+CREATE INDEX idx_user_bans_discord_id ON user_bans(discord_id);
+CREATE INDEX idx_user_bans_is_active ON user_bans(is_active);
+CREATE INDEX idx_user_bans_expires_at ON user_bans(expires_at);
+CREATE INDEX idx_user_bans_banned_at ON user_bans(banned_at);
 ```
 
 ### Auto-Update Trigger
@@ -97,8 +143,6 @@ interface User {
   email: string | null;           // Email (null if not verified)
   agreed_terms: number;           // 0 or 1
   account_status: AccountStatus;  // 0 = NORMAL, 1 = BANNED
-  ban_expires_at: Date | null;    // Ban expiration
-  banned_at: Date | null;         // Ban timestamp
   created_at: Date;               // Created timestamp
   updated_at: Date;               // Updated timestamp
 }
@@ -181,41 +225,121 @@ await userRepository.setUserEmail(
 
 ---
 
-## Ban System
+## Ban Repository
+
+Ban operations are handled by a separate repository for better organization.
+
+### Import
+
+```typescript
+import { banRepository } from '../database/repositories/ban.repository';
+```
+
+### UserBan Interface
+
+```typescript
+interface UserBan {
+  id: number;
+  discord_id: string;
+  reason: string | null;
+  banned_by: string | null;      // Discord ID of moderator
+  banned_at: Date;
+  expires_at: Date | null;        // NULL = permanent
+  is_active: boolean;
+  unbanned_at: Date | null;
+  unbanned_by: string | null;     // Discord ID of moderator
+  created_at: Date;
+}
+```
 
 ### Ban User (Temporary)
 
 ```typescript
-// Ban for 7 days
+// Ban for 7 days with reason
 const expiresAt = new Date();
 expiresAt.setDate(expiresAt.getDate() + 7);
 
-await userRepository.banUser('123456789012345678', expiresAt);
+await banRepository.banUser({
+  discord_id: '123456789012345678',
+  reason: 'Spam',
+  banned_by: '987654321098765432',  // Moderator ID
+  expires_at: expiresAt,
+});
 ```
 
 ### Ban User (Permanent)
 
 ```typescript
-await userRepository.banUser('123456789012345678', null);
-// null = permanent ban
+// Permanent ban
+await banRepository.banUser({
+  discord_id: '123456789012345678',
+  reason: 'ToS violation',
+  banned_by: '987654321098765432',
+  expires_at: null,  // NULL = permanent
+});
 ```
 
 ### Unban User
 
 ```typescript
-await userRepository.unbanUser('123456789012345678');
+await banRepository.unbanUser({
+  discord_id: '123456789012345678',
+  unbanned_by: '987654321098765432',  // Moderator ID
+});
 ```
 
 ### Check if User is Banned
 
 ```typescript
-const isBanned = await userRepository.isUserBanned('123456789012345678');
+const isBanned = await banRepository.isUserBanned('123456789012345678');
 
 if (isBanned) {
   console.log('User is currently banned');
 }
 
-// Note: Automatically unbans if ban expired
+// Note: Automatically unbans if temporary ban expired
+```
+
+### Get Active Ban
+
+```typescript
+const activeBan = await banRepository.getActiveBan('123456789012345678');
+
+if (activeBan) {
+  console.log(`Reason: ${activeBan.reason}`);
+  console.log(`Banned by: ${activeBan.banned_by}`);
+  console.log(`Expires: ${activeBan.expires_at || 'Never (permanent)'}`);
+}
+```
+
+### Get Ban History
+
+```typescript
+// Get all bans for user (including past bans)
+const history = await banRepository.getUserBanHistory('123456789012345678');
+
+console.log(`Total bans: ${history.length}`);
+history.forEach(ban => {
+  console.log(`- ${ban.reason} (${ban.is_active ? 'Active' : 'Lifted'})`);
+});
+```
+
+### Get All Active Bans
+
+```typescript
+const activeBans = await banRepository.getAllActiveBans();
+console.log(`Currently ${activeBans.length} users are banned`);
+```
+
+### Get Ban Statistics
+
+```typescript
+const stats = await banRepository.getBanStats();
+
+console.log(`Total bans: ${stats.total_bans}`);
+console.log(`Active: ${stats.active_bans}`);
+console.log(`Permanent: ${stats.permanent_bans}`);
+console.log(`Temporary: ${stats.temporary_bans}`);
 ```
 
 ---

@@ -5,6 +5,7 @@
 
 import { ChatInputCommandInteraction, Message, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 import { userRepository, AccountStatus } from '../database/repositories/user.repository';
+import { banRepository } from '../database/repositories/ban.repository';
 import { config } from '../config';
 import { VerificationLevel } from '../types/command';
 import Logger from '../utils/logger';
@@ -32,17 +33,21 @@ export async function checkVerificationForSlashCommand(
     }
 
     // Check if user is banned
-    const isBanned = await userRepository.isUserBanned(userId);
+    const isBanned = await banRepository.isUserBanned(userId);
     if (isBanned) {
-      const banMessage = user.ban_expires_at
-        ? `Tài khoản của bạn bị cấm đến ${user.ban_expires_at.toLocaleString('vi-VN')}`
+      const activeBan = await banRepository.getActiveBan(userId);
+
+      const banMessage = activeBan?.expires_at
+        ? `Tài khoản của bạn bị cấm đến <t:${Math.floor(activeBan.expires_at.getTime() / 1000)}:F>`
         : 'Tài khoản của bạn đã bị cấm vĩnh viễn';
 
+      const reason = activeBan?.reason ? `\n**Lý do:** ${activeBan.reason}` : '';
+
       await interaction.reply({
-        content: `🚫 **Tài khoản bị cấm**\n\n${banMessage}\n\nVui lòng liên hệ admin để biết thêm chi tiết.`,
+        content: `🚫 **Tài khoản bị cấm khỏi bot**\n\n${banMessage}${reason}\n\nVui lòng liên hệ admin để biết thêm chi tiết.`,
         ephemeral: true,
       });
-      Logger.debug(`User ${interaction.user.tag} blocked: Banned`);
+      Logger.debug(`User ${interaction.user.tag} blocked: Banned from bot`);
       return false;
     }
 
@@ -192,16 +197,20 @@ export async function checkVerificationForPrefixCommand(
     }
 
     // Check if user is banned
-    const isBanned = await userRepository.isUserBanned(userId);
+    const isBanned = await banRepository.isUserBanned(userId);
     if (isBanned) {
-      const banMessage = user.ban_expires_at
-        ? `Tài khoản của bạn bị cấm đến ${user.ban_expires_at.toLocaleString('vi-VN')}`
+      const activeBan = await banRepository.getActiveBan(userId);
+
+      const banMessage = activeBan?.expires_at
+        ? `Tài khoản của bạn bị cấm đến <t:${Math.floor(activeBan.expires_at.getTime() / 1000)}:F>`
         : 'Tài khoản của bạn đã bị cấm vĩnh viễn';
 
+      const reason = activeBan?.reason ? `\n**Lý do:** ${activeBan.reason}` : '';
+
       await message.reply({
-        content: `🚫 **Tài khoản bị cấm**\n\n${banMessage}\n\nVui lòng liên hệ admin để biết thêm chi tiết.`,
+        content: `🚫 **Tài khoản bị cấm khỏi bot**\n\n${banMessage}${reason}\n\nVui lòng liên hệ admin để biết thêm chi tiết.`,
       });
-      Logger.debug(`User ${message.author.tag} blocked: Banned`);
+      Logger.debug(`User ${message.author.tag} blocked: Banned from bot`);
       return false;
     }
 
