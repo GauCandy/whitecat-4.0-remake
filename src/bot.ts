@@ -3,6 +3,7 @@ import { config } from './config';
 import Logger from './utils/logger';
 import { commandManager } from './managers/command-manager';
 import { checkVerificationForSlashCommand, checkVerificationForPrefixCommand } from './middleware/terms-check';
+import { guildRepository } from './database/repositories/guild.repository';
 
 // Create Discord client
 export async function createClient(): Promise<Client> {
@@ -19,10 +20,43 @@ export async function createClient(): Promise<Client> {
   await commandManager.initialize();
 
   // Event: Bot is ready
-  client.once(Events.ClientReady, (readyClient) => {
+  client.once(Events.ClientReady, async (readyClient) => {
     Logger.success(`Bot logged in as ${readyClient.user.tag}`);
     Logger.info(`Serving ${client.guilds.cache.size} guild(s)`);
+
+    // Auto-create guild records for all guilds bot is in
+    for (const guild of client.guilds.cache.values()) {
+      try {
+        await guildRepository.getOrCreateGuild(guild.id);
+        Logger.debug(`Guild record ensured for: ${guild.name} (${guild.id})`);
+      } catch (error) {
+        Logger.error(`Failed to create guild record for ${guild.name}`, error);
+      }
+    }
+
     Logger.success('Ready to handle commands!');
+  });
+
+  // Event: Bot joins a new guild
+  client.on(Events.GuildCreate, async (guild) => {
+    try {
+      await guildRepository.getOrCreateGuild(guild.id);
+      Logger.info(`Joined guild: ${guild.name} (${guild.id})`);
+      Logger.info(`Guild count: ${client.guilds.cache.size}`);
+    } catch (error) {
+      Logger.error(`Failed to create guild record for ${guild.name}`, error);
+    }
+  });
+
+  // Event: Bot leaves a guild
+  client.on(Events.GuildDelete, async (guild) => {
+    try {
+      await guildRepository.deleteGuild(guild.id);
+      Logger.info(`Left guild: ${guild.name} (${guild.id})`);
+      Logger.info(`Guild count: ${client.guilds.cache.size}`);
+    } catch (error) {
+      Logger.error(`Failed to delete guild record for ${guild.name}`, error);
+    }
   });
 
   // Event: Handle slash commands

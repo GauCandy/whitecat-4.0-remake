@@ -160,3 +160,46 @@ COMMENT ON COLUMN user_bans.is_active IS 'Whether this ban is currently active';
 COMMENT ON COLUMN user_bans.unbanned_at IS 'Timestamp when ban was lifted';
 COMMENT ON COLUMN user_bans.unbanned_by IS 'Discord ID of moderator who lifted ban';
 COMMENT ON COLUMN user_bans.created_at IS 'Timestamp when record was created';
+
+-- =============================================================================
+-- Guilds Table
+-- =============================================================================
+-- Stores guild (server) settings including locale and custom prefix
+-- Auto-created when bot joins a new guild
+
+CREATE TABLE IF NOT EXISTS guilds (
+  -- Primary key: Discord guild ID (stored as TEXT to handle large snowflake IDs)
+  guild_id TEXT PRIMARY KEY,
+
+  -- Guild locale (language)
+  -- Default: 'vi' (Vietnamese)
+  -- Supported: 'vi', 'en'
+  locale TEXT NOT NULL DEFAULT 'vi' CHECK (locale IN ('vi', 'en')),
+
+  -- Custom command prefix
+  -- Default: '!' (can be changed by server admins)
+  prefix TEXT NOT NULL DEFAULT '!',
+
+  -- Timestamps
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Create indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_guilds_locale ON guilds(locale);
+CREATE INDEX IF NOT EXISTS idx_guilds_created_at ON guilds(created_at);
+
+-- Create trigger to automatically update updated_at on row updates
+DROP TRIGGER IF EXISTS update_guilds_updated_at ON guilds;
+CREATE TRIGGER update_guilds_updated_at
+  BEFORE UPDATE ON guilds
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Add comments to table and columns for documentation
+COMMENT ON TABLE guilds IS 'Stores guild (server) settings for the Discord bot';
+COMMENT ON COLUMN guilds.guild_id IS 'Discord guild ID (snowflake)';
+COMMENT ON COLUMN guilds.locale IS 'Guild language setting: vi=Vietnamese, en=English';
+COMMENT ON COLUMN guilds.prefix IS 'Custom command prefix for this guild';
+COMMENT ON COLUMN guilds.created_at IS 'Timestamp when guild was added to database';
+COMMENT ON COLUMN guilds.updated_at IS 'Timestamp when guild settings were last updated';

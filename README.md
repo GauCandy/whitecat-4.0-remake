@@ -18,6 +18,8 @@ A modern, scalable Discord bot built with TypeScript, featuring a 2-level user v
 - 🌐 **REST API** - Express server for webhooks & authentication
 - 📦 **PostgreSQL Database** - User management with connection pooling
 - ⚡ **Slash Commands** - Modern Discord interactions with lazy loading
+- 🌍 **Multi-Language Support** - Vietnamese & English with per-server settings
+- ⚙️ **Guild Settings** - Custom prefix & language per server
 - 🏗️ **Modular Architecture** - Easy to extend and maintain
 - 🚀 **TypeScript** - Full type safety
 - 📊 **Ban System** - Temporary & permanent user bans
@@ -62,6 +64,8 @@ npm run dev
 | [Installation](docs/installation.md) | Detailed installation guide |
 | [Configuration](docs/configuration.md) | Environment variables & setup |
 | [Verification System](docs/VERIFICATION_SYSTEM.md) | 2-level user verification |
+| [Guild Settings](docs/guild-settings.md) | Language & prefix per server |
+| [i18n System](docs/i18n-usage.md) | Multi-language support guide |
 | [API Reference](docs/api.md) | REST API endpoints |
 | [Creating Commands](docs/commands.md) | How to add new commands |
 | [Database](docs/database.md) | Schema & repositories |
@@ -71,10 +75,24 @@ npm run dev
 
 ## 🎯 Available Commands
 
+### General
 | Command | Verification | Description |
 |---------|--------------|-------------|
 | `/help` | Basic | Display help menu |
 | `/ping` | Basic | Check bot latency |
+
+### Server Settings (Admin Only)
+| Command | Permission | Description |
+|---------|------------|-------------|
+| `/language` | Manage Server | Set bot language for server |
+| `/prefix` | Manage Server | Set custom command prefix |
+
+### Moderation (Owner Only)
+| Command | Description |
+|---------|-------------|
+| `/botban` | Ban user from using bot |
+| `/botunban` | Unban user from bot |
+| `/botbaninfo` | View ban information |
 
 **Note:** Basic = Terms agreement, Verified = OAuth email required
 
@@ -86,10 +104,14 @@ npm run dev
 whitecat-discord-bot/
 ├── src/
 │   ├── commands/         # Slash commands (organized by category)
+│   │   ├── admin/        # Server admin commands
+│   │   ├── general/      # General commands
+│   │   └── moderation/   # Bot moderation commands
 │   ├── api/              # Express REST API
 │   ├── database/         # PostgreSQL integration
+│   ├── locales/          # Multi-language support (vi, en)
 │   ├── middleware/       # Verification middleware
-│   ├── services/         # OAuth & business logic
+│   ├── services/         # OAuth & locale services
 │   ├── types/            # TypeScript interfaces
 │   └── index.ts          # Main entry point
 ├── database/
