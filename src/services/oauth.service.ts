@@ -4,7 +4,8 @@
  */
 
 import { config } from '../config';
-import { userRepository, AccountStatus } from '../database/repositories/user.repository';
+import { userRepository, VerificationLevel } from '../database/repositories/user.repository';
+import { userProfileRepository } from '../database/repositories/user-profile.repository';
 import Logger from '../utils/logger';
 
 interface DiscordTokenResponse {
@@ -137,20 +138,29 @@ export class OAuthService {
       Logger.debug(`Updating user ${discordUserId} with OAuth data (scope: ${scope})`);
 
       if (scope === 'verified') {
-        // Full verification: save email and agree to terms
-        const updatedUser = await userRepository.updateUser({
+        // Full verification: save profile to user_profiles and set verification level to VERIFIED
+        await userProfileRepository.upsertProfile({
           discord_id: discordUserId,
+          username: discordUser.username,
+          discriminator: discordUser.discriminator,
+          avatar: discordUser.avatar,
           email: discordUser.email,
-          agreed_terms: 1,
         });
+
+        const updatedUser = await userRepository.setVerificationLevel(
+          discordUserId,
+          VerificationLevel.VERIFIED
+        );
+
         Logger.success(`OAuth completed for user ${discordUser.username}#${discordUser.discriminator} (verified with email)`);
         return { user: updatedUser, scope: 'verified' };
       } else {
-        // Basic authorization: only agree to terms, no email
-        const updatedUser = await userRepository.updateUser({
-          discord_id: discordUserId,
-          agreed_terms: 1,
-        });
+        // Basic authorization: set verification level to BASIC
+        const updatedUser = await userRepository.setVerificationLevel(
+          discordUserId,
+          VerificationLevel.BASIC
+        );
+
         Logger.success(`OAuth completed for user ${discordUser.username}#${discordUser.discriminator} (basic authorization)`);
         return { user: updatedUser, scope: 'basic' };
       }

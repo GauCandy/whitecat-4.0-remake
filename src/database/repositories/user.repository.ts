@@ -11,12 +11,18 @@ export enum AccountStatus {
   BANNED = 1,   // Warned/banned (temporary or permanent)
 }
 
+// Verification level enum
+export enum VerificationLevel {
+  NOT_VERIFIED = 0,  // Not verified (no OAuth)
+  BASIC = 1,         // Basic OAuth (identify only, agreed to terms)
+  VERIFIED = 2,      // Verified with email (identify + email)
+}
+
 // User interface matching database schema
 export interface User {
   id: number;  // Auto-increment ID for milestone tracking
   discord_id: string;
-  email: string | null;
-  agreed_terms: number;  // 0 = not agreed, 1 = agreed
+  verification_level: VerificationLevel;
   account_status: AccountStatus;
   created_at: Date;
   updated_at: Date;
@@ -25,16 +31,14 @@ export interface User {
 // Create user input (only required fields)
 export interface CreateUserInput {
   discord_id: string;
-  email?: string;
-  agreed_terms?: number;
+  verification_level?: VerificationLevel;
   account_status?: AccountStatus;
 }
 
 // Update user input (all fields optional except discord_id)
 export interface UpdateUserInput {
   discord_id: string;
-  email?: string;
-  agreed_terms?: number;
+  verification_level?: VerificationLevel;
   account_status?: AccountStatus;
 }
 
@@ -43,13 +47,17 @@ export class UserRepository {
    * Create a new user
    */
   async createUser(input: CreateUserInput): Promise<User> {
-    const { discord_id, email, agreed_terms = 0, account_status = AccountStatus.NORMAL } = input;
+    const {
+      discord_id,
+      verification_level = VerificationLevel.NOT_VERIFIED,
+      account_status = AccountStatus.NORMAL
+    } = input;
 
     const result = await query<User>(
-      `INSERT INTO users (discord_id, email, agreed_terms, account_status)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO users (discord_id, verification_level, account_status)
+       VALUES ($1, $2, $3)
        RETURNING *`,
-      [discord_id, email || null, agreed_terms, account_status]
+      [discord_id, verification_level, account_status]
     );
 
     return result[0];
@@ -62,18 +70,6 @@ export class UserRepository {
     const result = await query<User>(
       `SELECT * FROM users WHERE discord_id = $1`,
       [discord_id]
-    );
-
-    return result[0] || null;
-  }
-
-  /**
-   * Get user by email
-   */
-  async getUserByEmail(email: string): Promise<User | null> {
-    const result = await query<User>(
-      `SELECT * FROM users WHERE email = $1`,
-      [email]
     );
 
     return result[0] || null;
@@ -128,34 +124,48 @@ export class UserRepository {
   }
 
   /**
-   * Agree to terms of service
-   * Sets agreed_terms to 1
+   * Set user verification level
    */
-  async agreeToTerms(discord_id: string): Promise<User | null> {
+  async setVerificationLevel(discord_id: string, level: VerificationLevel): Promise<User | null> {
     const result = await query<User>(
       `UPDATE users
-       SET agreed_terms = 1
-       WHERE discord_id = $1
+       SET verification_level = $1
+       WHERE discord_id = $2
        RETURNING *`,
-      [discord_id]
+      [level, discord_id]
     );
 
     return result[0] || null;
   }
 
   /**
-   * Set user email (after OAuth verification)
+   * Set user to basic verification (OAuth identify only)
    */
-  async setUserEmail(discord_id: string, email: string): Promise<User | null> {
-    const result = await query<User>(
-      `UPDATE users
-       SET email = $1
-       WHERE discord_id = $2
-       RETURNING *`,
-      [email, discord_id]
-    );
+  async setBasicVerification(discord_id: string): Promise<User | null> {
+    return this.setVerificationLevel(discord_id, VerificationLevel.BASIC);
+  }
 
-    return result[0] || null;
+  /**
+   * Set user to full verification (OAuth identify + email)
+   */
+  async setFullVerification(discord_id: string): Promise<User | null> {
+    return this.setVerificationLevel(discord_id, VerificationLevel.VERIFIED);
+  }
+
+  /**
+   * Check if user has basic verification or higher
+   */
+  async hasBasicVerification(discord_id: string): Promise<boolean> {
+    const user = await this.getUserByDiscordId(discord_id);
+    return user !== null && user.verification_level >= VerificationLevel.BASIC;
+  }
+
+  /**
+   * Check if user has full verification
+   */
+  async hasFullVerification(discord_id: string): Promise<boolean> {
+    const user = await this.getUserByDiscordId(discord_id);
+    return user !== null && user.verification_level === VerificationLevel.VERIFIED;
   }
 
   /**
@@ -193,6 +203,16 @@ export class UserRepository {
   }
 
   /**
+   * Get all users with specific verification level
+   */
+  async getUsersByVerificationLevel(level: VerificationLevel): Promise<User[]> {
+    return await query<User>(
+      `SELECT * FROM users WHERE verification_level = $1 ORDER BY created_at DESC`,
+      [level]
+    );
+  }
+
+  /**
    * Get total user count
    */
   async getTotalUsers(): Promise<number> {
@@ -204,22 +224,24 @@ export class UserRepository {
   }
 
   /**
-   * Get users who agreed to terms
+   * Get users with basic verification or higher
    */
-  async getAgreedUsersCount(): Promise<number> {
+  async getBasicVerifiedUsersCount(): Promise<number> {
     const result = await query<{ count: string }>(
-      `SELECT COUNT(*) as count FROM users WHERE agreed_terms = 1`
+      `SELECT COUNT(*) as count FROM users WHERE verification_level >= $1`,
+      [VerificationLevel.BASIC]
     );
 
     return parseInt(result[0].count, 10);
   }
 
   /**
-   * Get verified users (have email)
+   * Get fully verified users (with email)
    */
-  async getVerifiedUsersCount(): Promise<number> {
+  async getFullyVerifiedUsersCount(): Promise<number> {
     const result = await query<{ count: string }>(
-      `SELECT COUNT(*) as count FROM users WHERE email IS NOT NULL`
+      `SELECT COUNT(*) as count FROM users WHERE verification_level = $1`,
+      [VerificationLevel.VERIFIED]
     );
 
     return parseInt(result[0].count, 10);

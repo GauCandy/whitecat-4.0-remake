@@ -4,7 +4,7 @@
  */
 
 import { ChatInputCommandInteraction, Message, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } from 'discord.js';
-import { userRepository, AccountStatus } from '../database/repositories/user.repository';
+import { userRepository, VerificationLevel as DBVerificationLevel } from '../database/repositories/user.repository';
 import { banRepository } from '../database/repositories/ban.repository';
 import { config } from '../config';
 import { VerificationLevel } from '../types/command';
@@ -58,8 +58,8 @@ export async function checkVerificationForSlashCommand(
 
     // Check verification level requirements
     if (verificationLevel === 'basic') {
-      // Basic: Need OAuth authorization (agreed_terms = 1)
-      if (user.agreed_terms === 0) {
+      // Basic: Need OAuth authorization (verification_level >= BASIC)
+      if (user.verification_level < DBVerificationLevel.BASIC) {
         const embed = new EmbedBuilder()
           .setColor(0x5865F2)
           .setTitle('🔐 Yêu cầu ủy quyền Discord')
@@ -96,8 +96,8 @@ export async function checkVerificationForSlashCommand(
       return true;
 
     } else if (verificationLevel === 'verified') {
-      // Verified: Need OAuth with email (agreed_terms = 1 AND email IS NOT NULL)
-      if (user.agreed_terms === 0 || !user.email) {
+      // Verified: Need OAuth with email (verification_level === VERIFIED)
+      if (user.verification_level < DBVerificationLevel.VERIFIED) {
         const embed = new EmbedBuilder()
           .setColor(0xFF0000)
           .setTitle('🔒 Yêu cầu xác thực Email')
@@ -196,8 +196,8 @@ export async function checkVerificationForPrefixCommand(
 
     // Check verification level requirements
     if (verificationLevel === 'basic') {
-      // Basic: Need OAuth authorization (agreed_terms = 1)
-      if (user.agreed_terms === 0) {
+      // Basic: Need OAuth authorization (verification_level >= BASIC)
+      if (user.verification_level < DBVerificationLevel.BASIC) {
         const embed = new EmbedBuilder()
           .setColor(0x5865F2)
           .setTitle('🔐 Yêu cầu ủy quyền Discord')
@@ -233,8 +233,8 @@ export async function checkVerificationForPrefixCommand(
       return true;
 
     } else if (verificationLevel === 'verified') {
-      // Verified: Need OAuth with email (agreed_terms = 1 AND email IS NOT NULL)
-      if (user.agreed_terms === 0 || !user.email) {
+      // Verified: Need OAuth with email (verification_level === VERIFIED)
+      if (user.verification_level < DBVerificationLevel.VERIFIED) {
         const embed = new EmbedBuilder()
           .setColor(0xFF0000)
           .setTitle('🔒 Yêu cầu xác thực Email')

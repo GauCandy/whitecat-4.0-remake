@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { oauthService } from '../../services/oauth.service';
-import { userRepository } from '../../database/repositories/user.repository';
+import { userRepository, VerificationLevel } from '../../database/repositories/user.repository';
+import { userProfileRepository } from '../../database/repositories/user-profile.repository';
 import { banRepository } from '../../database/repositories/ban.repository';
 import Logger from '../../utils/logger';
 
@@ -200,13 +201,26 @@ router.get('/status/:userId', async (req: Request, res: Response) => {
       banExpiresAt = activeBan?.expires_at || null;
     }
 
+    // Get email from user_profiles if verified
+    let email = null;
+    if (user.verification_level === VerificationLevel.VERIFIED) {
+      const profile = await userProfileRepository.getProfileByDiscordId(userId);
+      email = profile?.email || null;
+    }
+
     res.json({
       success: true,
-      agreedTerms: user.agreed_terms === 1,
-      verified: !!user.email,
+      verificationLevel: user.verification_level, // 0=not verified, 1=basic, 2=verified
+      hasBasicAuth: user.verification_level >= VerificationLevel.BASIC,
+      hasEmailVerification: user.verification_level === VerificationLevel.VERIFIED,
+      email: email, // Only if verified
       status: user.account_status === 0 ? 'normal' : 'banned',
       banned: user.account_status === 1,
       banExpiresAt: banExpiresAt,
+
+      // Legacy fields for backwards compatibility
+      agreedTerms: user.verification_level >= VerificationLevel.BASIC,
+      verified: user.verification_level === VerificationLevel.VERIFIED,
     });
   } catch (error) {
     Logger.error('Error checking auth status', error);

@@ -3,7 +3,7 @@
 -- =============================================================================
 -- Users Table
 -- =============================================================================
--- Stores user information including Discord ID, email, terms agreement, and account status
+-- Stores user information including Discord ID, verification level, and account status
 
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
@@ -13,13 +13,11 @@ CREATE TABLE IF NOT EXISTS users (
   -- Primary key: Discord user ID (stored as TEXT to handle large snowflake IDs)
   discord_id TEXT PRIMARY KEY,
 
-  -- User email (NULL if not verified via OAuth)
-  email TEXT,
-
-  -- Terms agreement status:
-  -- 0 = not agreed
-  -- 1 = agreed
-  agreed_terms SMALLINT NOT NULL DEFAULT 0 CHECK (agreed_terms IN (0, 1)),
+  -- Verification level:
+  -- 0 = not verified (no OAuth)
+  -- 1 = basic (OAuth identify only, agreed to terms)
+  -- 2 = verified (OAuth identify + email)
+  verification_level SMALLINT NOT NULL DEFAULT 0 CHECK (verification_level IN (0, 1, 2)),
 
   -- Account status:
   -- 0 = normal (no issues)
@@ -32,9 +30,8 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Create indexes for better query performance
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_verification_level ON users(verification_level);
 CREATE INDEX IF NOT EXISTS idx_users_account_status ON users(account_status);
-CREATE INDEX IF NOT EXISTS idx_users_agreed_terms ON users(agreed_terms);
 CREATE INDEX IF NOT EXISTS idx_users_created_at ON users(created_at);
 CREATE INDEX IF NOT EXISTS idx_users_id ON users(id);
 
@@ -58,11 +55,54 @@ CREATE TRIGGER update_users_updated_at
 COMMENT ON TABLE users IS 'Stores user information for the Discord bot';
 COMMENT ON COLUMN users.id IS 'Auto-increment ID for milestone tracking';
 COMMENT ON COLUMN users.discord_id IS 'Discord user ID (snowflake)';
-COMMENT ON COLUMN users.email IS 'User email address (NULL if not verified)';
-COMMENT ON COLUMN users.agreed_terms IS 'Terms agreement status: 0=not agreed, 1=agreed';
+COMMENT ON COLUMN users.verification_level IS 'Verification level: 0=not verified, 1=basic OAuth, 2=verified with email';
 COMMENT ON COLUMN users.account_status IS 'Account status: 0=normal, 1=warned/banned';
 COMMENT ON COLUMN users.created_at IS 'Timestamp when user record was created';
 COMMENT ON COLUMN users.updated_at IS 'Timestamp when user record was last updated';
+
+-- =============================================================================
+-- User Profiles Table
+-- =============================================================================
+-- Stores Discord profile information for verified users (email, avatar, etc)
+-- This table is separate to avoid wasting space on users who don't verify email
+
+CREATE TABLE IF NOT EXISTS user_profiles (
+  -- Foreign key to users table (Primary Key)
+  discord_id TEXT PRIMARY KEY REFERENCES users(discord_id) ON DELETE CASCADE,
+
+  -- Discord user info
+  username TEXT NOT NULL,
+  discriminator TEXT,  -- Can be NULL for new Discord usernames without discriminator
+  avatar TEXT,         -- Discord avatar hash
+
+  -- Email (only for verified users)
+  email TEXT NOT NULL UNIQUE,
+
+  -- Timestamps
+  verified_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+-- Create indexes for better query performance
+CREATE INDEX IF NOT EXISTS idx_user_profiles_email ON user_profiles(email);
+CREATE INDEX IF NOT EXISTS idx_user_profiles_verified_at ON user_profiles(verified_at);
+
+-- Create trigger to automatically update updated_at on row updates
+DROP TRIGGER IF EXISTS update_user_profiles_updated_at ON user_profiles;
+CREATE TRIGGER update_user_profiles_updated_at
+  BEFORE UPDATE ON user_profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Add comments to table and columns for documentation
+COMMENT ON TABLE user_profiles IS 'Stores Discord profile information for verified users (email, avatar, etc)';
+COMMENT ON COLUMN user_profiles.discord_id IS 'Discord user ID (foreign key to users)';
+COMMENT ON COLUMN user_profiles.username IS 'Discord username';
+COMMENT ON COLUMN user_profiles.discriminator IS 'Discord discriminator (legacy, can be NULL)';
+COMMENT ON COLUMN user_profiles.avatar IS 'Discord avatar hash';
+COMMENT ON COLUMN user_profiles.email IS 'User email address (required for verified users)';
+COMMENT ON COLUMN user_profiles.verified_at IS 'Timestamp when user completed email verification';
+COMMENT ON COLUMN user_profiles.updated_at IS 'Timestamp when profile was last updated';
 
 -- =============================================================================
 -- User Bans Table
