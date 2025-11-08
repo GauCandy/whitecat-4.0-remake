@@ -88,15 +88,12 @@ export async function createClient(): Promise<Client> {
     } catch (error) {
       Logger.error(`Error executing slash command ${interaction.commandName}`, error);
 
-      const errorMessage = {
-        content: 'There was an error while executing this command!',
-        flags: MessageFlags.Ephemeral,
-      };
+      const errorContent = 'There was an error while executing this command!';
 
       if (interaction.replied || interaction.deferred) {
-        await interaction.followUp(errorMessage);
+        await interaction.followUp({ content: errorContent, flags: MessageFlags.Ephemeral });
       } else {
-        await interaction.reply(errorMessage);
+        await interaction.reply({ content: errorContent, flags: MessageFlags.Ephemeral });
       }
     }
   });
