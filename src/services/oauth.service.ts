@@ -32,15 +32,19 @@ export class OAuthService {
   /**
    * Generate OAuth URL for user to authorize
    * @param discordUserId - Discord user ID to encode in state
+   * @param scope - 'basic' for identify only, 'verified' for identify + email
    * @returns OAuth authorization URL
    */
-  generateAuthUrl(discordUserId: string): string {
+  generateAuthUrl(discordUserId: string, scope: 'basic' | 'verified' = 'verified'): string {
+    // Determine OAuth scopes based on verification level
+    const oauthScope = scope === 'basic' ? 'identify' : 'identify email';
+
     const params = new URLSearchParams({
       client_id: config.clientId,
       redirect_uri: config.redirectUri,
       response_type: 'code',
-      scope: 'identify email', // Request access to user ID and email
-      state: discordUserId, // Pass Discord user ID in state parameter
+      scope: oauthScope,
+      state: `${discordUserId}:${scope}`, // Pass Discord user ID and scope in state
     });
 
     return `${this.OAUTH_URL}?${params.toString()}`;
@@ -97,15 +101,22 @@ export class OAuthService {
   }
 
   /**
-   * Complete OAuth flow and save user email to database
+   * Complete OAuth flow and save user data to database
    * @param code - Authorization code
-   * @param discordUserId - Discord user ID from state parameter
-   * @returns Created/updated user
+   * @param state - State parameter containing Discord user ID and scope
+   * @returns Created/updated user and scope information
    */
-  async completeOAuth(code: string, discordUserId: string) {
+  async completeOAuth(code: string, state: string): Promise<{ user: any; scope: 'basic' | 'verified' }> {
     try {
+      // Parse state parameter: "discordUserId:scope"
+      const [discordUserId, scope] = state.split(':') as [string, 'basic' | 'verified'];
+
+      if (!discordUserId || !scope) {
+        throw new Error('Invalid state parameter');
+      }
+
       // Step 1: Exchange code for tokens
-      Logger.debug(`Exchanging code for tokens for user ${discordUserId}`);
+      Logger.debug(`Exchanging code for tokens for user ${discordUserId} (scope: ${scope})`);
       const tokenResponse = await this.exchangeCode(code);
 
       // Step 2: Get user info
@@ -122,18 +133,29 @@ export class OAuthService {
         discord_id: discordUserId,
       });
 
-      // Step 4: Update user with email and agree to terms
-      Logger.debug(`Updating user ${discordUserId} with email and terms agreement`);
-      const updatedUser = await userRepository.updateUser({
-        discord_id: discordUserId,
-        email: discordUser.email,
-        agreed_terms: 1, // User agreed to terms via OAuth
-      });
+      // Step 4: Update user based on scope
+      Logger.debug(`Updating user ${discordUserId} with OAuth data (scope: ${scope})`);
 
-      Logger.success(`OAuth completed for user ${discordUser.username}#${discordUser.discriminator} (verified)`);
-      return updatedUser;
+      if (scope === 'verified') {
+        // Full verification: save email and agree to terms
+        const updatedUser = await userRepository.updateUser({
+          discord_id: discordUserId,
+          email: discordUser.email,
+          agreed_terms: 1,
+        });
+        Logger.success(`OAuth completed for user ${discordUser.username}#${discordUser.discriminator} (verified with email)`);
+        return { user: updatedUser, scope: 'verified' };
+      } else {
+        // Basic authorization: only agree to terms, no email
+        const updatedUser = await userRepository.updateUser({
+          discord_id: discordUserId,
+          agreed_terms: 1,
+        });
+        Logger.success(`OAuth completed for user ${discordUser.username}#${discordUser.discriminator} (basic authorization)`);
+        return { user: updatedUser, scope: 'basic' };
+      }
     } catch (error) {
-      Logger.error(`OAuth error for user ${discordUserId}`, error);
+      Logger.error(`OAuth error`, error);
       throw error;
     }
   }

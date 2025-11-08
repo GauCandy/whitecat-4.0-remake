@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Events } from 'discord.js';
+import { Client, GatewayIntentBits, Events, MessageFlags } from 'discord.js';
 import { config } from './config';
 import Logger from './utils/logger';
 import { commandManager } from './managers/command-manager';
@@ -47,7 +47,7 @@ export async function createClient(): Promise<Client> {
         if (retryCommand.ownerOnly && interaction.user.id !== config.botOwnerId) {
           await interaction.reply({
             content: '❌ This command can only be used by the bot owner!',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
@@ -67,7 +67,7 @@ export async function createClient(): Promise<Client> {
         if (command.ownerOnly && interaction.user.id !== config.botOwnerId) {
           await interaction.reply({
             content: '❌ This command can only be used by the bot owner!',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
           });
           return;
         }
@@ -90,7 +90,7 @@ export async function createClient(): Promise<Client> {
 
       const errorMessage = {
         content: 'There was an error while executing this command!',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       };
 
       if (interaction.replied || interaction.deferred) {

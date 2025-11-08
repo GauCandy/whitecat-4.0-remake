@@ -9,7 +9,8 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
-  PermissionFlagsBits
+  PermissionFlagsBits,
+  MessageFlags
 } from 'discord.js';
 import { SlashCommand } from '../../types/command';
 import { banRepository } from '../../database/repositories/ban.repository';
@@ -87,7 +88,7 @@ const botbaninfoCommand: SlashCommand = {
         });
       }
 
-      await interaction.reply({ embeds: [embed], ephemeral: true });
+      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 
     } catch (error) {
       console.error('Error in botbaninfo command:', error);
@@ -97,7 +98,7 @@ const botbaninfoCommand: SlashCommand = {
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply(errorMessage);
       } else {
-        await interaction.reply({ content: errorMessage, ephemeral: true });
+        await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
       }
     }
   },

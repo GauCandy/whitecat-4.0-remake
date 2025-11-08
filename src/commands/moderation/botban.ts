@@ -9,7 +9,8 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   EmbedBuilder,
-  PermissionFlagsBits
+  PermissionFlagsBits,
+  MessageFlags
 } from 'discord.js';
 import { SlashCommand } from '../../types/command';
 import { banRepository } from '../../database/repositories/ban.repository';
@@ -59,7 +60,7 @@ const botbanCommand: SlashCommand = {
       if (targetUser.id === interaction.user.id) {
         await interaction.reply({
           content: '❌ You cannot ban yourself!',
-          ephemeral: true
+          flags: MessageFlags.Ephemeral
         });
         return;
       }
@@ -68,7 +69,7 @@ const botbanCommand: SlashCommand = {
       if (targetUser.bot) {
         await interaction.reply({
           content: '❌ Cannot ban bots!',
-          ephemeral: true
+          flags: MessageFlags.Ephemeral
         });
         return;
       }
@@ -78,7 +79,7 @@ const botbanCommand: SlashCommand = {
       if (isAlreadyBanned) {
         await interaction.reply({
           content: `❌ ${targetUser.tag} is already banned from the bot!`,
-          ephemeral: true
+          flags: MessageFlags.Ephemeral
         });
         return;
       }
@@ -159,7 +160,7 @@ const botbanCommand: SlashCommand = {
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply(errorMessage);
       } else {
-        await interaction.reply({ content: errorMessage, ephemeral: true });
+        await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
       }
     }
   },

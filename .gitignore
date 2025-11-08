@@ -28,3 +28,6 @@ Thumbs.db
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Zip files
+*.zip

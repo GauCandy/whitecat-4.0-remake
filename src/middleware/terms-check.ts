@@ -3,7 +3,7 @@
  * Checks user verification level before executing commands
  */
 
-import { ChatInputCommandInteraction, Message, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, Message, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } from 'discord.js';
 import { userRepository, AccountStatus } from '../database/repositories/user.repository';
 import { banRepository } from '../database/repositories/ban.repository';
 import { config } from '../config';
@@ -45,45 +45,49 @@ export async function checkVerificationForSlashCommand(
 
       await interaction.reply({
         content: `🚫 **Tài khoản bị cấm khỏi bot**\n\n${banMessage}${reason}\n\nVui lòng liên hệ admin để biết thêm chi tiết.`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       Logger.debug(`User ${interaction.user.tag} blocked: Banned from bot`);
       return false;
     }
 
-    // Generate links
+    // Generate OAuth links with appropriate scope
     const apiUrl = config.redirectUri.replace('/api/auth/discord/callback', '');
-    const termsLink = `${apiUrl}/api/auth/terms?user_id=${userId}`;
-    const oauthLink = `${apiUrl}/api/auth/discord?user_id=${userId}`;
+    const basicOAuthLink = `${apiUrl}/api/auth/discord?user_id=${userId}&scope=basic`;
+    const verifiedOAuthLink = `${apiUrl}/api/auth/discord?user_id=${userId}&scope=verified`;
 
     // Check verification level requirements
     if (verificationLevel === 'basic') {
-      // Basic: Only need agreed_terms = 1
+      // Basic: Need OAuth authorization (agreed_terms = 1)
       if (user.agreed_terms === 0) {
         const embed = new EmbedBuilder()
-          .setColor(0xFFA500)
-          .setTitle('⚠️ Yêu cầu đồng ý điều khoản')
+          .setColor(0x5865F2)
+          .setTitle('🔐 Yêu cầu ủy quyền Discord')
           .setDescription(
-            'Bạn cần đồng ý với điều khoản sử dụng trước khi có thể sử dụng lệnh này.\n\n' +
-            '**Click vào nút bên dưới để đồng ý:**'
+            'Bạn cần ủy quyền cho bot để sử dụng lệnh này.\n\n' +
+            '**Khi ủy quyền, bạn sẽ:**\n' +
+            '• Đồng ý với điều khoản sử dụng bot\n' +
+            '• Cho phép bot truy cập thông tin cơ bản của bạn\n' +
+            '• Kích hoạt các tính năng như DM, hosting, v.v.\n\n' +
+            '**Click vào nút bên dưới để bắt đầu:**'
           )
-          .setFooter({ text: 'Lệnh này chỉ cần đồng ý điều khoản, không cần xác thực email' })
+          .setFooter({ text: 'Bot chỉ truy cập thông tin Discord cơ bản, không yêu cầu email' })
           .setTimestamp();
 
         const button = new ButtonBuilder()
-          .setLabel('✅ Đồng ý điều khoản')
+          .setLabel('🔐 Ủy quyền với Discord')
           .setStyle(ButtonStyle.Link)
-          .setURL(termsLink);
+          .setURL(basicOAuthLink);
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
         await interaction.reply({
           embeds: [embed],
           components: [row],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
 
-        Logger.debug(`User ${interaction.user.tag} blocked: Need to agree to terms`);
+        Logger.debug(`User ${interaction.user.tag} blocked: Need basic OAuth authorization`);
         return false;
       }
 
@@ -92,62 +96,33 @@ export async function checkVerificationForSlashCommand(
       return true;
 
     } else if (verificationLevel === 'verified') {
-      // Verified: Need agreed_terms = 1 AND email IS NOT NULL
-      if (user.agreed_terms === 0) {
+      // Verified: Need OAuth with email (agreed_terms = 1 AND email IS NOT NULL)
+      if (user.agreed_terms === 0 || !user.email) {
         const embed = new EmbedBuilder()
           .setColor(0xFF0000)
-          .setTitle('🔒 Yêu cầu xác thực đầy đủ')
+          .setTitle('🔒 Yêu cầu xác thực Email')
           .setDescription(
             'Lệnh này yêu cầu xác thực email qua Discord OAuth.\n\n' +
             '**Khi xác thực, bạn sẽ:**\n' +
             '• Đồng ý với điều khoản sử dụng bot\n' +
             '• Cấp quyền truy cập email của bạn\n' +
-            '• Kích hoạt tài khoản để sử dụng tính năng nâng cao\n\n' +
+            '• Kích hoạt tài khoản cho tính năng premium\n\n' +
             '**Click vào nút bên dưới để bắt đầu:**'
           )
           .setFooter({ text: 'Email của bạn sẽ được sử dụng cho tính năng hosting và premium' })
           .setTimestamp();
 
         const button = new ButtonBuilder()
-          .setLabel('🔐 Xác thực với Discord')
+          .setLabel('🔐 Xác thực Email với Discord')
           .setStyle(ButtonStyle.Link)
-          .setURL(oauthLink);
+          .setURL(verifiedOAuthLink);
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
         await interaction.reply({
           embeds: [embed],
           components: [row],
-          ephemeral: true,
-        });
-
-        Logger.debug(`User ${interaction.user.tag} blocked: Need full verification (terms + email)`);
-        return false;
-      }
-
-      if (!user.email) {
-        const embed = new EmbedBuilder()
-          .setColor(0xFF0000)
-          .setTitle('🔒 Yêu cầu xác thực email')
-          .setDescription(
-            'Lệnh này yêu cầu bạn xác thực email qua Discord OAuth.\n\n' +
-            'Bạn đã đồng ý điều khoản, nhưng chưa xác thực email.\n\n' +
-            '**Click vào nút bên dưới để xác thực:**'
-          )
-          .setFooter({ text: 'Email của bạn sẽ được sử dụng cho tính năng hosting và premium' })
-          .setTimestamp();
-
-        const button = new ButtonBuilder()
-          .setLabel('🔐 Xác thực email với Discord')
-          .setStyle(ButtonStyle.Link)
-          .setURL(oauthLink);
-
-        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
-
-        await interaction.reply({
-          embeds: [embed],
-          components: [row],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
 
         Logger.debug(`User ${interaction.user.tag} blocked: Need email verification`);
@@ -168,7 +143,7 @@ export async function checkVerificationForSlashCommand(
     // On error, block execution to be safe
     await interaction.reply({
       content: '❌ Đã xảy ra lỗi khi kiểm tra xác thực. Vui lòng thử lại sau.',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return false;
   }
@@ -214,29 +189,33 @@ export async function checkVerificationForPrefixCommand(
       return false;
     }
 
-    // Generate links
+    // Generate OAuth links with appropriate scope
     const apiUrl = config.redirectUri.replace('/api/auth/discord/callback', '');
-    const termsLink = `${apiUrl}/api/auth/terms?user_id=${userId}`;
-    const oauthLink = `${apiUrl}/api/auth/discord?user_id=${userId}`;
+    const basicOAuthLink = `${apiUrl}/api/auth/discord?user_id=${userId}&scope=basic`;
+    const verifiedOAuthLink = `${apiUrl}/api/auth/discord?user_id=${userId}&scope=verified`;
 
     // Check verification level requirements
     if (verificationLevel === 'basic') {
-      // Basic: Only need agreed_terms = 1
+      // Basic: Need OAuth authorization (agreed_terms = 1)
       if (user.agreed_terms === 0) {
         const embed = new EmbedBuilder()
-          .setColor(0xFFA500)
-          .setTitle('⚠️ Yêu cầu đồng ý điều khoản')
+          .setColor(0x5865F2)
+          .setTitle('🔐 Yêu cầu ủy quyền Discord')
           .setDescription(
-            'Bạn cần đồng ý với điều khoản sử dụng trước khi có thể sử dụng lệnh này.\n\n' +
-            '**Click vào nút bên dưới để đồng ý:**'
+            'Bạn cần ủy quyền cho bot để sử dụng lệnh này.\n\n' +
+            '**Khi ủy quyền, bạn sẽ:**\n' +
+            '• Đồng ý với điều khoản sử dụng bot\n' +
+            '• Cho phép bot truy cập thông tin cơ bản của bạn\n' +
+            '• Kích hoạt các tính năng như DM, hosting, v.v.\n\n' +
+            '**Click vào nút bên dưới để bắt đầu:**'
           )
-          .setFooter({ text: 'Lệnh này chỉ cần đồng ý điều khoản, không cần xác thực email' })
+          .setFooter({ text: 'Bot chỉ truy cập thông tin Discord cơ bản, không yêu cầu email' })
           .setTimestamp();
 
         const button = new ButtonBuilder()
-          .setLabel('✅ Đồng ý điều khoản')
+          .setLabel('🔐 Ủy quyền với Discord')
           .setStyle(ButtonStyle.Link)
-          .setURL(termsLink);
+          .setURL(basicOAuthLink);
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
@@ -245,7 +224,7 @@ export async function checkVerificationForPrefixCommand(
           components: [row],
         });
 
-        Logger.debug(`User ${message.author.tag} blocked: Need to agree to terms`);
+        Logger.debug(`User ${message.author.tag} blocked: Need basic OAuth authorization`);
         return false;
       }
 
@@ -254,54 +233,26 @@ export async function checkVerificationForPrefixCommand(
       return true;
 
     } else if (verificationLevel === 'verified') {
-      // Verified: Need agreed_terms = 1 AND email IS NOT NULL
-      if (user.agreed_terms === 0) {
+      // Verified: Need OAuth with email (agreed_terms = 1 AND email IS NOT NULL)
+      if (user.agreed_terms === 0 || !user.email) {
         const embed = new EmbedBuilder()
           .setColor(0xFF0000)
-          .setTitle('🔒 Yêu cầu xác thực đầy đủ')
+          .setTitle('🔒 Yêu cầu xác thực Email')
           .setDescription(
             'Lệnh này yêu cầu xác thực email qua Discord OAuth.\n\n' +
             '**Khi xác thực, bạn sẽ:**\n' +
             '• Đồng ý với điều khoản sử dụng bot\n' +
             '• Cấp quyền truy cập email của bạn\n' +
-            '• Kích hoạt tài khoản để sử dụng tính năng nâng cao\n\n' +
+            '• Kích hoạt tài khoản cho tính năng premium\n\n' +
             '**Click vào nút bên dưới để bắt đầu:**'
           )
           .setFooter({ text: 'Email của bạn sẽ được sử dụng cho tính năng hosting và premium' })
           .setTimestamp();
 
         const button = new ButtonBuilder()
-          .setLabel('🔐 Xác thực với Discord')
+          .setLabel('🔐 Xác thực Email với Discord')
           .setStyle(ButtonStyle.Link)
-          .setURL(oauthLink);
-
-        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
-
-        await message.reply({
-          embeds: [embed],
-          components: [row],
-        });
-
-        Logger.debug(`User ${message.author.tag} blocked: Need full verification (terms + email)`);
-        return false;
-      }
-
-      if (!user.email) {
-        const embed = new EmbedBuilder()
-          .setColor(0xFF0000)
-          .setTitle('🔒 Yêu cầu xác thực email')
-          .setDescription(
-            'Lệnh này yêu cầu bạn xác thực email qua Discord OAuth.\n\n' +
-            'Bạn đã đồng ý điều khoản, nhưng chưa xác thực email.\n\n' +
-            '**Click vào nút bên dưới để xác thực:**'
-          )
-          .setFooter({ text: 'Email của bạn sẽ được sử dụng cho tính năng hosting và premium' })
-          .setTimestamp();
-
-        const button = new ButtonBuilder()
-          .setLabel('🔐 Xác thực email với Discord')
-          .setStyle(ButtonStyle.Link)
-          .setURL(oauthLink);
+          .setURL(verifiedOAuthLink);
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
