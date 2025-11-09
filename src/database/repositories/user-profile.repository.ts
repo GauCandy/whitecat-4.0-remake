@@ -23,7 +23,7 @@ export interface CreateProfileInput {
   username: string;
   discriminator?: string | null;
   avatar?: string | null;
-  email: string;
+  email?: string | null;  // Optional - only for verified users
 }
 
 // Update profile input

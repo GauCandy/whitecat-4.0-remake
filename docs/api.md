@@ -5,6 +5,7 @@ Complete API documentation for WhiteCat Bot REST endpoints.
 ## Table of Contents
 - [Overview](#overview)
 - [Base URL](#base-url)
+- [Bot Invitation Endpoints](#bot-invitation-endpoints)
 - [Authentication Endpoints](#authentication-endpoints)
 - [Health Check Endpoints](#health-check-endpoints)
 - [Response Formats](#response-formats)
@@ -39,66 +40,117 @@ https://yourdomain.com
 
 ---
 
-## Authentication Endpoints
+## Bot Invitation Endpoints
 
-### 1. Simple Terms Agreement
+### 1. Guild Install (Server Invite)
 
-**Endpoint:** `GET /api/auth/terms`
+**Endpoint:** `GET /invite/guild`
 
-**Description:** Basic terms agreement without OAuth (Level 1 verification)
+**Description:** Invite bot to server with automatic basic verification
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `user_id` | string | Yes | Discord user ID |
+| `permissions` | string | No | Bot permissions (default: '0') |
 
 **Example Request:**
 ```http
-GET /api/auth/terms?user_id=123456789012345678
+GET /invite/guild?permissions=8
 ```
 
-**Success Response:**
-- **Status:** 200 OK
-- **Content-Type:** text/html
-- **Body:** HTML success page
+**Response:**
+- **Status:** 302 Redirect
+- **Location:** Discord OAuth authorization URL
 
-**Error Responses:**
-- **400 Bad Request:** Missing `user_id` parameter
-- **500 Internal Server Error:** Database or server error
+**OAuth Flow:**
+1. User authorizes bot on Discord
+2. Discord redirects to callback with code
+3. Server saves user info to database
+4. Sets `verification_level = BASIC`
+5. Shows success page
 
-**Flow:**
-1. User clicks "Agree to Terms" button in Discord
-2. Redirects to this endpoint
-3. Server creates/updates user record
-4. Sets `agreed_terms = 1` in database
-5. Shows success page with "return to Discord" message
-
-**Implementation:**
-```typescript
-// In Discord bot
-const termsLink = `${apiUrl}/api/auth/terms?user_id=${userId}`;
-const button = new ButtonBuilder()
-  .setLabel('✅ Đồng ý điều khoản')
-  .setStyle(ButtonStyle.Link)
-  .setURL(termsLink);
-```
+**OAuth Scopes:**
+- `bot` - Add bot to server
+- `applications.commands` - Use slash commands
+- `identify` - Get user info (username, avatar)
 
 ---
 
-### 2. Start OAuth Flow
+### 2. User Install (Personal Authorization)
+
+**Endpoint:** `GET /invite/user`
+
+**Description:** Personal bot authorization (User Install Apps) with automatic basic verification
+
+**Example Request:**
+```http
+GET /invite/user
+```
+
+**Response:**
+- **Status:** 302 Redirect
+- **Location:** Discord OAuth authorization URL
+
+**OAuth Flow:**
+1. User authorizes personal app usage
+2. Discord redirects to callback with code
+3. Server saves user info to database
+4. Sets `verification_level = BASIC`
+5. Shows success page
+
+**OAuth Scopes:**
+- `applications.commands` - Use slash commands anywhere
+- `identify` - Get user info (username, avatar)
+
+---
+
+### 3. Flexible Install (Both Guild and User)
+
+**Endpoint:** `GET /invite`
+
+**Description:** Supports both guild and user install in one flow
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `permissions` | string | No | Bot permissions for guild (default: '0') |
+
+**Example Request:**
+```http
+GET /invite?permissions=0
+```
+
+**Response:**
+- **Status:** 302 Redirect
+- **Location:** Discord OAuth authorization URL
+
+**OAuth Flow:**
+- Same as above, but supports both integration types
+- User can choose: Add to server OR Use personally
+
+---
+
+## Authentication Endpoints
+
+### 1. Start Basic OAuth Flow
 
 **Endpoint:** `GET /api/auth/discord`
 
-**Description:** Start Discord OAuth2 flow for email verification (Level 2)
+**Description:** Start Discord OAuth2 flow for user verification
 
 **Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `user_id` | string | Yes | Discord user ID |
+| `scope` | string | No | 'basic' or 'verified' (default: 'verified') |
 
-**Example Request:**
+**Example Requests:**
 ```http
-GET /api/auth/discord?user_id=123456789012345678
+# Basic verification (identify only)
+GET /api/auth/discord?user_id=123456789012345678&scope=basic
+
+# Email verification (identify + email)
+GET /api/auth/discord?user_id=123456789012345678&scope=verified
 ```
 
 **Response:**
@@ -116,16 +168,24 @@ https://discord.com/api/oauth2/authorize?
 ```
 
 **OAuth Scopes:**
-- `identify` - Get user ID and username
+
+For `scope=basic`:
+- `identify` - Get user ID, username, avatar
+- `applications.commands` - Use commands
+
+For `scope=verified`:
+- `identify` - Get user ID, username, avatar
 - `email` - Get user email address
+- `applications.commands` - Use commands
 
 **State Parameter:**
-- Contains Discord user ID for verification
+- Format: `{user_id}:{scope}` (e.g., "123456789012345678:verified")
 - Prevents CSRF attacks
+- Validates user identity
 
 ---
 
-### 3. OAuth Callback
+### 2. OAuth Callback
 
 **Endpoint:** `GET /api/auth/discord/callback`
 
@@ -155,20 +215,28 @@ GET /api/auth/discord/callback?code=ABC123&state=123456789012345678
 1. Discord redirects user to this endpoint after authorization
 2. Server exchanges code for access token
 3. Server fetches user info from Discord API
-4. Server saves email to database
-5. Sets `agreed_terms = 1`
-6. Shows success page
+4. Server saves to `users` and `user_profiles` tables
+5. Sets appropriate `verification_level` (1=BASIC, 2=VERIFIED)
+6. Shows success page with gradient background
 
-**Database Update:**
+**Database Updates:**
+
+For Basic:
 ```sql
-UPDATE users
-SET email = 'user@example.com', agreed_terms = 1
-WHERE discord_id = '123456789012345678';
+INSERT INTO users (discord_id, verification_level) VALUES ('123...', 1);
+INSERT INTO user_profiles (discord_id, username, discriminator, avatar)
+VALUES ('123...', 'Username', '0', 'avatar_hash');
+```
+
+For Verified:
+```sql
+UPDATE users SET verification_level = 2 WHERE discord_id = '123...';
+UPDATE user_profiles SET email = 'user@example.com' WHERE discord_id = '123...';
 ```
 
 ---
 
-### 4. Check User Status
+### 3. Check User Status
 
 **Endpoint:** `GET /api/auth/status/:userId`
 
@@ -188,11 +256,17 @@ GET /api/auth/status/123456789012345678
 ```json
 {
   "success": true,
-  "agreedTerms": true,
-  "verified": true,
+  "verificationLevel": 2,
+  "hasBasicAuth": true,
+  "hasEmailVerification": true,
+  "email": "user@example.com",
   "status": "normal",
   "banned": false,
-  "banExpiresAt": null
+  "banExpiresAt": null,
+
+  // Legacy fields (backwards compatibility)
+  "agreedTerms": true,
+  "verified": true
 }
 ```
 
@@ -200,11 +274,15 @@ GET /api/auth/status/123456789012345678
 | Field | Type | Description |
 |-------|------|-------------|
 | `success` | boolean | Request success status |
-| `agreedTerms` | boolean | User agreed to terms (true/false) |
-| `verified` | boolean | User has email (true/false) |
+| `verificationLevel` | number | 0=none, 1=basic, 2=verified |
+| `hasBasicAuth` | boolean | Has basic verification (level >= 1) |
+| `hasEmailVerification` | boolean | Has email verification (level = 2) |
+| `email` | string\|null | Email address (only if verified) |
 | `status` | string | Account status: "normal" or "banned" |
 | `banned` | boolean | Is user currently banned |
 | `banExpiresAt` | string\|null | Ban expiration (null = permanent) |
+| `agreedTerms` | boolean | **LEGACY:** Same as hasBasicAuth |
+| `verified` | boolean | **LEGACY:** Same as hasEmailVerification |
 
 **User Not Found Response:**
 ```json
@@ -229,12 +307,19 @@ GET /api/auth/status/123456789012345678
 const response = await fetch(`/api/auth/status/${userId}`);
 const data = await response.json();
 
-if (data.verified) {
+if (data.verificationLevel >= 2) {
   console.log('User has email verification');
-} else if (data.agreedTerms) {
+} else if (data.verificationLevel >= 1) {
   console.log('User has basic verification only');
 } else {
   console.log('User not verified');
+}
+
+// Or using helper fields
+if (data.hasEmailVerification) {
+  console.log('Can use premium features');
+} else if (data.hasBasicAuth) {
+  console.log('Can use basic features');
 }
 ```
 

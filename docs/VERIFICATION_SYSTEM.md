@@ -5,30 +5,48 @@ WhiteCat Bot features a **2-level verification system** to protect bot features 
 ## Overview
 
 The verification system has two levels:
-- **Basic:** Simple terms agreement (no email required)
-- **Verified:** Full OAuth authentication with email collection
+- **Basic (Level 1):** OAuth with `identify` scope - User info only (username, avatar)
+- **Verified (Level 2):** OAuth with `identify + email` scope - Includes email verification
+
+**Key Concept:** Bot invitation (guild/user install) = Basic verification automatically
+
+---
 
 ## Level 1: Basic Verification
 
 ### Requirements
-- User must agree to Terms of Service
-- No email or additional permissions required
+- User authorizes bot via Discord OAuth
+- OAuth scope: `identify` (basic user info only)
+- **OR** invites bot to server (guild/user install)
 
 ### Process
+
+**Option A: Via Bot Invite (Recommended)**
+1. User clicks invite link (`/invite/guild` or `/invite/user`)
+2. Discord OAuth page → User authorizes bot
+3. Callback saves user info to database
+4. Sets `verification_level = BASIC (1)`
+5. User can use basic commands
+
+**Option B: Via Command Authorization**
 1. User runs a command requiring basic verification
-2. Bot displays embed with "Agree to Terms" button
-3. User clicks button → redirects to web page
-4. Server sets `agreed_terms = 1` in database
-5. User returns to Discord → can use basic commands
+2. Bot displays "Authorize Bot" button
+3. User clicks → OAuth flow with `identify` scope
+4. Callback saves user info
+5. Sets `verification_level = BASIC (1)`
 
 ### Data Collected
-- Discord ID only
-- Timestamp of agreement
+- Discord ID
+- Username
+- Discriminator
+- Avatar
+- Timestamp of authorization
 
 ### Commands Access
 - `/help` - Display help
 - `/ping` - Check bot latency
-- All future basic commands
+- All general commands
+- Basic features
 
 ### Implementation
 
@@ -52,39 +70,42 @@ const command: SlashCommand = {
 
 **Middleware Check:**
 ```typescript
-// In middleware/terms-check.ts
+// In middleware/verification-check.ts
 if (verificationLevel === 'basic') {
-  if (user.agreed_terms === 0) {
-    // Show "Agree to Terms" button
-    // Link: /api/auth/terms?user_id=<id>
+  if (user.verification_level < VerificationLevel.BASIC) {
+    // Show "Authorize Bot" button
+    const authUrl = oauthService.generateAuthUrl(userId, 'basic');
+    // Display embed with button
   }
 }
 ```
 
-## Level 2: Verified (OAuth)
+---
+
+## Level 2: Verified (Email)
 
 ### Requirements
-- User must complete Discord OAuth flow
-- Must grant email permission to bot
+- User must already have Basic verification
+- Must grant `email` permission via OAuth
 
 ### Process
 1. User runs a command requiring verified level
-2. Bot displays embed with "Authenticate with Discord" button
-3. User clicks → redirects to Discord OAuth page
-4. User logs in and grants email permission
-5. Discord redirects to callback URL
-6. Server saves email + sets `agreed_terms = 1`
-7. User returns to Discord → can use verified commands
+2. Bot displays "Email Verification Required" button
+3. User clicks → OAuth flow with `identify + email` scope
+4. Discord OAuth page → User grants email permission
+5. Callback updates user profile with email
+6. Sets `verification_level = VERIFIED (2)`
+7. User can use premium/verified features
 
 ### Data Collected
-- Discord ID
-- Email address
-- Timestamp of agreement
+- All basic data (Discord ID, username, avatar)
+- Email address (verified by Discord)
+- Timestamp of email verification
 
 ### Commands Access
 - All basic commands
-- Premium features (to be added)
-- Hosting features (to be added)
+- Premium features
+- Hosting features
 - Any advanced features requiring email
 
 ### Implementation
@@ -109,70 +130,121 @@ const command: SlashCommand = {
 
 **Middleware Check:**
 ```typescript
-// In middleware/terms-check.ts
+// In middleware/verification-check.ts
 if (verificationLevel === 'verified') {
-  if (user.agreed_terms === 0) {
-    // Show "Authenticate with Discord" button (OAuth)
-  } else if (!user.email) {
-    // User agreed to terms but hasn't done OAuth yet
-    // Show email verification required
+  if (user.verification_level < VerificationLevel.VERIFIED) {
+    // Show "Email Verification Required" button
+    const authUrl = oauthService.generateAuthUrl(userId, 'verified');
+    // Display embed with button
   }
 }
 ```
 
+---
+
 ## Database Schema
 
 ```sql
+-- Main users table
 CREATE TABLE users (
   id SERIAL,
   discord_id TEXT PRIMARY KEY,
-  email TEXT,                    -- NULL if not verified
-  agreed_terms SMALLINT DEFAULT 0, -- 0 = not agreed, 1 = agreed
-  account_status SMALLINT DEFAULT 0, -- 0 = normal, 1 = banned
-  ban_expires_at TIMESTAMP,
-  banned_at TIMESTAMP,
+  verification_level SMALLINT DEFAULT 0,
+    -- 0 = NOT_VERIFIED
+    -- 1 = BASIC (has identify)
+    -- 2 = VERIFIED (has email)
+  account_status SMALLINT DEFAULT 0,
+    -- 0 = NORMAL
+    -- 1 = BANNED
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
+
+-- User profiles (for verified users)
+CREATE TABLE user_profiles (
+  discord_id TEXT PRIMARY KEY REFERENCES users(discord_id) ON DELETE CASCADE,
+  username TEXT NOT NULL,
+  discriminator TEXT NOT NULL,
+  avatar TEXT,
+  email TEXT,  -- Only for VERIFIED level
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- User bans
+CREATE TABLE user_bans (
+  id SERIAL PRIMARY KEY,
+  discord_id TEXT NOT NULL REFERENCES users(discord_id) ON DELETE CASCADE,
+  reason TEXT,
+  expires_at TIMESTAMP,  -- NULL = permanent ban
+  banned_at TIMESTAMP DEFAULT NOW(),
+  unbanned_at TIMESTAMP
+);
 ```
+
+---
 
 ## API Endpoints
 
-### Basic Verification
-- **Endpoint:** `GET /api/auth/terms?user_id=<discord_id>`
-- **Purpose:** Simple terms agreement
-- **Flow:**
-  1. User clicks button in Discord
-  2. Redirects to this endpoint
-  3. Server creates/updates user record
-  4. Sets `agreed_terms = 1`
-  5. Shows success page
-- **Data Collected:** Discord ID only
+### Bot Invitation (Auto Basic Verification)
 
-### Verified (OAuth)
-- **Start OAuth:** `GET /api/auth/discord?user_id=<discord_id>`
-  - Generates Discord OAuth URL
-  - Redirects user to Discord login
+- **Guild Install:** `GET /invite/guild?permissions=<permissions>`
+  - Invite bot to server
+  - OAuth scope: `bot + applications.commands + identify`
+  - Redirects to callback → saves basic user info
+  - Sets `verification_level = BASIC`
 
-- **OAuth Callback:** `GET /api/auth/discord/callback?code=<code>&state=<discord_id>`
+- **User Install:** `GET /invite/user`
+  - Personal bot authorization (User Install Apps)
+  - OAuth scope: `applications.commands + identify`
+  - Redirects to callback → saves basic user info
+  - Sets `verification_level = BASIC`
+
+- **Flexible:** `GET /invite`
+  - Supports both guild and user install
+  - Automatically sets `verification_level = BASIC`
+
+### Manual Authorization
+
+- **Basic Auth:** `GET /api/auth/discord?user_id=<discord_id>&scope=basic`
+  - For users who didn't invite bot
+  - OAuth scope: `identify + applications.commands`
+  - Redirects to callback
+  - Sets `verification_level = BASIC`
+
+- **Email Verification:** `GET /api/auth/discord?user_id=<discord_id>&scope=verified`
+  - For premium features
+  - OAuth scope: `identify + email + applications.commands`
+  - Redirects to callback
+  - Sets `verification_level = VERIFIED`
+
+### OAuth Callback
+
+- **Endpoint:** `GET /api/auth/discord/callback?code=<code>&state=<state>`
+  - Handles all OAuth callbacks (invite + manual)
   - Exchanges code for access token
-  - Fetches user email from Discord API
-  - Saves email to database
-  - Sets `agreed_terms = 1`
+  - Fetches user info from Discord API
+  - Saves to `users` and `user_profiles` tables
   - Shows success page
 
-- **Check Status:** `GET /api/auth/status/:userId`
+### Status Check
+
+- **Endpoint:** `GET /api/auth/status/:userId`
   - Returns user verification status
   - Response:
     ```json
     {
       "success": true,
-      "agreedTerms": true,
-      "verified": true,
+      "verificationLevel": 2,
+      "hasBasicAuth": true,
+      "hasEmailVerification": true,
+      "email": "user@example.com",
       "status": "normal",
       "banned": false
     }
     ```
+
+---
 
 ## User Ban System
 
@@ -180,41 +252,50 @@ The verification system includes user ban functionality:
 
 ### Ban User (Temporary)
 ```typescript
-await userRepository.banUser(discordId, expiresAt);
+await banRepository.banUser(discordId, reason, expiresAt);
 // expiresAt = Date object (e.g., 7 days from now)
 ```
 
 ### Ban User (Permanent)
 ```typescript
-await userRepository.banUser(discordId, null);
+await banRepository.banUser(discordId, reason, null);
 // null = permanent ban
 ```
 
 ### Unban User
 ```typescript
-await userRepository.unbanUser(discordId);
+await banRepository.unbanUser(discordId);
+```
+
+### Check Ban Status
+```typescript
+const ban = await banRepository.getActiveBan(discordId);
+if (ban) {
+  // User is banned
+  console.log('Ban reason:', ban.reason);
+  console.log('Expires at:', ban.expires_at);
+}
 ```
 
 ### Auto-Unban on Expiry
-The system automatically unbans users when checking if they're banned:
-```typescript
-const isBanned = await userRepository.isUserBanned(discordId);
-// If ban expired, automatically unbans and returns false
-```
+The system automatically checks for expired bans and unbans users when they try to use commands.
+
+---
 
 ## Security Considerations
-
-### Terms Agreement
-- ✅ No sensitive data collected
-- ✅ User can't bypass (middleware checks every command)
-- ✅ Stored in database, not in-memory cache
 
 ### OAuth Flow
 - ✅ Uses Discord's official OAuth2
 - ✅ State parameter prevents CSRF attacks
-- ✅ Only collects email (scope: `identify email`)
+- ✅ HTTPS only in production
 - ✅ No password or token storage
 - ✅ Email verified by Discord
+
+### Data Collection
+- ✅ Basic: Only Discord ID, username, avatar
+- ✅ Verified: Adds email (Discord-verified)
+- ✅ Minimal data collection
+- ✅ User can revoke access anytime via Discord
 
 ### Best Practices
 - Always check verification level before command execution
@@ -223,24 +304,27 @@ const isBanned = await userRepository.isUserBanned(discordId);
 - Implement rate limiting on API endpoints
 - Log all verification attempts for security audit
 
-## Migration from Old System
+---
 
-If you had an old terms system, here's how to migrate:
+## Migration from Old System
 
 ### Old System
 ```typescript
 requireTerms?: boolean // true or false
+agreed_terms: 0 | 1 // in database
 ```
 
 ### New System
 ```typescript
-verificationLevel?: 'basic' | 'verified' // default: 'basic'
+verificationLevel?: 'basic' | 'verified' // in command
+verification_level: 0 | 1 | 2 // in database
 ```
 
 ### Migration Steps
-1. Remove all `requireTerms: false` → These become basic (default)
-2. Keep `requireTerms: true` → These become basic (default)
-3. For premium features → Add `verificationLevel: 'verified'`
+1. Run database migration to add `verification_level` column
+2. Convert old `agreed_terms = 1` to `verification_level = 1` (BASIC)
+3. Users with email already → `verification_level = 2` (VERIFIED)
+4. Update middleware to check `verification_level` instead of `agreed_terms`
 
 **Backwards Compatibility:**
 The middleware exports both old and new function names:
@@ -249,31 +333,62 @@ export const checkTermsForSlashCommand = checkVerificationForSlashCommand;
 export const checkTermsForPrefixCommand = checkVerificationForPrefixCommand;
 ```
 
+---
+
+## OAuth Flow Types
+
+The system supports 4 OAuth flow types (defined in `oauth.service.ts`):
+
+1. **`guild`** - Bot invitation to server
+   - Scope: `bot + applications.commands + identify`
+   - Integration type: 0 (Guild Install)
+   - Redirects to callback
+   - Sets verification = BASIC
+
+2. **`user`** - User Install Apps
+   - Scope: `applications.commands + identify`
+   - Integration type: 1 (User Install)
+   - Redirects to callback
+   - Sets verification = BASIC
+
+3. **`basic`** - Manual basic authorization
+   - Scope: `identify + applications.commands`
+   - No integration type (pure OAuth)
+   - Redirects to callback
+   - Sets verification = BASIC
+
+4. **`verified`** - Email verification
+   - Scope: `identify + email + applications.commands`
+   - No integration type (pure OAuth)
+   - Redirects to callback
+   - Sets verification = VERIFIED
+
+---
+
 ## Testing
 
-### Test Basic Verification
-1. Create fresh user (clear database)
-2. Run `/ping` command
-3. Should see "Agree to Terms" button
-4. Click button → should redirect to success page
-5. Return to Discord, run `/ping` again
-6. Should execute successfully
+### Test Basic Verification (via Invite)
+1. Navigate to `http://localhost:3000/invite/guild`
+2. Authorize bot on Discord
+3. Should redirect to success page
+4. Check database: `verification_level = 1`
+5. Run `/ping` command → should work
 
-### Test Verified Verification
-1. Create command with `verificationLevel: 'verified'`
-2. User with basic verification runs command
-3. Should see "Authenticate with Discord" button
+### Test Email Verification
+1. User with basic verification runs premium command
+2. Bot shows "Email Verification Required" button
+3. User clicks → OAuth with email scope
 4. Complete OAuth flow
-5. Return to Discord, run command again
-6. Should execute successfully
+5. Check database: `verification_level = 2`
+6. Run premium command → should work
 
 ### Test Ban System
-1. Ban a user: `userRepository.banUser(userId, null)`
+1. Ban a user: `banRepository.banUser(userId, 'Test ban', null)`
 2. User tries to run any command
-3. Should see ban message
-4. Unban user: `userRepository.unbanUser(userId)`
+3. Should see ban message with reason
+4. Unban user: `banRepository.unbanUser(userId)`
 5. User can run commands again
 
 ---
 
-[← Back to Main README](../README.md) | [API Documentation →](API.md)
+[← Back to Main README](../README.md) | [API Documentation →](api.md)

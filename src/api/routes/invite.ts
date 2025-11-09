@@ -4,48 +4,44 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { config } from '../../config';
+import { oauthService } from '../../services/oauth.service';
 
 const router = Router();
 
 /**
- * GET /api/invite/guild
+ * GET /invite/guild
  * Redirect to Discord OAuth for Guild Install (Add bot to server)
- * Also requests user info access (identify)
+ * Automatically sets verification_level = BASIC on callback
  */
 router.get('/guild', (req: Request, res: Response) => {
-  // Bot invite URL with permissions
-  // Scope: bot + applications.commands (Guild Install) + identify (User Info)
-  const permissions = '0'; // Adjust permissions as needed (0 = no permissions)
-
-  const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${config.clientId}&permissions=${permissions}&integration_type=0&scope=bot+applications.commands+identify`;
-
+  const permissions = (req.query.permissions as string) || '0';
+  const inviteUrl = oauthService.generateOAuthUrl('guild', undefined, permissions);
   res.redirect(inviteUrl);
 });
 
 /**
- * GET /api/invite/user
+ * GET /invite/user
  * Redirect to Discord OAuth for User Install (Personal authorization)
- * Also requests user info access (identify)
+ * Automatically sets verification_level = BASIC on callback
  */
 router.get('/user', (req: Request, res: Response) => {
-  // User Install URL
-  // Scope: applications.commands (User Install) + identify (User Info)
-  const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${config.clientId}&integration_type=1&scope=applications.commands+identify`;
-
+  const inviteUrl = oauthService.generateOAuthUrl('user');
   res.redirect(inviteUrl);
 });
 
 /**
- * GET /api/invite
+ * GET /invite
  * Redirect to both Guild and User Install (flexible)
- * Also requests user info access (identify)
+ * User can choose: Add to server OR Use personally
+ * Automatically sets verification_level = BASIC on callback
  */
 router.get('/', (req: Request, res: Response) => {
-  // Support both integration types
-  const permissions = '0';
+  const permissions = (req.query.permissions as string) || '0';
 
-  const inviteUrl = `https://discord.com/api/oauth2/authorize?client_id=${config.clientId}&permissions=${permissions}&integration_type=0&integration_type=1&scope=bot+applications.commands+identify`;
+  // Generate guild install URL
+  const baseUrl = oauthService.generateOAuthUrl('guild', undefined, permissions);
+  // Add user install as secondary option
+  const inviteUrl = `${baseUrl}&integration_type=1`;
 
   res.redirect(inviteUrl);
 });

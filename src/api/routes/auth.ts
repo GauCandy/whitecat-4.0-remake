@@ -80,19 +80,45 @@ router.get('/discord/callback', async (req: Request, res: Response) => {
     // Complete OAuth flow and save to database
     const result = await oauthService.completeOAuth(code, state);
 
-    // Generate success message based on scope
+    // Generate success message based on flow type
     const isVerified = result.scope === 'verified';
-    const backgroundColor = isVerified
-      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-      : 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)';
+    const isInvite = result.isInvite;
 
-    const title = isVerified ? 'Xác thực Email thành công!' : 'Ủy quyền thành công!';
-    const description = isVerified
-      ? 'Bạn đã đồng ý với điều khoản sử dụng và cấp quyền truy cập email.'
-      : 'Bạn đã đồng ý với điều khoản sử dụng và ủy quyền cho bot.';
+    // Choose background gradient
+    const backgroundColor = isVerified
+      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'  // Purple for verified
+      : isInvite
+        ? 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'  // Pink for invite
+        : 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)';  // Green for basic
+
+    // Generate title based on flow
+    let title: string;
+    if (isVerified) {
+      title = 'Xác thực Email thành công!';
+    } else if (isInvite) {
+      title = result.flowType === 'guild' ? 'Bot đã được thêm vào server!' : 'Bot đã được ủy quyền!';
+    } else {
+      title = 'Ủy quyền thành công!';
+    }
+
+    // Generate description
+    let description: string;
+    if (isVerified) {
+      description = 'Bạn đã đồng ý với điều khoản sử dụng và cấp quyền truy cập email.';
+    } else if (isInvite && result.flowType === 'guild') {
+      description = 'Bot đã được thêm vào server của bạn và bạn đã được xác thực tự động.';
+    } else if (isInvite && result.flowType === 'user') {
+      description = 'Bạn đã ủy quyền sử dụng bot cá nhân và được xác thực tự động.';
+    } else {
+      description = 'Bạn đã đồng ý với điều khoản sử dụng và ủy quyền cho bot.';
+    }
+
+    // Generate features text
     const features = isVerified
       ? 'Giờ bạn có thể sử dụng tất cả các lệnh của bot, bao gồm các tính năng premium.'
       : 'Giờ bạn có thể sử dụng các lệnh cơ bản của bot.';
+
+    // Note for non-verified users
     const note = isVerified
       ? ''
       : '<p><strong>Lưu ý:</strong> Một số lệnh nâng cao yêu cầu xác thực email.</p>';

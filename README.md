@@ -63,10 +63,11 @@ npm run dev
 |-------|-------------|
 | [Installation](docs/installation.md) | Detailed installation guide |
 | [Configuration](docs/configuration.md) | Environment variables & setup |
-| [Verification System](docs/VERIFICATION_SYSTEM.md) | 2-level user verification |
+| [Verification System](docs/VERIFICATION_SYSTEM.md) | 2-level OAuth user verification |
 | [Guild Settings](docs/guild-settings.md) | Language & prefix per server |
-| [i18n System](docs/i18n-usage.md) | Multi-language support guide |
-| [API Reference](docs/api.md) | REST API endpoints |
+| [i18n Guide](docs/i18n.md) | Multi-language system reference |
+| [i18n Usage](docs/i18n-usage.md) | Examples & best practices |
+| [API Reference](docs/api.md) | REST API endpoints (invite, auth, health) |
 | [Creating Commands](docs/commands.md) | How to add new commands |
 | [Database](docs/database.md) | Schema & repositories |
 | [Deployment](docs/deployment.md) | Production deployment guide |
