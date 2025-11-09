@@ -61,13 +61,14 @@ class GuildRepository {
   /**
    * Get or create guild (auto-create if not exists)
    * @param guildId - Discord guild ID
+   * @param locale - Optional locale to set when creating (defaults to 'vi')
    * @returns Guild object
    */
-  async getOrCreateGuild(guildId: string): Promise<Guild> {
+  async getOrCreateGuild(guildId: string, locale?: SupportedLocale): Promise<Guild> {
     let guild = await this.getGuildById(guildId);
 
     if (!guild) {
-      guild = await this.createGuild({ guild_id: guildId });
+      guild = await this.createGuild({ guild_id: guildId, locale });
     }
 
     return guild;

@@ -1,0 +1,59 @@
+{
+  "commands": {
+    "ping": {
+      "description": "Check bot latency",
+      "response": {
+        "title": "🏓 Pong!",
+        "api_latency": "**API Latency:** {latency}ms",
+        "ws_ping": "**WebSocket Ping:** {ping}ms",
+        "uptime": "**Uptime:** {uptime}"
+      }
+    },
+    "help": {
+      "description": "Show command list and usage guide",
+      "title": "📚 Help - WhiteCat Bot",
+      "categories": {
+        "general": "🔧 General",
+        "moderation": "🛡️ Moderation",
+        "fun": "🎮 Fun",
+        "utility": "⚙️ Utility"
+      }
+    },
+    "botban": {
+      "description": "Ban a user from the bot",
+      "success": "✅ Banned {user} from the bot",
+      "already_banned": "❌ User is already banned",
+      "error": "❌ Failed to ban this user"
+    },
+    "botunban": {
+      "description": "Unban a user from the bot",
+      "success": "✅ Unbanned {user}",
+      "not_banned": "❌ User is not banned",
+      "error": "❌ Failed to unban this user"
+    },
+    "botbaninfo": {
+      "description": "View ban information",
+      "not_found": "❌ Ban not found",
+      "title": "📋 Ban Information"
+    },
+    "language": {
+      "description": "Set the bot language for this server",
+      "success_title": "✅ Language Set Successfully!",
+      "success_description": "The bot language for this server has been set to **{language}**\n\n**Note:** Slash commands will still display in your Discord language, but responses will use the set language.",
+      "no_permission": "❌ You need **Manage Server** permission to use this command!",
+      "guild_only": "❌ This command can only be used in servers!",
+      "error": "❌ An error occurred while setting the language. Please try again later."
+    },
+    "prefix": {
+      "description": "Set a custom command prefix for this server",
+      "success_title": "✅ Prefix Set Successfully!",
+      "success_description": "**Old Prefix:** `{old}`\n**New Prefix:** `{new}`\n\nYou can now use prefix commands with `{new}`\nExample: `{new}help`, `{new}ping`",
+      "no_permission": "❌ You need **Manage Server** permission to use this command!",
+      "guild_only": "❌ This command can only be used in servers!",
+      "empty_prefix": "❌ Prefix cannot be empty!",
+      "too_long": "❌ Prefix cannot be longer than 5 characters!",
+      "contains_space": "❌ Prefix cannot contain spaces!",
+      "error": "❌ An error occurred while setting the prefix. Please try again later."
+    }
+  }
+}

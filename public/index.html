@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhiteCat Bot - Discord Bot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: #5865F2;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 50px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .option-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px 30px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            border-color: #5865F2;
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.2);
+        }
+
+        .option-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .option-title {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .option-description {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #5865F2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4752c4;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background: #57F287;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #3ba55d;
+            transform: scale(1.05);
+        }
+
+        .features {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .feature-tag {
+            background: #e8f4f8;
+            color: #3498db;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🐱</div>
+        <h1>WhiteCat Bot</h1>
+        <p class="subtitle">A modern Discord bot with fun commands and utilities</p>
+
+        <div class="options">
+            <div class="option-card">
+                <div class="option-icon">🏠</div>
+                <h2 class="option-title">Add to Server</h2>
+                <p class="option-description">
+                    Invite WhiteCat to your Discord server. Perfect for server admins who want to add fun commands and utilities for all members.
+                </p>
+                <a href="/invite/guild" class="btn btn-primary">Invite to Server</a>
+            </div>
+
+            <div class="option-card">
+                <div class="option-icon">👤</div>
+                <h2 class="option-title">Personal Use</h2>
+                <p class="option-description">
+                    Authorize WhiteCat for personal use. Use commands anywhere on Discord - even in servers without the bot!
+                </p>
+                <a href="/invite/user" class="btn btn-secondary">Authorize for Me</a>
+            </div>
+        </div>
+
+        <div class="features">
+            <h3>✨ Features</h3>
+            <div class="features-list">
+                <span class="feature-tag">40+ Fun Commands</span>
+                <span class="feature-tag">Anime GIFs</span>
+                <span class="feature-tag">Multi-language</span>
+                <span class="feature-tag">Cooldown System</span>
+                <span class="feature-tag">User Install Support</span>
+                <span class="feature-tag">DM Support</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

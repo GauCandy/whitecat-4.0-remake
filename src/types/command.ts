@@ -15,6 +15,7 @@ export interface SlashCommand {
   execute: (interaction: ChatInputCommandInteraction<CacheType>) => Promise<void>;
   verificationLevel?: VerificationLevel; // Default: 'basic' (requires terms only). Set to 'verified' for email verification
   ownerOnly?: boolean; // If true, only bot owner (from OWNER_ID in .env) can use this command
+  cooldown?: number; // Cooldown in seconds (default: 0 - no cooldown)
 }
 
 // Prefix Command Interface
@@ -27,6 +28,7 @@ export interface PrefixCommand {
   execute: (message: Message, args: string[]) => Promise<void>;
   verificationLevel?: VerificationLevel; // Default: 'basic' (requires terms only). Set to 'verified' for email verification
   ownerOnly?: boolean; // If true, only bot owner (from OWNER_ID in .env) can use this command
+  cooldown?: number; // Cooldown in seconds (default: 0 - no cooldown)
 }
 
 // Hybrid Command Interface (supports both slash and prefix)
@@ -48,6 +50,7 @@ export interface HybridCommand {
   executePrefix: (message: Message, args: string[]) => Promise<void>;
   verificationLevel?: VerificationLevel; // Default: 'basic' (requires terms only). Set to 'verified' for email verification
   ownerOnly?: boolean; // If true, only bot owner (from OWNER_ID in .env) can use this command
+  cooldown?: number; // Cooldown in seconds (default: 0 - no cooldown)
 }
 
 // Legacy support - keep the old Command type for backward compatibility

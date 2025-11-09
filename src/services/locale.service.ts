@@ -7,39 +7,86 @@ import fs from 'fs';
 import path from 'path';
 import { SupportedLocale, LocaleData } from '../types/locale';
 import { guildRepository } from '../database/repositories/guild.repository';
+import { config } from '../config';
 import Logger from '../utils/logger';
 
 class LocaleService {
   private locales: Map<SupportedLocale, LocaleData> = new Map();
-  private defaultLocale: SupportedLocale = 'vi';
+  private defaultLocale: SupportedLocale;
 
   constructor() {
+    this.defaultLocale = config.defaultLocale;
     this.loadLocales();
   }
 
   /**
    * Load all locale files from the locales directory
+   * Supports both single files (vi.json) and directory structure (vi/*.json)
    */
   private loadLocales(): void {
     const localesDir = path.join(__dirname, '..', 'locales');
-    const localeFiles = fs.readdirSync(localesDir).filter(file => file.endsWith('.json'));
+    const items = fs.readdirSync(localesDir, { withFileTypes: true });
 
-    for (const file of localeFiles) {
-      const locale = file.replace('.json', '') as SupportedLocale;
-      const filePath = path.join(localesDir, file);
+    for (const item of items) {
+      let locale: SupportedLocale;
+      let localeData: any = {};
 
-      try {
-        const data = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as LocaleData;
-        this.locales.set(locale, data);
-        Logger.info(`Loaded locale: ${locale}`);
-      } catch (error) {
-        Logger.error(`Failed to load locale file ${file}`, error);
+      if (item.isFile() && item.name.endsWith('.json')) {
+        // Legacy: Single file format (vi.json, en.json)
+        locale = item.name.replace('.json', '') as SupportedLocale;
+        const filePath = path.join(localesDir, item.name);
+
+        try {
+          localeData = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as LocaleData;
+          this.locales.set(locale, localeData);
+          Logger.info(`Loaded locale: ${locale} (single file)`);
+        } catch (error) {
+          Logger.error(`Failed to load locale file ${item.name}`, error);
+        }
+      } else if (item.isDirectory()) {
+        // New: Directory format (vi/*.json, en/*.json)
+        locale = item.name as SupportedLocale;
+        const localeDir = path.join(localesDir, item.name);
+        const jsonFiles = fs.readdirSync(localeDir).filter(file => file.endsWith('.json'));
+
+        try {
+          // Load and merge all JSON files in the locale directory
+          for (const file of jsonFiles) {
+            const filePath = path.join(localeDir, file);
+            const fileData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+            // Merge file data into locale data
+            localeData = this.deepMerge(localeData, fileData);
+          }
+
+          this.locales.set(locale, localeData);
+          Logger.info(`Loaded locale: ${locale} (${jsonFiles.length} files)`);
+        } catch (error) {
+          Logger.error(`Failed to load locale directory ${item.name}`, error);
+        }
       }
     }
 
     if (this.locales.size === 0) {
       Logger.error('No locale files loaded! Bot may not function properly.');
     }
+  }
+
+  /**
+   * Deep merge two objects
+   */
+  private deepMerge(target: any, source: any): any {
+    const result = { ...target };
+
+    for (const key in source) {
+      if (source[key] instanceof Object && key in target && target[key] instanceof Object) {
+        result[key] = this.deepMerge(target[key], source[key]);
+      } else {
+        result[key] = source[key];
+      }
+    }
+
+    return result;
   }
 
   /**
@@ -82,6 +129,15 @@ class LocaleService {
           return path;
         }
       }
+    }
+
+    // If value is an array, randomly pick one element
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        Logger.warn(`Translation array is empty: ${path}`);
+        return path;
+      }
+      value = value[Math.floor(Math.random() * value.length)];
     }
 
     if (typeof value !== 'string') {
@@ -175,6 +231,6 @@ class LocaleService {
 export const localeService = new LocaleService();
 
 // Helper function for quick translations
-export function t(path: string, params?: Record<string, any>, locale: SupportedLocale = 'vi'): string {
-  return localeService.t(locale, path, params);
+export function t(path: string, params?: Record<string, any>, locale?: SupportedLocale): string {
+  return localeService.t(locale || config.defaultLocale, path, params);
 }

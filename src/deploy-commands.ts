@@ -48,24 +48,35 @@ for (const filePath of commandFiles) {
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(config.token);
 
+// Get guild ID from command line argument (if provided)
+// Usage: npm run deploy              -> Global deploy
+//        npm run deploy <guild_id>   -> Guild deploy
+const guildId = process.argv[2];
+
 // Deploy commands
 (async () => {
   try {
     console.log(`[INFO] Started refreshing ${commands.length} application (/) commands.`);
 
-    // Deploy to a specific guild for testing (faster updates)
-    const data = await rest.put(
-      Routes.applicationGuildCommands(config.clientId, config.guildId),
-      { body: commands },
-    ) as any[];
+    let data: any[];
 
-    console.log(`[SUCCESS] Successfully reloaded ${data.length} application (/) commands.`);
-
-    // If you want to deploy globally (takes up to 1 hour to update), use this instead:
-    // const data = await rest.put(
-    //   Routes.applicationCommands(config.clientId),
-    //   { body: commands },
-    // ) as any[];
+    if (guildId) {
+      // Deploy to specific guild (instant update)
+      console.log(`[INFO] Deploying to guild: ${guildId}`);
+      data = await rest.put(
+        Routes.applicationGuildCommands(config.clientId, guildId),
+        { body: commands },
+      ) as any[];
+      console.log(`[SUCCESS] Successfully deployed ${data.length} guild commands to ${guildId}`);
+    } else {
+      // Deploy globally (takes ~1 hour to propagate)
+      console.log('[INFO] Deploying globally (this may take up to 1 hour to propagate)...');
+      data = await rest.put(
+        Routes.applicationCommands(config.clientId),
+        { body: commands },
+      ) as any[];
+      console.log(`[SUCCESS] Successfully deployed ${data.length} global commands`);
+    }
 
   } catch (error) {
     console.error('[ERROR] Failed to deploy commands:', error);

@@ -38,7 +38,8 @@ export class OAuthService {
    */
   generateAuthUrl(discordUserId: string, scope: 'basic' | 'verified' = 'verified'): string {
     // Determine OAuth scopes based on verification level
-    const oauthScope = scope === 'basic' ? 'identify' : 'identify email';
+    // applications.commands required for User Install Apps (to invoke commands in any context)
+    const oauthScope = scope === 'basic' ? 'identify applications.commands' : 'identify email applications.commands';
 
     const params = new URLSearchParams({
       client_id: config.clientId,

@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import path from 'path';
 import { Client } from 'discord.js';
 import { config } from '../config';
 import Logger from '../utils/logger';
@@ -8,6 +9,7 @@ import Logger from '../utils/logger';
 import healthRouter from './routes/health';
 import pingRouter from './routes/ping';
 import authRouter from './routes/auth';
+import inviteRouter from './routes/invite';
 
 export class APIServer {
   private app: Application;
@@ -47,6 +49,10 @@ export class APIServer {
     // Parse URL-encoded bodies
     this.app.use(express.urlencoded({ extended: true }));
 
+    // Serve static files from public directory
+    const publicPath = path.join(__dirname, '..', '..', 'public');
+    this.app.use(express.static(publicPath));
+
     // Request logging middleware (skip frequent endpoints to avoid spam)
     this.app.use((req, res, next) => {
       const skipLogging = ['/api/ping', '/api/health', '/favicon.ico'];
@@ -61,8 +67,19 @@ export class APIServer {
    * Setup API routes
    */
   private setupRoutes(): void {
-    // Root endpoint
+    // API routes (must be before static file serving for proper routing)
+    this.app.use('/api/ping', pingRouter);
+    this.app.use('/api/health', healthRouter);
+    this.app.use('/api/auth', authRouter);
+    this.app.use('/invite', inviteRouter);
+
+    // Root endpoint - serve landing page
     this.app.get('/', (req: Request, res: Response) => {
+      res.sendFile(path.join(__dirname, '..', '..', 'public', 'index.html'));
+    });
+
+    // API info endpoint
+    this.app.get('/api', (req: Request, res: Response) => {
       res.json({
         success: true,
         message: 'WhiteCat Discord Bot API',
@@ -71,14 +88,10 @@ export class APIServer {
           ping: '/api/ping',
           health: '/api/health',
           auth: '/api/auth',
+          invite: '/invite',
         },
       });
     });
-
-    // API routes
-    this.app.use('/api/ping', pingRouter);
-    this.app.use('/api/health', healthRouter);
-    this.app.use('/api/auth', authRouter);
 
     // 404 handler
     this.app.use((req: Request, res: Response) => {

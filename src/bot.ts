@@ -2,8 +2,10 @@ import { Client, GatewayIntentBits, Events, MessageFlags } from 'discord.js';
 import { config } from './config';
 import Logger from './utils/logger';
 import { commandManager } from './managers/command-manager';
+import { cooldownManager } from './managers/cooldown-manager';
 import { checkVerificationForSlashCommand, checkVerificationForPrefixCommand } from './middleware/terms-check';
 import { guildRepository } from './database/repositories/guild.repository';
+import { mapDiscordLocale } from './utils/locale-mapper';
 
 // Create Discord client
 export async function createClient(): Promise<Client> {
@@ -27,8 +29,9 @@ export async function createClient(): Promise<Client> {
     // Auto-create guild records for all guilds bot is in
     for (const guild of client.guilds.cache.values()) {
       try {
-        await guildRepository.getOrCreateGuild(guild.id);
-        Logger.debug(`Guild record ensured for: ${guild.name} (${guild.id})`);
+        const locale = mapDiscordLocale(guild.preferredLocale);
+        await guildRepository.getOrCreateGuild(guild.id, locale);
+        Logger.debug(`Guild record ensured for: ${guild.name} (${guild.id}) with locale: ${locale}`);
       } catch (error) {
         Logger.error(`Failed to create guild record for ${guild.name}`, error);
       }
@@ -40,8 +43,9 @@ export async function createClient(): Promise<Client> {
   // Event: Bot joins a new guild
   client.on(Events.GuildCreate, async (guild) => {
     try {
-      await guildRepository.getOrCreateGuild(guild.id);
-      Logger.info(`Joined guild: ${guild.name} (${guild.id})`);
+      const locale = mapDiscordLocale(guild.preferredLocale);
+      await guildRepository.getOrCreateGuild(guild.id, locale);
+      Logger.info(`Joined guild: ${guild.name} (${guild.id}) with locale: ${locale}`);
       Logger.info(`Guild count: ${client.guilds.cache.size}`);
     } catch (error) {
       Logger.error(`Failed to create guild record for ${guild.name}`, error);
@@ -86,6 +90,19 @@ export async function createClient(): Promise<Client> {
           return;
         }
 
+        // Check cooldown
+        const cooldownSeconds = retryCommand.cooldown ?? 0;
+        if (cooldownSeconds > 0 && interaction.user.id !== config.botOwnerId) {
+          const remaining = cooldownManager.getRemainingCooldown(interaction.user.id, interaction.commandName);
+          if (remaining > 0) {
+            await interaction.reply({
+              content: `⏱️ Please wait ${remaining} more second(s) before using this command again.`,
+              flags: MessageFlags.Ephemeral,
+            });
+            return;
+          }
+        }
+
         // Check verification before executing (default: 'basic')
         const canExecute = await checkVerificationForSlashCommand(interaction, retryCommand.verificationLevel ?? 'basic');
         if (!canExecute) return;
@@ -95,6 +112,11 @@ export async function createClient(): Promise<Client> {
           await retryCommand.executeSlash(interaction);
         } else {
           await retryCommand.execute(interaction);
+        }
+
+        // Set cooldown after successful execution
+        if (cooldownSeconds > 0 && interaction.user.id !== config.botOwnerId) {
+          cooldownManager.setCooldown(interaction.user.id, interaction.commandName, cooldownSeconds);
         }
       } else {
         // Check if command is owner only
@@ -106,6 +128,19 @@ export async function createClient(): Promise<Client> {
           return;
         }
 
+        // Check cooldown
+        const cooldownSeconds = command.cooldown ?? 0;
+        if (cooldownSeconds > 0 && interaction.user.id !== config.botOwnerId) {
+          const remaining = cooldownManager.getRemainingCooldown(interaction.user.id, interaction.commandName);
+          if (remaining > 0) {
+            await interaction.reply({
+              content: `⏱️ Please wait ${remaining} more second(s) before using this command again.`,
+              flags: MessageFlags.Ephemeral,
+            });
+            return;
+          }
+        }
+
         // Check verification before executing (default: 'basic')
         const canExecute = await checkVerificationForSlashCommand(interaction, command.verificationLevel ?? 'basic');
         if (!canExecute) return;
@@ -115,6 +150,11 @@ export async function createClient(): Promise<Client> {
           await command.executeSlash(interaction);
         } else {
           await command.execute(interaction);
+        }
+
+        // Set cooldown after successful execution
+        if (cooldownSeconds > 0 && interaction.user.id !== config.botOwnerId) {
+          cooldownManager.setCooldown(interaction.user.id, interaction.commandName, cooldownSeconds);
         }
       }
 
@@ -168,6 +208,16 @@ export async function createClient(): Promise<Client> {
         return;
       }
 
+      // Check cooldown
+      const cooldownSeconds = 'cooldown' in command ? (command.cooldown ?? 0) : 0;
+      if (cooldownSeconds > 0 && message.author.id !== config.botOwnerId) {
+        const remaining = cooldownManager.getRemainingCooldown(message.author.id, commandName);
+        if (remaining > 0) {
+          await message.reply(`⏱️ Please wait ${remaining} more second(s) before using this command again.`);
+          return;
+        }
+      }
+
       // Check verification before executing (default: 'basic')
       const verificationLevel = 'verificationLevel' in command ? (command.verificationLevel ?? 'basic') : 'basic';
       const canExecute = await checkVerificationForPrefixCommand(message, verificationLevel);
@@ -180,6 +230,11 @@ export async function createClient(): Promise<Client> {
       } else {
         // Prefix-only command
         await command.execute(message, args);
+      }
+
+      // Set cooldown after successful execution
+      if (cooldownSeconds > 0 && message.author.id !== config.botOwnerId) {
+        cooldownManager.setCooldown(message.author.id, commandName, cooldownSeconds);
       }
 
       Logger.debug(`Prefix command "${config.prefix}${commandName}" executed by ${message.author.tag}`);

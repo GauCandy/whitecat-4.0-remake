@@ -1,0 +1,58 @@
+{
+  "common": {
+    "error": "An error occurred",
+    "success": "Success",
+    "cancelled": "Cancelled",
+    "loading": "Loading...",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "verification": {
+    "basic": {
+      "title": "🔐 Discord Authorization Required",
+      "description": "You need to authorize the bot to use this command.\n\n**When you authorize, you will:**\n• Agree to the bot's terms of service\n• Allow the bot to access your basic information\n• Enable features like DM, hosting, etc.\n\n**Click the button below to start:**",
+      "footer": "The bot only accesses basic Discord information, no email required",
+      "button": "🔐 Authorize with Discord"
+    },
+    "verified": {
+      "title": "🔒 Email Verification Required",
+      "description": "This command requires email verification via Discord OAuth.\n\n**When you verify, you will:**\n• Agree to the bot's terms of service\n• Grant access to your email\n• Activate your account for premium features\n\n**Click the button below to start:**",
+      "footer": "Your email will be used for hosting and premium features",
+      "button": "🔐 Verify Email with Discord"
+    },
+    "banned": {
+      "title": "🚫 Banned from Bot",
+      "permanent": "Your account has been permanently banned",
+      "temporary": "Your account is banned until {expiry}",
+      "reason": "**Reason:** {reason}",
+      "contact": "Please contact admin for more details."
+    },
+    "error": "❌ An error occurred while checking verification. Please try again later."
+  },
+  "oauth": {
+    "success": {
+      "verified": {
+        "title": "Email Verification Successful!",
+        "description": "You have agreed to the terms of service and granted email access.",
+        "features": "You can now use all bot commands, including premium features."
+      },
+      "basic": {
+        "title": "Authorization Successful!",
+        "description": "You have agreed to the terms of service and authorized the bot.",
+        "features": "You can now use basic bot commands.",
+        "note": "**Note:** Some advanced commands require email verification."
+      },
+      "close": "You can close this tab and return to Discord."
+    },
+    "error": {
+      "title": "❌ Authentication Error",
+      "message": "Something went wrong during authentication.",
+      "retry": "Please try again from Discord."
+    },
+    "missing_params": {
+      "title": "❌ Authentication Failed",
+      "message": "Missing required parameters.",
+      "retry": "Please try again from Discord."
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { SupportedLocale } from './types/locale';
 
 dotenv.config();
 
@@ -11,6 +12,7 @@ interface Config {
   guildId: string;
   prefix: string;
   apiPort: number;
+  defaultLocale: SupportedLocale;
 }
 
 function validateEnv(): Config {
@@ -22,6 +24,7 @@ function validateEnv(): Config {
   const guildId = process.env.GUILD_ID;
   const prefix = process.env.BOT_PREFIX || '!'; // Default to '!' if not specified
   const apiPort = parseInt(process.env.API_PORT || '3000', 10); // Default to 3000 if not specified
+  const defaultLocale = (process.env.DEFAULT_LOCALE || 'en') as SupportedLocale; // Default to 'en' if not specified
 
   if (!token) {
     throw new Error('DISCORD_TOKEN is not defined in environment variables');
@@ -60,6 +63,7 @@ function validateEnv(): Config {
     guildId,
     prefix,
     apiPort,
+    defaultLocale,
   };
 }
 

@@ -1,0 +1,434 @@
+{
+  "commands": {
+    "fun": {
+      "angry": {
+        "message": [
+          "{user} đang rất giận! 😠",
+          "{user} giận dữ quá đi! 😡",
+          "{user} nổi điên rồi! 💢"
+        ]
+      },
+      "baka": {
+        "message": [
+          "{user} says: Baka! 😤",
+          "{user} nói: Baka! バカ！",
+          "{user}: Baka baka baka! 😤"
+        ]
+      },
+      "blush": {
+        "message": [
+          "{user} đang đỏ mặt! 😊",
+          "{user} đỏ mặt lên rồi~ 😳",
+          "{user} ngại quá! >///< 😊"
+        ]
+      },
+      "bored": {
+        "message": [
+          "{user} đang buồn chán... 😑",
+          "{user} chán quá~ 😴",
+          "{user} buồn tẻ ghê... =_="
+        ]
+      },
+      "cry": {
+        "message": [
+          "{user} đang khóc! 😭",
+          "{user} òa khóc... 😢",
+          "{user} khóc hu hu... 😭😭"
+        ]
+      },
+      "dance": {
+        "message": [
+          "{user} đang nhảy múa! 💃",
+          "{user} nhảy điên cuồng! 🕺",
+          "{user} nhảy cực sung! 💃✨"
+        ]
+      },
+      "facepalm": {
+        "message": [
+          "{user} úp mặt... 🤦",
+          "{user} úp mặt thất vọng... 🤦‍♂️",
+          "{user} facepalm cực mạnh! 🤦"
+        ]
+      },
+      "happy": {
+        "message": [
+          "{user} đang vui vẻ! 😄",
+          "{user} vui quá trời! 🥰",
+          "{user} hạnh phúc lắm! ✨😊"
+        ]
+      },
+      "laugh": {
+        "message": [
+          "{user} đang cười! 😂",
+          "{user} cười như điên! 🤣",
+          "{user} cười sặc sụa! 😂😂"
+        ]
+      },
+      "lurk": {
+        "message": [
+          "{user} đang rình rập... 👀",
+          "{user} núp bóng rình mò... 🕵️",
+          "{user} lén lút quan sát... 👁️"
+        ]
+      },
+      "nod": {
+        "message": [
+          "{user} gật đầu 👍",
+          "{user} đồng ý! ✅",
+          "{user} gật gật~ 👌"
+        ]
+      },
+      "nope": {
+        "message": [
+          "{user} nói không! 🙅",
+          "{user} không đồng ý! ❌",
+          "{user} từ chối! 🙅‍♂️"
+        ]
+      },
+      "pout": {
+        "message": [
+          "{user} đang bĩu môi 😾",
+          "{user} hờn dỗi quá~ 😤",
+          "{user} bĩu môi tí ti... 😾"
+        ]
+      },
+      "run": {
+        "message": [
+          "{user} đang chạy! 🏃",
+          "{user} chạy vèo vèo! 💨",
+          "{user} chạy nhanh như gió! 🏃‍♂️💨"
+        ]
+      },
+      "shrug": {
+        "message": [
+          "{user} nhún vai 🤷",
+          "{user} mặc kệ đi~ ¯\\_(ツ)_/¯",
+          "{user} nhún vai thờ ơ... 🤷‍♂️"
+        ]
+      },
+      "sleep": {
+        "message": [
+          "{user} đang ngủ... 😴",
+          "{user} ngủ say quá~ 💤",
+          "{user} gục đầu ngủ rồi... zzZ"
+        ]
+      },
+      "smile": {
+        "message": [
+          "{user} mỉm cười! 😊",
+          "{user} cười tươi! ☺️",
+          "{user} nở nụ cười! 😌"
+        ]
+      },
+      "smug": {
+        "message": [
+          "{user} tỏ vẻ tự mãn 😏",
+          "{user} cười kiêu ngạo~ 😎",
+          "{user} nhếch mép cười 😏"
+        ]
+      },
+      "stare": {
+        "message": [
+          "{user} đang nhìn chằm chằm... 👁️",
+          "{user} nhìn không chớp mắt... 👀",
+          "{user} nhìn chằm chằm... ಠ_ಠ"
+        ]
+      },
+      "think": {
+        "message": [
+          "{user} đang suy nghĩ... 🤔",
+          "{user} đang nghĩ ngợi... 💭",
+          "{user} trầm tư... 🤔💭"
+        ]
+      },
+      "thumbsup": {
+        "message": [
+          "{user} giơ ngón cái! 👍",
+          "{user} like! 👍✨",
+          "{user} good job! 👍😎"
+        ]
+      },
+      "yawn": {
+        "message": [
+          "{user} đang ngáp... 🥱",
+          "{user} ngáp dài... 😮‍💨",
+          "{user} ngáp ngắn ngủ quá... 🥱💤"
+        ]
+      },
+      "bite": {
+        "message": [
+          "{user} cắn {target}! 🦷",
+          "{user} cắn mạnh {target}! 😈",
+          "{user} cắn nhẹ {target}~ 🦷✨"
+        ],
+        "self": [
+          "{user} cố cắn chính mình... Au! 🦷",
+          "{user} tự cắn mình... Đau chết! 😭"
+        ],
+        "bot": [
+          "{user} cố cắn tôi! Này! 🦷",
+          "{user} định cắn tôi à! Đừng có! 😤"
+        ]
+      },
+      "cuddle": {
+        "message": [
+          "{user} ôm ấp {target}! 🤗",
+          "{user} ôm chầm {target}! 💕",
+          "{user} ôm ấp {target} thật ấm áp! 🥰"
+        ],
+        "self": [
+          "{user} tự ôm mình... Cô đơn à? 🤗",
+          "{user} ôm lấy bản thân... Buồn quá! 😢"
+        ],
+        "bot": [
+          "{user} ôm ấp tôi! Ấm áp quá! 🤗",
+          "{user} ôm tôi! Cảm ơn nhé! 💕"
+        ]
+      },
+      "feed": {
+        "message": [
+          "{user} cho {target} ăn! 🍔",
+          "{user} đút thức ăn cho {target}! 🍰",
+          "{user} cho {target} ăn cực ngon! 🍜"
+        ],
+        "self": [
+          "{user} tự cho mình ăn! 🍔",
+          "{user} tự ăn một mình... 😋"
+        ],
+        "bot": [
+          "{user} cho tôi ăn! Ngon quá! 🍔",
+          "{user} đút cho tôi ăn! Yummy! 😋"
+        ]
+      },
+      "handhold": {
+        "message": [
+          "{user} nắm tay {target}! 🤝",
+          "{user} nắm chặt tay {target}! 💑",
+          "{user} nắm tay {target} thật ấm! 🥰"
+        ],
+        "self": [
+          "{user} nắm tay chính mình... 🤝",
+          "{user} tự nắm tay bản thân... Cô đơn ghê!"
+        ],
+        "bot": [
+          "{user} nắm tay tôi! 🤝",
+          "{user} nắm chặt tay tôi! Ấm áp! 💕"
+        ]
+      },
+      "handshake": {
+        "message": [
+          "{user} bắt tay với {target}! 🤝",
+          "{user} và {target} bắt tay! 🤝✨",
+          "{user} bắt tay thân thiện với {target}! 😊"
+        ],
+        "self": [
+          "{user} bắt tay với chính mình? 🤝",
+          "{user} tự bắt tay... Lạ thật! 😅"
+        ],
+        "bot": [
+          "{user} bắt tay với tôi! 🤝",
+          "{user} bắt tay! Nice to meet you! 😊"
+        ]
+      },
+      "highfive": {
+        "message": [
+          "{user} vỗ tay với {target}! ✋",
+          "{user} high five {target}! 🙌",
+          "{user} và {target} vỗ tay ăn ý! ✨"
+        ],
+        "self": [
+          "{user} tự vỗ tay! ✋",
+          "{user} vỗ tay một mình... Forever alone! 😢"
+        ],
+        "bot": [
+          "{user} vỗ tay với tôi! ✋",
+          "{user} high five tôi! Yeah! 🙌"
+        ]
+      },
+      "hug": {
+        "message": [
+          "{user} ôm {target}! 🤗",
+          "{user} ôm chặt {target}! 💕",
+          "{user} ôm {target} thật ấm áp! 🥰",
+          "{user} cho {target} một cái ôm! 🫂"
+        ],
+        "self": [
+          "{user} tự ôm mình... Bạn ổn chứ? 🤗",
+          "{user} tự ôm lấy bản thân... Cô đơn quá! 😢"
+        ],
+        "bot": [
+          "{user} ôm tôi! Cảm ơn bạn! 🤗",
+          "{user} ôm tôi! Ấm áp ghê! 💕"
+        ]
+      },
+      "kick": {
+        "message": [
+          "{user} đá {target}! 👟",
+          "{user} đá mạnh {target}! 💥",
+          "{user} đá bay {target}! 🦵"
+        ],
+        "self": [
+          "{user} tự đá mình... Tại sao?! 👟",
+          "{user} đá chính mình... Đau chết! 😭"
+        ],
+        "bot": [
+          "{user} cố đá tôi! Thô lỗ! 👟",
+          "{user} đá tôi! Này này! 😤"
+        ]
+      },
+      "kiss": {
+        "message": [
+          "{user} hôn {target}! 💋",
+          "{user} hôn nhẹ {target}! 😘",
+          "{user} hôn {target} thật ngọt ngào! 💕",
+          "{user} chu {target} một cái! 😚"
+        ],
+        "self": [
+          "{user} tự hôn mình... Tự ái? 💋",
+          "{user} hôn gương... Lạ thật! 🪞"
+        ],
+        "bot": [
+          "{user} hôn tôi! >//< 💋",
+          "{user} hôn tôi! Xấu hổ quá! 😳"
+        ]
+      },
+      "nom": {
+        "message": [
+          "{user} nom {target}! 👅",
+          "{user} ăn {target}! 😋",
+          "{user} nom nom {target}! 🍽️"
+        ],
+        "self": [
+          "{user} tự nom mình! 👅",
+          "{user} tự ăn chính mình... Ơ! 😅"
+        ],
+        "bot": [
+          "{user} nom tôi! 👅",
+          "{user} nom tôi! Dừng lại! 😂"
+        ]
+      },
+      "pat": {
+        "message": [
+          "{user} vỗ đầu {target}! 👋",
+          "{user} vỗ vỗ đầu {target}! 🥰",
+          "{user} xoa đầu {target}! ✨",
+          "{user} vuốt đầu {target} nhẹ nhàng! 💕"
+        ],
+        "self": [
+          "{user} tự vỗ đầu! 👋",
+          "{user} vỗ đầu chính mình... Good job! 😊"
+        ],
+        "bot": [
+          "{user} vỗ đầu tôi! *purrs* 👋",
+          "{user} vỗ vỗ đầu tôi! Dễ thương! 🥰"
+        ]
+      },
+      "peck": {
+        "message": [
+          "{user} hôn nhẹ {target}! 😘",
+          "{user} chu nhẹ {target}! 😚",
+          "{user} hôn gió {target}! 💋✨"
+        ],
+        "self": [
+          "{user} tự hôn nhẹ! 😘",
+          "{user} hôn gió chính mình! 💋"
+        ],
+        "bot": [
+          "{user} hôn nhẹ tôi! 😘",
+          "{user} chu tôi! Kyaaa! 😳"
+        ]
+      },
+      "poke": {
+        "message": [
+          "{user} chọc {target}! 👉",
+          "{user} chọc chọc {target}! 👈",
+          "{user} chọc nhẹ {target}! 👉👈"
+        ],
+        "self": [
+          "{user} tự chọc mình! 👉",
+          "{user} chọc chính mình... 😅"
+        ],
+        "bot": [
+          "{user} chọc tôi! 👉",
+          "{user} chọc tôi! Gây gổ à! 😤"
+        ]
+      },
+      "punch": {
+        "message": [
+          "{user} đấm {target}! 👊",
+          "{user} đấm mạnh {target}! 💥",
+          "{user} cho {target} một đấm! 🥊"
+        ],
+        "self": [
+          "{user} tự đấm mình... Bạo lực? 👊",
+          "{user} đấm chính mình... Tại sao?! 😭"
+        ],
+        "bot": [
+          "{user} cố đấm tôi! 👊",
+          "{user} đấm tôi! Đau quá! 😤"
+        ]
+      },
+      "shoot": {
+        "message": [
+          "{user} bắn {target}! 🔫",
+          "{user} bắn tỉa {target}! 🎯",
+          "{user} bắn thẳng vào {target}! 💥"
+        ],
+        "self": [
+          "{user} tự bắn mình! 🔫",
+          "{user} bắn chính mình... Ơ! 😱"
+        ],
+        "bot": [
+          "{user} bắn tôi! 🔫",
+          "{user} bắn tôi! Au au! 😭"
+        ]
+      },
+      "slap": {
+        "message": [
+          "{user} tát {target}! ✋",
+          "{user} tát mạnh {target}! 💥",
+          "{user} cho {target} một cái tát! 😤"
+        ],
+        "self": [
+          "{user} tự tát mình! ✋",
+          "{user} tát chính mình... Wake up! 😵"
+        ],
+        "bot": [
+          "{user} tát tôi! ✋",
+          "{user} tát tôi! Đau quá! 😭"
+        ]
+      },
+      "tickle": {
+        "message": [
+          "{user} cù {target}! 🤗",
+          "{user} cù cù {target}! 😂",
+          "{user} cù {target} không thương tiếc! 🤣"
+        ],
+        "self": [
+          "{user} tự cù mình! 🤗",
+          "{user} cù chính mình... Có được không? 😅"
+        ],
+        "bot": [
+          "{user} cù tôi! Haha! 🤗",
+          "{user} cù tôi! Dừng lại! 😂😂"
+        ]
+      },
+      "yeet": {
+        "message": [
+          "{user} ném {target}! 🚀",
+          "{user} yeet {target} bay xa! 💨",
+          "{user} ném {target} vào không gian! 🌌"
+        ],
+        "self": [
+          "{user} tự ném mình vào không gian! 🚀",
+          "{user} yeet chính mình! Wheee! 🌠"
+        ],
+        "bot": [
+          "{user} ném tôi! 🚀",
+          "{user} yeet tôi đi! Ơi giời! 😱"
+        ]
+      },
+      "error": "❌ Không thể tải GIF!"
+    }
+  }
+}
