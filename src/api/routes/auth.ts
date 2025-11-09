@@ -8,12 +8,16 @@ import Logger from '../../utils/logger';
 const router = Router();
 
 /**
- * Start OAuth flow
- * GET /api/auth/discord?user_id=<discord_user_id>&scope=<basic|verified>
+ * Unified Auth Entry Point
+ * GET /auth?user_id=<discord_id>&type=<basic|email>
+ *
+ * Examples:
+ *   /auth?user_id=123...&type=basic  → Basic verification (identify only)
+ *   /auth?user_id=123...&type=email  → Email verification (identify + email)
  */
-router.get('/discord', (req: Request, res: Response) => {
+router.get('/', (req: Request, res: Response) => {
   const userId = req.query.user_id as string;
-  const scope = (req.query.scope as string) || 'verified'; // Default to 'verified'
+  const type = (req.query.type as string) || 'basic'; // Default: basic
 
   if (!userId) {
     return res.status(400).json({
@@ -22,22 +26,22 @@ router.get('/discord', (req: Request, res: Response) => {
     });
   }
 
-  // Validate scope
-  if (scope !== 'basic' && scope !== 'verified') {
+  // Validate type
+  if (type !== 'basic' && type !== 'email') {
     return res.status(400).json({
       success: false,
-      error: 'Invalid scope parameter. Must be "basic" or "verified"',
+      error: 'Invalid type parameter. Must be "basic" or "email"',
     });
   }
 
   try {
-    // Generate OAuth URL with user ID and scope in state
-    const authUrl = oauthService.generateAuthUrl(userId, scope as 'basic' | 'verified');
+    // Map type to flow
+    const flowType = type === 'email' ? 'verified' : 'basic';
+    const authUrl = oauthService.generateOAuthUrl(flowType, userId);
 
-    // Redirect to Discord OAuth
     res.redirect(authUrl);
   } catch (error) {
-    Logger.error('Error generating OAuth URL', error);
+    Logger.error('Error generating auth URL', error);
     res.status(500).json({
       success: false,
       error: 'Failed to generate OAuth URL',
@@ -46,10 +50,18 @@ router.get('/discord', (req: Request, res: Response) => {
 });
 
 /**
- * OAuth callback handler
- * GET /api/auth/discord/callback?code=<code>&state=<discord_user_id>
+ * OAuth Callback Handler (handles ALL flows: invite + auth)
+ * GET /auth/callback?code=<code>&state=<state>
+ *
+ * Flow:
+ * 1. Discord redirects here after user authorizes
+ * 2. Extract code & state from query params
+ * 3. Exchange code for access token
+ * 4. Fetch user info from Discord API
+ * 5. Save to database
+ * 6. Show success page
  */
-router.get('/discord/callback', async (req: Request, res: Response) => {
+router.get('/callback', async (req: Request, res: Response) => {
   const code = req.query.code as string;
   const state = req.query.state as string; // Discord user ID
 
@@ -173,7 +185,7 @@ router.get('/discord/callback', async (req: Request, res: Response) => {
       </html>
     `);
 
-    Logger.success(`OAuth completed for user (scope: ${result.scope})`);
+    Logger.success(`OAuth completed for user (${result.isInvite ? 'INVITE' : 'AUTH'}: ${result.scope})`);
   } catch (error) {
     Logger.error('OAuth callback error', error);
 
@@ -203,8 +215,8 @@ router.get('/discord/callback', async (req: Request, res: Response) => {
 });
 
 /**
- * Check authentication status
- * GET /api/auth/status/:userId
+ * Check User Authentication Status
+ * GET /auth/status/:userId
  */
 router.get('/status/:userId', async (req: Request, res: Response) => {
   const userId = req.params.userId;

@@ -67,11 +67,13 @@ export class APIServer {
    * Setup API routes
    */
   private setupRoutes(): void {
-    // API routes (must be before static file serving for proper routing)
+    // Auth routes (at root level for simple callback URL)
+    this.app.use('/auth', authRouter);
+    this.app.use('/invite', inviteRouter);
+
+    // API routes
     this.app.use('/api/ping', pingRouter);
     this.app.use('/api/health', healthRouter);
-    this.app.use('/api/auth', authRouter);
-    this.app.use('/invite', inviteRouter);
 
     // Root endpoint - serve landing page
     this.app.get('/', (req: Request, res: Response) => {

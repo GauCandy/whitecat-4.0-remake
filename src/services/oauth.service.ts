@@ -66,20 +66,20 @@ export class OAuthService {
         break;
 
       case 'basic':
-        // Manual basic authorization
+        // Manual basic authorization (user info only)
         if (!userId) {
           throw new Error('userId is required for basic auth flow');
         }
-        scope = 'identify applications.commands';
+        scope = 'identify';
         state = `auth:${userId}:basic`; // State format: auth:{user_id}:{scope}
         break;
 
       case 'verified':
-        // Email verification
+        // Email verification (user info + email)
         if (!userId) {
           throw new Error('userId is required for verified auth flow');
         }
-        scope = 'identify email applications.commands';
+        scope = 'identify email';
         state = `auth:${userId}:verified`; // State format: auth:{user_id}:{scope}
         break;
 
