@@ -1,34 +1,394 @@
-# Environment variables
-.env
+# ==========================================
+# .gitignore - Discord Hosting Bot (TypeScript)
+# ==========================================
 
-# Dependencies
+# ==========================================
+# Node.js
+# ==========================================
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
 
-# Build output
+# Dependency directories
+jspm_packages/
+
+# Package lock files (optional - uncomment if you don't want to track)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# ==========================================
+# TypeScript
+# ==========================================
+# Compiled output
 dist/
+build/
+out/
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map
 
+# IMPORTANT: Exceptions for config files that are JavaScript
+!*.config.js
+!.eslintrc.js
+!jest.config.js
+
+# TypeScript cache
+*.tsbuildinfo
+.tsbuildinfo
+
+# ==========================================
+# Environment Variables
+# ==========================================
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+.env.backup
+
+# ==========================================
 # Logs
+# ==========================================
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
 
-# OS files
-.DS_Store
-Thumbs.db
+# Runtime logs
+combined.log
+error.log
+exceptions.log
+access.log
 
-# IDE files
+# PM2 logs
+.pm2/
+pm2-*.log
+
+# ==========================================
+# Database
+# ==========================================
+# SQLite
+*.sqlite
+*.sqlite3
+*.db
+
+# PostgreSQL dumps
+*.sql
+*.dump
+*.backup
+
+# Database backups
+backups/
+*.bak
+
+# ==========================================
+# Redis
+# ==========================================
+dump.rdb
+appendonly.aof
+
+# ==========================================
+# Testing
+# ==========================================
+coverage/
+.nyc_output/
+*.lcov
+
+# Jest
+jest-results.json
+
+# ==========================================
+# IDEs and Editors
+# ==========================================
+# VSCode
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ IDEA
 .idea/
-.claude/
+*.iml
+*.iws
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
 *.swp
 *.swo
 *~
+.*.sw[a-z]
 
-# TypeScript cache
-*.tsbuildinfo
+# Emacs
+*~
+\#*\#
+.\#*
 
-# Zip files
+# Atom
+.atom/
+
+# ==========================================
+# Operating Systems
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.Trash-*
+.nfs*
+
+# ==========================================
+# Build Tools
+# ==========================================
+# Webpack
+.webpack/
+
+# Parcel
+.cache/
+.parcel-cache/
+
+# Next.js
+.next/
+next-env.d.ts
+
+# Nuxt.js
+.nuxt/
+
+# Vite
+.vite/
+
+# ==========================================
+# Temporary Files
+# ==========================================
+tmp/
+temp/
+*.tmp
+*.temp
+.temp/
+.tmp/
+
+# ==========================================
+# Security & Sensitive Data
+# ==========================================
+# Private keys
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+
+# API keys (extra safety)
+*secret*
+*apikey*
+*api-key*
+*credentials*
+
+# SSH keys
+id_rsa
+id_dsa
+id_ed25519
+*.ppk
+
+# ==========================================
+# Discord Bot Specific
+# ==========================================
+# Bot token files
+token.txt
+bot-token.txt
+
+# Pterodactyl credentials
+pterodactyl.json
+
+# User data uploads (if any)
+uploads/
+
+# ==========================================
+# Nginx
+# ==========================================
+# Generated nginx configs (contain sensitive data)
+nginx/sites-enabled/*.conf
+nginx/sites-available/*.conf
+
+# Keep templates
+!nginx/templates/*.conf
+!nginx/templates/*.template
+
+# Nginx logs
+nginx/logs/
+nginx/*.log
+
+# SSL certificates
+nginx/ssl/
+nginx/certs/
+
+# ==========================================
+# Web Server
+# ==========================================
+# Static uploads
+web/uploads/
+public/uploads/
+
+# Sessions
+sessions/
+.sessions/
+
+# ==========================================
+# Payment Gateway
+# ==========================================
+# Payment logs (may contain sensitive data)
+payment-logs/
+transactions.log
+
+# Webhook debug files
+webhook-*.json
+
+# ==========================================
+# Monitoring & Analytics
+# ==========================================
+# Sentry
+.sentryclirc
+
+# New Relic
+newrelic_agent.log
+
+# ==========================================
+# Documentation
+# ==========================================
+# Generated docs
+docs/build/
+docs/_build/
+site/
+
+# ==========================================
+# Misc
+# ==========================================
+# Archives
 *.zip
+*.tar
+*.tar.gz
 *.rar
+*.7z
+
+# Lock files for OS
+*.lock
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+
+# ==========================================
+# Project Specific
+# ==========================================
+# Test data
+test-data/
+mock-data/
+
+# Debug outputs
+debug/
+debug-*.json
+
+# Old/backup files
+*.old
+*.bak
+*.backup
+backup-*
+
+# Development only files
+dev-notes.txt
+todo.txt
+scratch.txt
+
+# User config overrides (if you have them)
+config.local.json
+config.override.json
+
+# ==========================================
+# KEEP THESE FILES (Important!)
+# ==========================================
+# Keep example files
+!.env.example
+!config.example.json
+
+# Keep .gitkeep files
+!**/.gitkeep
+
+# Keep README files
+!**/README.md
+
+# Keep template files
+!templates/
+!*.template
+
+# Keep public assets that are tracked
+!web/public/css/
+!web/public/js/
+!web/public/images/
+
+# ==========================================
+# Optional: Uncomment if needed
+# ==========================================
+# If you want to ignore all test files
+# tests/
+# *.test.ts
+# *.spec.ts
+
+# If you want to ignore all config files
+# config/
+
+# If you don't want to track migrations
+# src/database/migrations/
+
+# ==========================================
+# END OF .gitignore
+# ==========================================
