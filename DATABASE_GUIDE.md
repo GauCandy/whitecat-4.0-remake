@@ -9,6 +9,252 @@ Hướng dẫn chi tiết về cơ sở dữ liệu của WhiteCat Bot.
 - [Best Practices](#-best-practices)
 - [Ví Dụ Queries](#-ví-dụ-queries)
 
+## Visual Database Playground
+
+Muon nhin thay so do database thay vi chi doc bang mo ta? Thu mot trong cac cach duoi day:
+
+1. **Preview Mermaid ngay trong VS Code hoac GitHub**
+   - Mo file DATABASE_GUIDE.md va nhan Ctrl+Shift+V (Markdown: Open Preview to the Side).
+   - Mermaid ERD o phan duoi se render ngay; di chuot qua bang de highlight quan he.
+   - Cach nay hop de review nhanh hoac pair vơi teammate.
+2. **Dan block DBML ben duoi vao dbdiagram.io hoac Diagram.codes**
+   - Mo https://dbdiagram.io/new (hoac https://diagram.codes/db) > paste DBML > Ctrl+Enter.
+   - Chon Engine: PostgreSQL de tu dong format field type.
+   - Co the xuat PNG/SVG hoac share link visual cho team product/QA.
+
+Ngoai ra co the dung cac UI client pho bien nhu Beekeeper Studio, TablePlus, pgAdmin (ket noi bang connection string postgres://DB_USER:DB_PASSWORD@DB_HOST:DB_PORT/DB_NAME lay tu file .env) neu can thao tac truc tiep.
+
+### Mermaid ER Overview (render truc tiep trong Markdown)
+
+```mermaid
+erDiagram
+    USERS {
+        varchar(20) id
+        varchar username
+        varchar discriminator
+        boolean is_banned
+    }
+    USER_ECONOMY {
+        varchar(20) user_id
+        bigint coins
+        bigint points
+        bigint premium_currency
+    }
+    TRANSACTIONS {
+        serial id
+        varchar(20) user_id
+        varchar transaction_type
+        varchar currency_type
+        bigint amount
+    }
+    HOSTING_PLANS {
+        serial id
+        text name
+        integer ram_mb
+        numeric price_per_month
+    }
+    USER_HOSTING {
+        serial id
+        varchar(20) user_id
+        integer plan_id
+        integer port
+        timestamp expires_at
+    }
+    HOSTING_RENEWALS {
+        serial id
+        integer hosting_id
+        integer months
+        bigint total_cost
+    }
+    AVAILABLE_PORTS {
+        integer port
+        boolean is_taken
+    }
+    REVERSE_PROXY {
+        serial id
+        integer hosting_id
+        text domain
+        boolean ssl_enabled
+    }
+    GUILDS {
+        varchar(20) id
+        text name
+        text locale
+    }
+    COMMAND_STATS {
+        serial id
+        varchar(20) user_id
+        varchar command_name
+    }
+    STATISTICS {
+        date snapshot_date
+        bigint total_users
+        bigint commands_executed_today
+    }
+    WEBHOOKS {
+        serial id
+        varchar(20) guild_id
+        text event
+    }
+    WEBHOOK_LOGS {
+        serial id
+        integer webhook_id
+        text status
+    }
+    GIVEAWAYS {
+        serial id
+        varchar(20) guild_id
+        integer winners
+        timestamp ends_at
+    }
+    GIVEAWAY_PARTICIPANTS {
+        serial id
+        integer giveaway_id
+        varchar(20) user_id
+    }
+    GIVEAWAY_WINNERS {
+        serial id
+        integer giveaway_id
+        varchar(20) user_id
+    }
+
+    USERS ||--o{ USER_ECONOMY : balances
+    USERS ||--o{ TRANSACTIONS : initiates
+    USERS ||--o{ USER_HOSTING : "owns slots"
+    USERS ||--o{ COMMAND_STATS : "run commands"
+    USERS ||--o{ GIVEAWAY_PARTICIPANTS : joins
+    USERS ||--o{ GIVEAWAY_WINNERS : wins
+    USER_HOSTING ||--o{ HOSTING_RENEWALS : renews
+    USER_HOSTING ||--o{ REVERSE_PROXY : exposes
+    HOSTING_PLANS ||--o{ USER_HOSTING : selected
+    AVAILABLE_PORTS ||--o{ USER_HOSTING : assigns
+    GUILDS ||--o{ WEBHOOKS : emits
+    WEBHOOKS ||--o{ WEBHOOK_LOGS : writes
+    GUILDS ||--o{ GIVEAWAYS : hosts
+    GIVEAWAYS ||--o{ GIVEAWAY_PARTICIPANTS : collects
+    GIVEAWAYS ||--o{ GIVEAWAY_WINNERS : announces
+    TRANSACTIONS ||--o{ USER_ECONOMY : impacts
+    STATISTICS ||--o{ COMMAND_STATS : aggregates
+```
+
+### Hosting & monetization flow
+
+```mermaid
+flowchart LR
+    Plans["hosting_plans"] -->|user chon| Slots["user_hosting"]
+    Ports["available_ports"] -->|cap port| Slots
+    Slots -->|gia han| Renewals["hosting_renewals"]
+    Slots -->|reverse proxy| Proxy["reverse_proxy"]
+    Proxy --> Webhooks["webhooks"]
+    Webhooks --> Logs["webhook_logs"]
+    Slots --> Economy["transactions / user_economy"]
+    Economy --> Stats["statistics & command_stats"]
+```
+
+### DBML snippet (copy/paste sang dbdiagram)
+
+```dbml
+Table users {
+  id varchar(20) [pk]
+  username varchar(32)
+  discriminator varchar(4)
+  email varchar(255)
+  locale varchar(10)
+  is_banned boolean
+}
+
+Table user_economy {
+  user_id varchar(20) [pk, ref: > users.id]
+  coins bigint
+  points bigint
+  premium_currency bigint
+}
+
+Table transactions {
+  id serial [pk]
+  user_id varchar(20) [ref: > users.id]
+  transaction_type varchar(20)
+  currency_type varchar(20)
+  amount bigint
+  target_user_id varchar(20) [ref: > users.id]
+}
+
+Table hosting_plans {
+  id serial [pk]
+  name text
+  ram_mb int
+  cpu_cores int
+  price_per_month numeric
+}
+
+Table user_hosting {
+  id serial [pk]
+  user_id varchar(20) [ref: > users.id]
+  plan_id int [ref: > hosting_plans.id]
+  port int [ref: > available_ports.port]
+  expires_at timestamp
+}
+
+Table hosting_renewals {
+  id serial [pk]
+  hosting_id int [ref: > user_hosting.id]
+  months int
+  total_cost bigint
+}
+
+Table available_ports {
+  port int [pk]
+  is_taken boolean
+}
+
+Table reverse_proxy {
+  id serial [pk]
+  hosting_id int [ref: > user_hosting.id]
+  domain text
+  ssl_enabled boolean
+}
+
+Table guilds {
+  id varchar(20) [pk]
+  name text
+  locale text
+}
+
+Table webhooks {
+  id serial [pk]
+  guild_id varchar(20) [ref: > guilds.id]
+  event text
+}
+
+Table webhook_logs {
+  id serial [pk]
+  webhook_id int [ref: > webhooks.id]
+  status text
+}
+
+Table giveaways {
+  id serial [pk]
+  guild_id varchar(20) [ref: > guilds.id]
+  winners int
+  ends_at timestamp
+}
+
+Table giveaway_participants {
+  id serial [pk]
+  giveaway_id int [ref: > giveaways.id]
+  user_id varchar(20) [ref: > users.id]
+}
+
+Table giveaway_winners {
+  id serial [pk]
+  giveaway_id int [ref: > giveaways.id]
+  user_id varchar(20) [ref: > users.id]
+}
+```
+
+> Tip: Sau khi render diagram co the export anh, chen vao docs khac hoac gui link cho thanh vien khong doc code.
+
+
 ---
 
 ## 🚀 Khởi Tạo Database
