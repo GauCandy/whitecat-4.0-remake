@@ -23,7 +23,9 @@
       "Bash(node fix-locale-keys.js:*)",
       "Bash(node split-locale-files.js:*)",
       "Bash(node update-fun-contexts.js:*)",
-      "Bash(node add-dm-permission.js:*)"
+      "Bash(node add-dm-permission.js:*)",
+      "Bash(npm run db:init:*)",
+      "Bash(npm run db:seed:*)"
     ],
     "deny": [],
     "ask": []
