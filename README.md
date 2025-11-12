@@ -61,7 +61,7 @@ DB_PASSWORD=your_password
 npm run db:init
 
 # Seed sample data
-npm run db:seed:all
+npm run db:seed
 ```
 
 ### 5. Deploy Commands
