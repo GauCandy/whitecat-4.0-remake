@@ -1,8 +1,8 @@
 import type { Event } from '../types/event';
 import { logger } from '../utils/logger';
 
-const event: Event<'ready'> = {
-  name: 'ready',
+const event: Event<'clientReady'> = {
+  name: 'clientReady',
   once: true,
 
   execute(client) {

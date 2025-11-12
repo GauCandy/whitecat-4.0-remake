@@ -25,7 +25,8 @@
       "Bash(node update-fun-contexts.js:*)",
       "Bash(node add-dm-permission.js:*)",
       "Bash(npm run db:init:*)",
-      "Bash(npm run db:seed:*)"
+      "Bash(npm run db:seed:*)",
+      "Bash(npm run db:reset:*)"
     ],
     "deny": [],
     "ask": []

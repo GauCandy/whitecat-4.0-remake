@@ -40,7 +40,6 @@ async function initDatabase() {
     console.log('   - hosting_pricing (with default pricing)');
     console.log('   - ports');
     console.log('   - user_hosting');
-    console.log('   - reverse_proxy');
     console.log('   - webhooks');
     console.log('   - giveaways');
     console.log('   - giveaway_entries');
