@@ -9,6 +9,7 @@ export interface Command {
   category: CommandCategory;
   permissions?: PermissionResolvable[];
   cooldown?: number; // in seconds
+  requiresAuth?: boolean; // Default: true. Set to false to skip authorization check
   execute(interaction: ChatInputCommandInteraction): Promise<void>;
 }
 

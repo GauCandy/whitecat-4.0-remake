@@ -2,6 +2,7 @@ import { Collection } from 'discord.js';
 import type { Event } from '../types/event';
 import type { ExtendedClient } from '../types/client';
 import { logger } from '../utils/logger';
+import { checkAuthorization, registerUser } from '../middlewares/authorization';
 
 const event: Event<'interactionCreate'> = {
   name: 'interactionCreate',
@@ -42,6 +43,24 @@ const event: Event<'interactionCreate'> = {
 
     timestamps.set(interaction.user.id, now);
     setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
+
+    // Authorization check (skip if command has requiresAuth = false)
+    const requiresAuth = command.requiresAuth !== false; // Default to true
+    if (requiresAuth) {
+      // Register user if not exists
+      await registerUser(
+        interaction.user.id,
+        interaction.user.username,
+        interaction.user.discriminator,
+        interaction.user.avatar
+      );
+
+      // Check if user is authorized
+      const isAuthorized = await checkAuthorization(interaction);
+      if (!isAuthorized) {
+        return; // Authorization middleware already sent response
+      }
+    }
 
     // Execute command
     try {
