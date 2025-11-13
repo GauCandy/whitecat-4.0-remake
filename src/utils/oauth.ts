@@ -5,20 +5,31 @@ const CLIENT_ID = process.env.CLIENT_ID!;
 const CLIENT_SECRET = process.env.CLIENT_SECRET!;
 const REDIRECT_URI = process.env.REDIRECT_URI!;
 
-// Required OAuth2 scopes
-export const REQUIRED_SCOPES = ['identify', 'applications.commands'];
+// Default OAuth2 scopes (always required)
+export const DEFAULT_SCOPES = ['identify', 'applications.commands'];
+
+// Available additional scopes
+export const AVAILABLE_SCOPES = {
+  email: 'email',
+  guilds: 'guilds',
+  connections: 'connections',
+  guilds_join: 'guilds.join',
+} as const;
 
 /**
  * Generate Discord OAuth2 authorization URL
  * @param state - Random state for CSRF protection
+ * @param additionalScopes - Additional scopes beyond default
  * @returns Authorization URL
  */
-export function generateAuthUrl(state: string): string {
+export function generateAuthUrl(state: string, additionalScopes: string[] = []): string {
+  const scopes = [...DEFAULT_SCOPES, ...additionalScopes];
+
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
     redirect_uri: REDIRECT_URI,
     response_type: 'code',
-    scope: REQUIRED_SCOPES.join(' '),
+    scope: scopes.join(' '),
     state: state,
   });
 

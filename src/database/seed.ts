@@ -88,21 +88,65 @@ async function seedServerNodes() {
   console.log('✅ Default server node created');
 }
 
+async function unseedDatabase() {
+  console.log('🧹 Removing seeded data...');
+
+  // Remove test user
+  console.log('👤 Removing test user...');
+  const userResult = await pool.query(
+    'DELETE FROM users WHERE discord_id = $1 RETURNING id',
+    ['904037527739043861']
+  );
+
+  if (userResult.rowCount > 0) {
+    console.log('   ✓ Test user removed');
+  } else {
+    console.log('   ℹ Test user not found (already removed)');
+  }
+
+  // Remove test server node
+  console.log('🖥️  Removing default server node...');
+  const nodeResult = await pool.query(
+    'DELETE FROM server_nodes WHERE name = $1',
+    ['VN1']
+  );
+
+  if (nodeResult.rowCount > 0) {
+    console.log('   ✓ Server node VN1 removed');
+  } else {
+    console.log('   ℹ Server node VN1 not found (already removed)');
+  }
+
+  // Clear ports (optional - ports can be reused)
+  console.log('📦 Clearing ports...');
+  const portResult = await pool.query('DELETE FROM ports WHERE is_in_use = false');
+  console.log(`   ✓ Cleared ${portResult.rowCount} unused ports`);
+
+  console.log('\n✅ Seeded data removed successfully!');
+}
+
 async function main() {
+  const command = process.argv[2];
+
   try {
-    console.log('🌱 Starting database seed...\n');
+    if (command === 'unseed') {
+      console.log('🗑️  Starting database unseed...\n');
+      await unseedDatabase();
+    } else {
+      console.log('🌱 Starting database seed...\n');
 
-    await seedPorts();
-    await seedHostingPricing();
-    await seedTestUser();
-    await seedServerNodes();
+      await seedPorts();
+      await seedHostingPricing();
+      await seedTestUser();
+      await seedServerNodes();
 
-    console.log('\n✅ Database seeding completed!');
+      console.log('\n✅ Database seeding completed!');
+    }
 
     await pool.end();
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
+    console.error('❌ Error:', error);
     await pool.end();
     process.exit(1);
   }
@@ -113,4 +157,4 @@ if (require.main === module) {
   main();
 }
 
-export { seedPorts, seedHostingPricing, seedTestUser, seedServerNodes };
+export { seedPorts, seedHostingPricing, seedTestUser, seedServerNodes, unseedDatabase };

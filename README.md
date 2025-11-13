@@ -62,18 +62,17 @@ DB_NAME=whitecat
 DB_USER=postgres
 DB_PASSWORD=your_password
 
-# OAuth2 Callback
+# Web Server & OAuth2
+API_PORT=3000
 REDIRECT_URI=http://localhost:3000/auth/callback
+CORS_ORIGIN=http://localhost:3000
 ```
 
 ### 4. Database Setup
 
 ```bash
-# Initialize database
+# Initialize database (creates all tables)
 npm run db:init
-
-# Seed sample data
-npm run db:seed
 ```
 
 ### 5. Deploy Commands
@@ -83,16 +82,36 @@ npm run db:seed
 npm run deploy
 ```
 
-### 6. Run Bot
+### 6. Run Bot & Web Server
 
 ```bash
-# Development mode (auto-restart on changes)
+# Development mode - Run BOTH services (recommended)
 npm run dev
+
+# Or run services separately:
+# Terminal 1: Discord bot only
+npm run dev:bot
+
+# Terminal 2: Web server only
+npm run dev:web
 
 # Production mode
 npm run build
 npm start
 ```
+
+**By default, `npm run dev` starts BOTH:**
+- Discord Bot (src/index.ts)
+- Web Server (src/web/server.ts on port 3000)
+
+The web server handles:
+- `/auth/callback` - Discord OAuth2 callback endpoint
+- `/health` - Health check endpoint
+
+**CORS Configuration:**
+- `CORS_ORIGIN` - Comma-separated list of allowed origins for API access
+- Used for browser-based API calls, not Discord bot commands
+- Example: `http://localhost:3000,https://yourdomain.com`
 
 ---
 
@@ -129,7 +148,13 @@ whitecat-4.0-remake/
 │   │
 │   ├── scripts/           # Utility scripts
 │   │   ├── deploy-commands.ts  # Deploy slash commands
-│   │   └── clear-commands.ts   # Clear commands
+│   │   ├── clear-commands.ts   # Clear commands
+│   │   └── archive.ts          # Archive production/source code
+│   │
+│   ├── web/               # Web server (OAuth2 & API)
+│   │   ├── server.ts      # Express server
+│   │   └── routes/
+│   │       └── auth.ts    # OAuth2 callback endpoint
 │   │
 │   ├── services/          # Business logic services
 │   └── index.ts           # Main entry point
@@ -139,6 +164,7 @@ whitecat-4.0-remake/
 │
 ├── logs/                  # Application logs
 ├── backups/               # Database backups
+├── archives/              # ZIP archives (prod/source)
 └── .env                   # Environment variables (not tracked)
 ```
 
@@ -148,7 +174,9 @@ whitecat-4.0-remake/
 
 ### Development
 ```bash
-npm run dev          # Run in development mode
+npm run dev          # Run bot + web server (both services)
+npm run dev:bot      # Run Discord bot only
+npm run dev:web      # Run web server only (OAuth2 callbacks)
 npm run build        # Build TypeScript to JavaScript
 npm start            # Run production build
 npm run typecheck    # TypeScript type checking
@@ -159,10 +187,16 @@ npm run format       # Format code with Prettier
 ### Database
 ```bash
 npm run db:init      # Initialize database tables
-npm run db:drop      # Drop all tables
-npm run db:reset     # Reset database
-npm run db:seed      # Seed sample data
+npm run db:drop      # Drop all tables (⚠️ loses all data)
+npm run db:reset     # Drop and recreate all tables (⚠️ loses all data)
+npm run db:cleanup   # Remove unused tables not in schema.sql
 ```
+
+**Database Operations Explained:**
+- `db:init` - Creates all tables defined in schema.sql (safe, doesn't drop existing)
+- `db:drop` - Drops ALL tables (use with caution!)
+- `db:reset` - Drops all tables then recreates them (⚠️ **LOSES ALL DATA**)
+- `db:cleanup` - Compares DB tables vs schema.sql, drops tables not in schema (useful after schema changes)
 
 ### Deployment
 ```bash
@@ -174,6 +208,10 @@ npm run deploy:global  # Deploy to ALL servers (same as deploy)
 # Clear Commands
 npm run clear:guild    # Clear guild test commands
 npm run clear:global   # Clear global commands
+
+# Archive/Package
+npm run archive:prod   # Build and archive for production deployment (dist + dependencies)
+npm run archive:source # Archive source code for backup/sharing (src + configs)
 ```
 
 ---
@@ -228,14 +266,15 @@ npm run clear:global   # Clear global commands
 - **Database:** PostgreSQL
 - **Logger:** Winston
 - **Authentication:** Discord OAuth2
-- **Web Server:** Express.js (planned)
+- **Web Server:** Express.js
+- **Archiving:** Archiver
 - **Hosting API:** Pterodactyl Panel (planned)
 
 ---
 
 ## 🔐 Authorization System
 
-The bot uses **Discord OAuth2** for user authorization and terms acceptance.
+The bot uses **Discord OAuth2** for user authorization with a **flexible 3-level system**.
 
 ### How it works:
 
@@ -245,17 +284,11 @@ The bot uses **Discord OAuth2** for user authorization and terms acceptance.
 4. User clicks "Authorize Now" button
 5. Redirected to Discord OAuth2 page
 6. After accepting → Tokens saved to database
-7. User can now use all commands
+7. User can now use commands
 
-### Required Scopes:
+### 3-Level Authorization System:
 
-- `identify` - Access basic Discord user info
-- `applications.commands` - Manage application commands
-
-### Commands that skip authorization:
-
-Set `requiresAuth: false` in command definition:
-
+#### **Level 1: No Authorization** (Public commands)
 ```typescript
 const command: Command = {
   data: new SlashCommandBuilder()
@@ -270,7 +303,52 @@ const command: Command = {
 };
 ```
 
-**Default:** All commands require authorization (`requiresAuth: true`)
+#### **Level 2: Default Authorization** (Most commands)
+```typescript
+const command: Command = {
+  data: new SlashCommandBuilder()
+    .setName('balance')
+    .setDescription('Check your coin balance'),
+
+  requiresAuth: true, // Default - can be omitted
+
+  async execute(interaction) {
+    // Command code
+  }
+};
+```
+
+**Required scopes:**
+- `identify` - Access basic Discord user info
+- `applications.commands` - Manage application commands
+
+#### **Level 3: Additional Scopes** (Advanced features)
+```typescript
+const command: Command = {
+  data: new SlashCommandBuilder()
+    .setName('premium')
+    .setDescription('Manage premium features'),
+
+  requiresAuth: true,
+  requiredScopes: ['email', 'guilds'], // Additional scopes
+
+  async execute(interaction) {
+    // Command code
+  }
+};
+```
+
+**Available additional scopes:**
+- `email` - Access user email address
+- `guilds` - View user's Discord servers
+- `connections` - View connected accounts
+- `guilds.join` - Join servers on user's behalf
+
+### Scope Validation:
+
+- If user is missing required scopes → Bot shows re-authorization request
+- Token expiry is automatically checked
+- Users can have different scope levels for different commands
 
 ---
 
@@ -279,7 +357,7 @@ const command: Command = {
 The bot uses PostgreSQL with **13 tables**:
 
 ### Core Tables
-- `users` - User accounts with OAuth2 tokens
+- `users` - User accounts with OAuth2 tokens, scopes, and email (if authorized)
 - `user_economy` - Coin balances and economy data
 - `guilds` - Server configurations
 - `transactions` - Transaction history

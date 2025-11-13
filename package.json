@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "dev": "concurrently \"npm run dev:bot\" \"npm run dev:web\" --names \"BOT,WEB\" --prefix-colors \"cyan,magenta\"",
     "dev:bot": "ts-node-dev --respawn --transpile-only src/index.ts",
     "dev:web": "ts-node-dev --respawn --transpile-only src/web/server.ts",
     "watch": "tsc --watch",
@@ -24,7 +24,7 @@
     "db:init": "ts-node src/database/init.ts init",
     "db:drop": "ts-node src/database/init.ts drop",
     "db:reset": "ts-node src/database/init.ts reset",
-    "db:seed": "ts-node src/database/seed.ts"
+    "db:cleanup": "ts-node src/database/init.ts cleanup"
   },
   "keywords": [
     "discord",
@@ -55,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "^6.18.1",
     "@typescript-eslint/parser": "^6.18.1",
     "archiver": "^7.0.1",
+    "concurrently": "^9.2.1",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.1.1",

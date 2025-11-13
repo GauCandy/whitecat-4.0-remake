@@ -79,6 +79,65 @@ async function resetDatabase() {
   }
 }
 
+async function cleanupUnusedTables() {
+  try {
+    console.log('🧹 Cleaning up unused tables...');
+
+    // Get all tables currently in database
+    const result = await pool.query(`
+      SELECT tablename
+      FROM pg_tables
+      WHERE schemaname = 'public'
+    `);
+
+    const existingTables = result.rows.map((row: any) => row.tablename);
+    console.log(`📊 Found ${existingTables.length} tables in database:`, existingTables.join(', '));
+
+    // Get tables defined in schema.sql
+    const schema = loadSchemaFile();
+    const createSQL = schema.split('-- @create')[1]?.split('-- @drop')[0] || schema;
+
+    // Extract table names from CREATE TABLE statements
+    const tableRegex = /CREATE TABLE IF NOT EXISTS (\w+)/gi;
+    const definedTables: string[] = [];
+    let match;
+
+    while ((match = tableRegex.exec(createSQL)) !== null) {
+      definedTables.push(match[1]);
+    }
+
+    console.log(`📋 Tables defined in schema.sql:`, definedTables.join(', '));
+
+    // Find unused tables (exist in DB but not in schema)
+    const unusedTables = existingTables.filter(
+      (table: string) => !definedTables.includes(table)
+    );
+
+    if (unusedTables.length === 0) {
+      console.log('✅ No unused tables found. Database is clean!');
+      return;
+    }
+
+    console.log(`⚠️  Found ${unusedTables.length} unused table(s):`, unusedTables.join(', '));
+    console.log('🗑️  Dropping unused tables...');
+
+    // Drop unused tables
+    for (const table of unusedTables) {
+      try {
+        await pool.query(`DROP TABLE IF EXISTS ${table} CASCADE`);
+        console.log(`   ✓ Dropped: ${table}`);
+      } catch (error) {
+        console.error(`   ✗ Failed to drop ${table}:`, error);
+      }
+    }
+
+    console.log('✅ Cleanup complete!');
+  } catch (error) {
+    console.error('❌ Error cleaning up tables:', error);
+    throw error;
+  }
+}
+
 async function main() {
   const command = process.argv[2];
 
@@ -93,8 +152,11 @@ async function main() {
       case 'reset':
         await resetDatabase();
         break;
+      case 'cleanup':
+        await cleanupUnusedTables();
+        break;
       default:
-        console.log('Usage: npm run db:init | db:drop | db:reset');
+        console.log('Usage: npm run db:init | db:drop | db:reset | db:cleanup');
         process.exit(1);
     }
 
@@ -112,4 +174,4 @@ if (require.main === module) {
   main();
 }
 
-export { initDatabase, dropDatabase, resetDatabase };
+export { initDatabase, dropDatabase, resetDatabase, cleanupUnusedTables };

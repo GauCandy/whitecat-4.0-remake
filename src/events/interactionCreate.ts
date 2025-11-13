@@ -55,8 +55,9 @@ const event: Event<'interactionCreate'> = {
         interaction.user.avatar
       );
 
-      // Check if user is authorized
-      const isAuthorized = await checkAuthorization(interaction);
+      // Check if user is authorized with required scopes
+      const requiredScopes = command.requiredScopes || [];
+      const isAuthorized = await checkAuthorization(interaction, requiredScopes);
       if (!isAuthorized) {
         return; // Authorization middleware already sent response
       }
