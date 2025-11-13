@@ -46,6 +46,7 @@ async function deployCommands() {
   const token = process.env.DISCORD_TOKEN;
   const clientId = process.env.CLIENT_ID;
   const guildId = process.env.GUILD_ID;
+  const mode = process.argv[2]; // 'guild' or 'global'
 
   if (!token || !clientId) {
     throw new Error('Missing DISCORD_TOKEN or CLIENT_ID in .env file');
@@ -56,15 +57,27 @@ async function deployCommands() {
   try {
     console.log(`🚀 Started refreshing ${commands.length} application (/) commands.`);
 
-    if (guildId) {
+    // Determine deploy mode
+    // Default: global deployment
+    // Only deploy to guild if explicitly specified
+    const deployToGuild = mode === 'guild';
+
+    if (deployToGuild) {
       // Deploy to specific guild (faster for testing)
+      if (!guildId) {
+        throw new Error('Missing GUILD_ID in .env file for guild deployment');
+      }
+
+      console.log(`🎯 Deploying to test guild (${guildId})...`);
       const data = await rest.put(Routes.applicationGuildCommands(clientId, guildId), {
         body: commands,
       }) as any[];
 
       console.log(`✅ Successfully reloaded ${data.length} guild (/) commands.`);
+      console.log('⚡ Guild commands update instantly!');
     } else {
       // Deploy globally (takes up to 1 hour)
+      console.log('🌍 Deploying to ALL servers (global)...');
       const data = await rest.put(Routes.applicationCommands(clientId), {
         body: commands,
       }) as any[];

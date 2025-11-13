@@ -309,6 +309,7 @@ site/
 # Misc
 # ==========================================
 # Archives
+archives/
 *.zip
 *.tar
 *.tar.gz

@@ -26,7 +26,10 @@
       "Bash(node add-dm-permission.js:*)",
       "Bash(npm run db:init:*)",
       "Bash(npm run db:seed:*)",
-      "Bash(npm run db:reset:*)"
+      "Bash(npm run db:reset:*)",
+      "Bash(npm run clear:guild:*)",
+      "Bash(npm run deploy:guild:*)",
+      "Bash(npm run archive:source:*)"
     ],
     "deny": [],
     "ask": []

@@ -16,6 +16,10 @@ Discord Bot for hosting management - Built with TypeScript, Discord.js v14, and 
 - ✅ Dynamic event handler
 - ✅ Bot connection & basic ping command
 - ✅ Error handling system
+- ✅ PostgreSQL database schema (13 tables)
+- ✅ OAuth2 Authorization system
+- ✅ Terms acceptance flow
+- ✅ Command deployment system (guild/global)
 
 ---
 
@@ -46,12 +50,20 @@ cp .env.example .env
 Edit `.env` and fill in your credentials:
 
 ```env
+# Discord Bot
 DISCORD_TOKEN=your_bot_token_here
 CLIENT_ID=your_client_id_here
+CLIENT_SECRET=your_client_secret_here
+GUILD_ID=your_test_guild_id_here
+
+# Database
 DB_HOST=localhost
 DB_NAME=whitecat
 DB_USER=postgres
 DB_PASSWORD=your_password
+
+# OAuth2 Callback
+REDIRECT_URI=http://localhost:3000/auth/callback
 ```
 
 ### 4. Database Setup
@@ -90,23 +102,40 @@ npm start
 whitecat-4.0-remake/
 ├── src/
 │   ├── commands/          # Slash commands
-│   │   ├── utility/       # Utility commands (ping, help)
+│   │   ├── utility/       # Utility commands (ping, verify)
 │   │   ├── economy/       # Economy commands
 │   │   ├── hosting/       # Hosting management
 │   │   ├── admin/         # Admin commands
 │   │   ├── config/        # Server config
 │   │   └── giveaway/      # Giveaway system
 │   │
-│   ├── events/            # Discord events (ready, interactionCreate)
+│   ├── events/            # Discord events
+│   │   ├── ready.ts       # Bot ready event
+│   │   └── interactionCreate.ts  # Command handler
+│   │
 │   ├── handlers/          # Command & event loaders
 │   ├── types/             # TypeScript type definitions
-│   ├── utils/             # Utility functions (logger, etc.)
-│   ├── database/          # Database models & migrations
+│   ├── utils/             # Utility functions
+│   │   ├── logger.ts      # Winston logger
+│   │   └── oauth.ts       # OAuth2 utilities
+│   │
+│   ├── middlewares/       # Middleware functions
+│   │   └── authorization.ts  # OAuth2 authorization check
+│   │
+│   ├── database/          # Database setup
+│   │   ├── config.ts      # Database connection
+│   │   ├── init.ts        # Schema initialization
+│   │   └── seed.ts        # Seed data
+│   │
+│   ├── scripts/           # Utility scripts
+│   │   ├── deploy-commands.ts  # Deploy slash commands
+│   │   └── clear-commands.ts   # Clear commands
+│   │
 │   ├── services/          # Business logic services
 │   └── index.ts           # Main entry point
 │
 ├── database/
-│   └── schema.sql         # PostgreSQL schema
+│   └── schema.sql         # PostgreSQL schema (13 tables)
 │
 ├── logs/                  # Application logs
 ├── backups/               # Database backups
@@ -137,15 +166,23 @@ npm run db:seed      # Seed sample data
 
 ### Deployment
 ```bash
-npm run deploy       # Deploy slash commands to Discord
+# Deploy Commands
+npm run deploy         # Deploy to ALL servers (global, takes 1 hour)
+npm run deploy:guild   # Deploy to guild test only (instant update)
+npm run deploy:global  # Deploy to ALL servers (same as deploy)
+
+# Clear Commands
+npm run clear:guild    # Clear guild test commands
+npm run clear:global   # Clear global commands
 ```
 
 ---
 
 ## 🤖 Bot Commands
 
-### Utility
-- `/ping` - Check bot latency
+### Utility (Public - No Auth Required)
+- `/ping` - Check bot latency and response time
+- `/verify` - Authorize bot to access your Discord account
 
 ### Coming Soon (Phase 1)
 - `/register` - Register user account
@@ -153,6 +190,8 @@ npm run deploy       # Deploy slash commands to Discord
 - `/balance` - Check coin balance
 - `/packages` - View hosting packages
 - `/buy` - Purchase hosting
+
+> **Note:** Most commands require OAuth2 authorization via `/verify` command first.
 
 ---
 
@@ -188,8 +227,87 @@ npm run deploy       # Deploy slash commands to Discord
 - **Framework:** Discord.js v14
 - **Database:** PostgreSQL
 - **Logger:** Winston
+- **Authentication:** Discord OAuth2
 - **Web Server:** Express.js (planned)
 - **Hosting API:** Pterodactyl Panel (planned)
+
+---
+
+## 🔐 Authorization System
+
+The bot uses **Discord OAuth2** for user authorization and terms acceptance.
+
+### How it works:
+
+1. User tries to use a protected command
+2. Bot checks if user has authorized
+3. If not authorized → Shows authorization request embed
+4. User clicks "Authorize Now" button
+5. Redirected to Discord OAuth2 page
+6. After accepting → Tokens saved to database
+7. User can now use all commands
+
+### Required Scopes:
+
+- `identify` - Access basic Discord user info
+- `applications.commands` - Manage application commands
+
+### Commands that skip authorization:
+
+Set `requiresAuth: false` in command definition:
+
+```typescript
+const command: Command = {
+  data: new SlashCommandBuilder()
+    .setName('ping')
+    .setDescription('Check bot latency'),
+
+  requiresAuth: false, // Skip authorization check
+
+  async execute(interaction) {
+    // Command code
+  }
+};
+```
+
+**Default:** All commands require authorization (`requiresAuth: true`)
+
+---
+
+## 🗄️ Database Schema
+
+The bot uses PostgreSQL with **13 tables**:
+
+### Core Tables
+- `users` - User accounts with OAuth2 tokens
+- `user_economy` - Coin balances and economy data
+- `guilds` - Server configurations
+- `transactions` - Transaction history
+
+### Hosting System
+- `server_nodes` - Server locations
+- `hosting_pricing` - Custom resource pricing (RAM/CPU/Storage)
+- `ports` - Available ports (25565-25664)
+- `user_hosting` - User hosting instances
+
+### Features
+- `webhooks` - Event webhooks
+- `giveaways` - Giveaway system
+- `giveaway_entries` - Giveaway participants
+- `statistics` - Bot statistics
+- `command_logs` - Command usage logs
+
+### Hosting Pricing Model
+
+**Custom Configuration System:**
+- Users select individual resources (RAM, CPU, Storage)
+- Each resource has multiple tiers with different prices
+- Total cost = RAM price + CPU price + Storage price
+
+Example pricing:
+- RAM: 512MB ($5k), 1GB ($10k), 2GB ($18k), etc.
+- CPU: 0.5 cores ($3k), 1 core ($6k), 2 cores ($11k), etc.
+- Storage: 5GB ($2k), 10GB ($4k), 20GB ($7k), etc.
 
 ---
 
@@ -200,6 +318,9 @@ npm run deploy       # Deploy slash commands to Discord
 - ⚠️ Validate user input
 - ⚠️ Rate limit commands with cooldowns
 - ⚠️ Secure webhook endpoints
+- ⚠️ OAuth2 tokens stored encrypted in database
+- ⚠️ Token expiry validation and auto-refresh
+- ⚠️ CSRF protection with state parameter
 
 ---
 
