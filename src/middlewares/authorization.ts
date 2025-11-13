@@ -24,14 +24,14 @@ export interface AuthorizationStatus {
 export async function getUserAuthorizationStatus(
   discordId: string
 ): Promise<AuthorizationStatus> {
+  // Default scopes (always required for all commands)
+  const DEFAULT_SCOPES = USER_INSTALL_SCOPES;
+
   try {
     const result = await pool.query(
       'SELECT is_authorized, oauth_token_expires_at, oauth_scopes FROM users WHERE discord_id = $1',
       [discordId]
     );
-
-    // Default scopes (always required for all commands)
-    const DEFAULT_SCOPES = USER_INSTALL_SCOPES;
 
     // User not in database
     if (result.rows.length === 0) {

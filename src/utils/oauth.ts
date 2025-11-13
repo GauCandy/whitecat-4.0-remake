@@ -5,6 +5,29 @@ const CLIENT_ID = process.env.CLIENT_ID!;
 const CLIENT_SECRET = process.env.CLIENT_SECRET!;
 const REDIRECT_URI = process.env.REDIRECT_URI!;
 
+/**
+ * Discord OAuth2 token response
+ */
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+}
+
+/**
+ * Discord user data response
+ */
+export interface UserResponse {
+  id: string;
+  username: string;
+  discriminator: string;
+  avatar: string | null;
+  email?: string;
+  verified?: boolean;
+}
+
 // OAuth2 scopes for user authentication only
 export const USER_AUTH_SCOPES = ['identify', 'email'];
 
@@ -58,7 +81,7 @@ export function generateUserInstallUrl(state: string): string {
  * @param code - Authorization code from Discord
  * @returns Token data
  */
-export async function exchangeCode(code: string) {
+export async function exchangeCode(code: string): Promise<TokenResponse> {
   const data = new URLSearchParams({
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
@@ -79,7 +102,7 @@ export async function exchangeCode(code: string) {
     throw new Error(`Failed to exchange code: ${response.statusText}`);
   }
 
-  return await response.json();
+  return (await response.json()) as TokenResponse;
 }
 
 /**
@@ -87,7 +110,7 @@ export async function exchangeCode(code: string) {
  * @param refreshToken - Refresh token
  * @returns New token data
  */
-export async function refreshAccessToken(refreshToken: string) {
+export async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
   const data = new URLSearchParams({
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
@@ -107,7 +130,7 @@ export async function refreshAccessToken(refreshToken: string) {
     throw new Error(`Failed to refresh token: ${response.statusText}`);
   }
 
-  return await response.json();
+  return (await response.json()) as TokenResponse;
 }
 
 /**
@@ -115,7 +138,7 @@ export async function refreshAccessToken(refreshToken: string) {
  * @param accessToken - OAuth2 access token
  * @returns User data
  */
-export async function getOAuthUser(accessToken: string) {
+export async function getOAuthUser(accessToken: string): Promise<UserResponse> {
   const response = await fetch('https://discord.com/api/v10/users/@me', {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -126,7 +149,7 @@ export async function getOAuthUser(accessToken: string) {
     throw new Error(`Failed to get user: ${response.statusText}`);
   }
 
-  return await response.json();
+  return (await response.json()) as UserResponse;
 }
 
 /**

@@ -29,7 +29,7 @@ Discord Bot for hosting management - Built with TypeScript, Discord.js v14, and 
 
 - Node.js 18+
 - PostgreSQL 12+
-- Discord Bot Token
+- Discord Bot Application with **User Install** enabled (see Configuration section)
 
 ### 2. Installation
 
@@ -45,7 +45,27 @@ npm install
 cp .env.example .env
 ```
 
-### 3. Configuration
+### 3. Discord Application Configuration
+
+**Important:** Configure your Discord Application for User-Installable Apps:
+
+1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
+2. Select your application
+3. Go to **Installation** tab
+4. Enable **User Install**
+5. Add the following scopes under **Default Install Settings > User Install**:
+   - `applications.commands`
+   - `identify`
+   - `email`
+6. Under **Install Link**, select "Discord Provided Link"
+
+**Why User Install?**
+- ✅ Users can use bot commands in ANY server without needing admin permissions
+- ✅ No need to invite bot to every server
+- ✅ Commands are installed per-user, not per-server
+- ✅ Better user experience for hosting management
+
+### 4. Environment Configuration
 
 Edit `.env` and fill in your credentials:
 
@@ -68,21 +88,21 @@ REDIRECT_URI=http://localhost:3000/auth/callback
 CORS_ORIGIN=http://localhost:3000
 ```
 
-### 4. Database Setup
+### 5. Database Setup
 
 ```bash
 # Initialize database (creates all tables)
 npm run db:init
 ```
 
-### 5. Deploy Commands
+### 6. Deploy Commands
 
 ```bash
 # Deploy slash commands to Discord
 npm run deploy
 ```
 
-### 6. Run Bot & Web Server
+### 7. Run Bot & Web Server
 
 ```bash
 # Development mode - Run BOTH services (recommended)
@@ -274,17 +294,31 @@ npm run archive:source # Archive source code for backup/sharing (src + configs)
 
 ## 🔐 Authorization System
 
-The bot uses **Discord OAuth2** for user authorization with a **flexible 3-level system**.
+The bot uses **Discord OAuth2** with **User-Installable App** architecture.
+
+### User-Installable App (integration_type=1)
+
+This bot uses Discord's **User Install** feature, allowing users to:
+- ✅ Use bot commands in ANY server they're in (without bot being in that server)
+- ✅ Install the app for themselves, not for a server
+- ✅ No admin permissions needed to use commands
+- ✅ Commands follow the user across all servers
+
+**OAuth2 Scopes:**
+- `identify` - Access basic Discord user info (username, avatar, ID)
+- `email` - Verify account and send important notifications
+- `applications.commands` - Use slash commands (with `integration_type=1` = User Install)
 
 ### How it works:
 
-1. User tries to use a protected command
+1. User runs `/verify` command
 2. Bot checks if user has authorized
 3. If not authorized → Shows authorization request embed
 4. User clicks "Authorize Now" button
-5. Redirected to Discord OAuth2 page
-6. After accepting → Tokens saved to database
-7. User can now use commands
+5. Redirected to Discord OAuth2 page with `integration_type=1` parameter
+6. User authorizes the app (NOT inviting bot to server)
+7. Tokens saved to database
+8. User can now use commands anywhere
 
 ### 2-Level Authorization System:
 
@@ -322,17 +356,38 @@ const command: Command = {
 
 **Required scopes:**
 - `identify` - Access basic Discord user info
-- `applications.commands` - Use commands in any server
 - `email` - Verify account and send important notifications
+- `applications.commands` - Use slash commands (User Install mode)
+
+**Technical Details:**
+- Uses `generateUserInstallUrl()` which sets `integration_type=1`
+- This is NOT the same as bot installation (`integration_type=0`)
+- User Install allows commands to work in any server without bot membership
 
 **Use for:** All commands that require user account (economy, hosting, profiles, etc.)
 
 ### Authorization Features:
 
-- Automatic token expiry validation
-- Automatic re-authorization request if token expired
-- Missing scope detection and re-authorization prompt
-- Simple binary system: auth required or not
+- ✅ User-Installable App (commands work anywhere)
+- ✅ Automatic token expiry validation
+- ✅ Automatic re-authorization request if token expired
+- ✅ Missing scope detection and re-authorization prompt
+- ✅ Simple binary system: auth required or not
+- ✅ CSRF protection with state parameter
+- ✅ Secure token storage with expiry tracking
+
+### OAuth2 URL Types:
+
+The bot provides two OAuth2 URL generators:
+
+1. **`generateAuthUrl()`** - User authentication only
+   - Scopes: `identify`, `email`
+   - Use for: Simple user verification without command access
+
+2. **`generateUserInstallUrl()`** - User-installable app (current implementation)
+   - Scopes: `identify`, `email`, `applications.commands`
+   - Parameter: `integration_type=1` (User Install, not Guild Install)
+   - Use for: Full bot access with slash commands
 
 ---
 
