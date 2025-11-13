@@ -117,6 +117,9 @@ jest-results.json
 !.vscode/extensions.json
 *.code-workspace
 
+# Claude Code
+.claude/
+
 # IntelliJ IDEA
 .idea/
 *.iml
