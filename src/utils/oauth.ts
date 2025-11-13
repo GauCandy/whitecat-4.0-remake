@@ -5,25 +5,17 @@ const CLIENT_ID = process.env.CLIENT_ID!;
 const CLIENT_SECRET = process.env.CLIENT_SECRET!;
 const REDIRECT_URI = process.env.REDIRECT_URI!;
 
-// Default OAuth2 scopes (always required)
-export const DEFAULT_SCOPES = ['identify', 'applications.commands'];
-
-// Available additional scopes
-export const AVAILABLE_SCOPES = {
-  email: 'email',
-  guilds: 'guilds',
-  connections: 'connections',
-  guilds_join: 'guilds.join',
-} as const;
+// Default OAuth2 scopes (always required for all authenticated commands)
+export const DEFAULT_SCOPES = ['identify', 'applications.commands', 'email'];
 
 /**
  * Generate Discord OAuth2 authorization URL
+ * Always requests the default scopes: identify, applications.commands, email
  * @param state - Random state for CSRF protection
- * @param additionalScopes - Additional scopes beyond default
  * @returns Authorization URL
  */
-export function generateAuthUrl(state: string, additionalScopes: string[] = []): string {
-  const scopes = [...DEFAULT_SCOPES, ...additionalScopes];
+export function generateAuthUrl(state: string): string {
+  const scopes = DEFAULT_SCOPES;
 
   const params = new URLSearchParams({
     client_id: CLIENT_ID,

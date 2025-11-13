@@ -9,7 +9,6 @@ const command: Command = {
 
   category: CommandCategory.Utility,
   cooldown: 5,
-  requiresAuth: false, // Public command, no authorization needed
 
   async execute(interaction: ChatInputCommandInteraction): Promise<void> {
     const sent = await interaction.reply({

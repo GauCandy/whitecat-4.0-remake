@@ -1,21 +1,20 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import type { Command } from '../../types/command';
 import { CommandCategory } from '../../types/command';
-import { pool } from '../../database/config';
 import { generateAuthUrl, generateState } from '../../utils/oauth';
-import { registerUser } from '../../middlewares/authorization';
+import { registerUser, getUserAuthorizationStatus } from '../../middlewares/authorization';
 
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('verify')
-    .setDescription('Authorize the bot to access your Discord account'),
+    .setDescription('Authorize the bot to access your Discord account and email'),
 
   category: CommandCategory.Utility,
   cooldown: 5,
-  requiresAuth: false, // This command is for authorization itself
+  requiresAuth: false, // Must be false - this command is used to authorize, so it can't require authorization
 
   async execute(interaction) {
-    // Register user if not exists
+    // Register user if not exists (creates user record in database)
     await registerUser(
       interaction.user.id,
       interaction.user.username,
@@ -23,65 +22,81 @@ const command: Command = {
       interaction.user.avatar
     );
 
-    // Check if already authorized
-    const result = await pool.query(
-      'SELECT is_authorized, oauth_token_expires_at FROM users WHERE discord_id = $1',
-      [interaction.user.id]
-    );
+    // Check if user already has full authorization
+    // Note: We use getUserAuthorizationStatus service instead of direct database query
+    const authStatus = await getUserAuthorizationStatus(interaction.user.id);
 
-    if (result.rows.length > 0 && result.rows[0].is_authorized) {
-      const expiresAt = result.rows[0].oauth_token_expires_at;
-      const isExpired = expiresAt && new Date(expiresAt) < new Date();
+    // User already authorized with all required scopes (identify + applications.commands + email)
+    if (authStatus.isAuthorized && !authStatus.isExpired && authStatus.hasAllScopes) {
+      const embed = new EmbedBuilder()
+        .setColor(0x57f287)
+        .setTitle('✅ Already Authorized')
+        .setDescription('You are already authorized to use this bot with all required permissions!')
+        .addFields({
+          name: '🔑 Token Expires',
+          value: authStatus.expiresAt
+            ? `<t:${Math.floor(authStatus.expiresAt.getTime() / 1000)}:R>`
+            : 'Unknown',
+          inline: false,
+        })
+        .setFooter({
+          text: 'WhiteCat Hosting Bot',
+        })
+        .setTimestamp();
 
-      if (!isExpired) {
-        const embed = new EmbedBuilder()
-          .setColor(0x57f287)
-          .setTitle('✅ Already Authorized')
-          .setDescription('You are already authorized to use this bot!')
-          .addFields({
-            name: '🔑 Token Expires',
-            value: `<t:${Math.floor(new Date(expiresAt).getTime() / 1000)}:R>`,
-            inline: false,
-          })
-          .setFooter({
-            text: 'WhiteCat Hosting Bot',
-          })
-          .setTimestamp();
-
-        await interaction.reply({
-          embeds: [embed],
-          ephemeral: true,
-        });
-        return;
-      }
+      await interaction.reply({
+        embeds: [embed],
+        ephemeral: true,
+      });
+      return;
     }
 
-    // Generate authorization URL
+    // User needs to authorize or re-authorize (token expired or missing scopes)
     const state = generateState();
-    const authUrl = generateAuthUrl(state);
+    const authUrl = generateAuthUrl(state); // No additional scopes needed - email is in default
+
+    // Determine authorization status message
+    let title = '🔐 Authorization Required';
+    let description = 'To use this bot, you need to authorize it to access your Discord account.\n\nClick the button below to authorize.';
+
+    if (authStatus.isAuthorized && authStatus.isExpired) {
+      title = '🔄 Authorization Expired';
+      description = 'Your authorization has expired. Please authorize again to continue using the bot.';
+    } else if (authStatus.isAuthorized && !authStatus.hasAllScopes) {
+      title = '⚠️ Additional Authorization Required';
+      description = `You need to grant additional permissions to use all features.\n\nMissing: **${authStatus.missingScopes.join(', ')}**\n\nPlease re-authorize to continue.`;
+    }
 
     const embed = new EmbedBuilder()
-      .setColor(0x5865f2)
-      .setTitle('🔐 Authorization Required')
-      .setDescription(
-        'To use this bot, you need to authorize it to access your Discord account.\n\n' +
-          'Click the button below to authorize.'
-      )
+      .setColor(authStatus.isExpired || !authStatus.hasAllScopes ? 0xffa500 : 0x5865f2)
+      .setTitle(title)
+      .setDescription(description)
       .addFields(
         {
           name: '📋 Required Permissions',
           value:
             '• **identify** - Access your basic Discord info (username, avatar, etc.)\n' +
-            '• **applications.commands** - Allow bot to create and manage application commands for you',
+            '• **applications.commands** - Allow you to use bot commands in any server\n' +
+            '• **email** - Verify your account and send important notifications',
+          inline: false,
+        },
+        {
+          name: '📧 Why We Need Your Email',
+          value:
+            '• 🛡️ **Prevent spam & alt accounts** - Verify legitimate users\n' +
+            '• 📨 **Important notifications** - Server expiring, payment confirmations\n' +
+            '• 🔑 **Account recovery** - Restore access if you lose your Discord account\n' +
+            '• 📜 **Receipts & invoices** - Send purchase confirmations for hosting',
           inline: false,
         },
         {
           name: '🔒 Privacy & Security',
           value:
             'Your data is stored securely and encrypted. We only collect necessary information to provide bot functionality.\n\n' +
-            '• We will never share your information with third parties\n' +
-            '• You can revoke access at any time\n' +
-            '• We comply with Discord ToS and privacy regulations',
+            '• ✅ We will NEVER sell or share your email\n' +
+            '• ✅ No spam - Only important bot notifications\n' +
+            '• ✅ You can revoke access at any time in Discord settings\n' +
+            '• ✅ We comply with Discord ToS and privacy regulations',
           inline: false,
         },
         {

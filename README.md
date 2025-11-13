@@ -286,7 +286,7 @@ The bot uses **Discord OAuth2** for user authorization with a **flexible 3-level
 6. After accepting → Tokens saved to database
 7. User can now use commands
 
-### 3-Level Authorization System:
+### 2-Level Authorization System:
 
 #### **Level 1: No Authorization** (Public commands)
 ```typescript
@@ -295,13 +295,15 @@ const command: Command = {
     .setName('ping')
     .setDescription('Check bot latency'),
 
-  requiresAuth: false, // Skip authorization check
+  requiresAuth: false, // Explicitly disable authorization
 
   async execute(interaction) {
     // Command code
   }
 };
 ```
+
+**Use for:** Public utility commands that anyone can use without account linking.
 
 #### **Level 2: Default Authorization** (Most commands)
 ```typescript
@@ -310,7 +312,7 @@ const command: Command = {
     .setName('balance')
     .setDescription('Check your coin balance'),
 
-  requiresAuth: true, // Default - can be omitted
+  // requiresAuth defaults to true - no need to specify
 
   async execute(interaction) {
     // Command code
@@ -320,35 +322,17 @@ const command: Command = {
 
 **Required scopes:**
 - `identify` - Access basic Discord user info
-- `applications.commands` - Manage application commands
+- `applications.commands` - Use commands in any server
+- `email` - Verify account and send important notifications
 
-#### **Level 3: Additional Scopes** (Advanced features)
-```typescript
-const command: Command = {
-  data: new SlashCommandBuilder()
-    .setName('premium')
-    .setDescription('Manage premium features'),
+**Use for:** All commands that require user account (economy, hosting, profiles, etc.)
 
-  requiresAuth: true,
-  requiredScopes: ['email', 'guilds'], // Additional scopes
+### Authorization Features:
 
-  async execute(interaction) {
-    // Command code
-  }
-};
-```
-
-**Available additional scopes:**
-- `email` - Access user email address
-- `guilds` - View user's Discord servers
-- `connections` - View connected accounts
-- `guilds.join` - Join servers on user's behalf
-
-### Scope Validation:
-
-- If user is missing required scopes → Bot shows re-authorization request
-- Token expiry is automatically checked
-- Users can have different scope levels for different commands
+- Automatic token expiry validation
+- Automatic re-authorization request if token expired
+- Missing scope detection and re-authorization prompt
+- Simple binary system: auth required or not
 
 ---
 

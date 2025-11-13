@@ -4,14 +4,98 @@ import { generateAuthUrl, generateState } from '../utils/oauth';
 import { logger } from '../utils/logger';
 
 /**
+ * Authorization status result
+ */
+export interface AuthorizationStatus {
+  isAuthorized: boolean;
+  isExpired: boolean;
+  hasAllScopes: boolean;
+  missingScopes: string[];
+  expiresAt?: Date;
+  userScopes: string[];
+}
+
+/**
+ * Get user authorization status
+ * Checks for default scopes: identify + applications.commands + email
+ * @param discordId - Discord user ID
+ * @returns Authorization status
+ */
+export async function getUserAuthorizationStatus(
+  discordId: string
+): Promise<AuthorizationStatus> {
+  try {
+    const result = await pool.query(
+      'SELECT is_authorized, oauth_token_expires_at, oauth_scopes FROM users WHERE discord_id = $1',
+      [discordId]
+    );
+
+    // Default scopes (always required for all commands)
+    const DEFAULT_SCOPES = ['identify', 'applications.commands', 'email'];
+
+    // User not in database
+    if (result.rows.length === 0) {
+      return {
+        isAuthorized: false,
+        isExpired: false,
+        hasAllScopes: false,
+        missingScopes: DEFAULT_SCOPES,
+        userScopes: [],
+      };
+    }
+
+    const user = result.rows[0];
+
+    // User not authorized
+    if (!user.is_authorized) {
+      return {
+        isAuthorized: false,
+        isExpired: false,
+        hasAllScopes: false,
+        missingScopes: DEFAULT_SCOPES,
+        userScopes: [],
+      };
+    }
+
+    // Check if token expired
+    const expiresAt = user.oauth_token_expires_at ? new Date(user.oauth_token_expires_at) : undefined;
+    const isExpired = expiresAt ? expiresAt < new Date() : false;
+
+    // Get user scopes
+    const userScopes = user.oauth_scopes ? user.oauth_scopes.split(' ') : [];
+
+    // Check if user has ALL default scopes
+    const missingScopes = DEFAULT_SCOPES.filter(scope => !userScopes.includes(scope));
+    const hasAllScopes = missingScopes.length === 0;
+
+    return {
+      isAuthorized: true,
+      isExpired,
+      hasAllScopes,
+      missingScopes,
+      expiresAt,
+      userScopes,
+    };
+  } catch (error) {
+    logger.error('Error getting user authorization status:', error);
+    return {
+      isAuthorized: false,
+      isExpired: false,
+      hasAllScopes: false,
+      missingScopes: DEFAULT_SCOPES,
+      userScopes: [],
+    };
+  }
+}
+
+/**
  * Check if user is authorized to use commands
+ * Requires default scopes: identify + applications.commands + email
  * @param interaction - Command interaction
- * @param requiredScopes - Additional scopes required beyond default
  * @returns True if authorized, false otherwise
  */
 export async function checkAuthorization(
-  interaction: ChatInputCommandInteraction,
-  requiredScopes: string[] = []
+  interaction: ChatInputCommandInteraction
 ): Promise<boolean> {
   try {
     const result = await pool.query(
@@ -19,9 +103,12 @@ export async function checkAuthorization(
       [interaction.user.id]
     );
 
+    // Default scopes required for all commands
+    const DEFAULT_SCOPES = ['identify', 'applications.commands', 'email'];
+
     // User not in database yet
     if (result.rows.length === 0) {
-      await sendAuthorizationRequest(interaction, requiredScopes);
+      await sendAuthorizationRequest(interaction);
       return false;
     }
 
@@ -29,27 +116,25 @@ export async function checkAuthorization(
 
     // User not authorized yet
     if (!user.is_authorized) {
-      await sendAuthorizationRequest(interaction, requiredScopes);
+      await sendAuthorizationRequest(interaction);
       return false;
     }
 
     // Check if token expired
     if (user.oauth_token_expires_at && new Date(user.oauth_token_expires_at) < new Date()) {
       logger.warn(`OAuth token expired for user ${interaction.user.tag}`);
-      await sendAuthorizationRequest(interaction, requiredScopes, true);
+      await sendAuthorizationRequest(interaction, true);
       return false;
     }
 
-    // Check if user has all required scopes
-    if (requiredScopes.length > 0) {
-      const userScopes = user.oauth_scopes ? user.oauth_scopes.split(' ') : [];
-      const missingScopes = requiredScopes.filter(scope => !userScopes.includes(scope));
+    // Check if user has all default scopes
+    const userScopes = user.oauth_scopes ? user.oauth_scopes.split(' ') : [];
+    const missingScopes = DEFAULT_SCOPES.filter(scope => !userScopes.includes(scope));
 
-      if (missingScopes.length > 0) {
-        logger.warn(`User ${interaction.user.tag} missing scopes: ${missingScopes.join(', ')}`);
-        await sendAuthorizationRequest(interaction, requiredScopes, false, missingScopes);
-        return false;
-      }
+    if (missingScopes.length > 0) {
+      logger.warn(`User ${interaction.user.tag} missing scopes: ${missingScopes.join(', ')}`);
+      await sendAuthorizationRequest(interaction, false, missingScopes);
+      return false;
     }
 
     return true;
@@ -66,33 +151,28 @@ export async function checkAuthorization(
 /**
  * Send authorization request to user
  * @param interaction - Command interaction
- * @param additionalScopes - Additional scopes required
  * @param isExpired - Whether token is expired
  * @param missingScopes - Scopes user is missing
  */
 async function sendAuthorizationRequest(
   interaction: ChatInputCommandInteraction,
-  additionalScopes: string[] = [],
   isExpired = false,
   missingScopes: string[] = []
 ): Promise<void> {
   const state = generateState();
-  const authUrl = generateAuthUrl(state, additionalScopes);
+  const authUrl = generateAuthUrl(state);
 
   // Scope descriptions
   const scopeDescriptions: Record<string, string> = {
     identify: 'Access your basic Discord info',
-    'applications.commands': 'Manage your application commands',
+    'applications.commands': 'Use commands in any server',
     email: 'Access your email address',
-    guilds: 'View your Discord servers',
-    connections: 'View your connected accounts',
-    'guilds.join': 'Join servers on your behalf',
   };
 
-  // Build required permissions list
-  const allScopes = ['identify', 'applications.commands', ...additionalScopes];
+  // Build required permissions list (always the same 3 scopes)
+  const allScopes = ['identify', 'applications.commands', 'email'];
   const permissionsList = allScopes
-    .map(scope => `• **${scope}** - ${scopeDescriptions[scope] || 'Additional permission'}`)
+    .map(scope => `• **${scope}** - ${scopeDescriptions[scope]}`)
     .join('\n');
 
   // Determine title and description

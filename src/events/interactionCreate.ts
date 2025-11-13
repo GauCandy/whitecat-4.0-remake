@@ -44,9 +44,11 @@ const event: Event<'interactionCreate'> = {
     timestamps.set(interaction.user.id, now);
     setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 
-    // Authorization check (skip if command has requiresAuth = false)
-    const requiresAuth = command.requiresAuth !== false; // Default to true
-    if (requiresAuth) {
+    // Authorization check
+    // Skip auth ONLY if explicitly requiresAuth = false
+    const shouldCheckAuth = command.requiresAuth !== false;
+
+    if (shouldCheckAuth) {
       // Register user if not exists
       await registerUser(
         interaction.user.id,
@@ -55,9 +57,8 @@ const event: Event<'interactionCreate'> = {
         interaction.user.avatar
       );
 
-      // Check if user is authorized with required scopes
-      const requiredScopes = command.requiredScopes || [];
-      const isAuthorized = await checkAuthorization(interaction, requiredScopes);
+      // Check if user is authorized (requires: identify + applications.commands + email)
+      const isAuthorized = await checkAuthorization(interaction);
       if (!isAuthorized) {
         return; // Authorization middleware already sent response
       }

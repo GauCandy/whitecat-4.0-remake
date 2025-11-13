@@ -9,23 +9,20 @@ export interface Command {
   category: CommandCategory;
   permissions?: PermissionResolvable[];
   cooldown?: number; // in seconds
-  requiresAuth?: boolean; // Default: true. Set to false to skip authorization check
-  requiredScopes?: string[]; // Additional OAuth2 scopes beyond default (identify + applications.commands)
+  requiresAuth?: boolean; // Set to false to skip authorization. Default: true
   execute(interaction: ChatInputCommandInteraction): Promise<void>;
 }
 
 /**
- * OAuth2 authorization levels:
+ * OAuth2 authorization:
  *
- * Level 1 - No authorization:
- *   requiresAuth: false
+ * requiresAuth: true (default)
+ *   - Requires: identify + applications.commands + email
+ *   - User must authorize via /verify command
  *
- * Level 2 - Default authorization (identify + applications.commands):
- *   requiresAuth: true
- *
- * Level 3 - Additional scopes:
- *   requiresAuth: true,
- *   requiredScopes: ['email', 'guilds']
+ * requiresAuth: false
+ *   - Public command
+ *   - No authorization required
  */
 
 export enum CommandCategory {
