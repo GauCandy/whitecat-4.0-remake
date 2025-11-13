@@ -5,17 +5,20 @@ const CLIENT_ID = process.env.CLIENT_ID!;
 const CLIENT_SECRET = process.env.CLIENT_SECRET!;
 const REDIRECT_URI = process.env.REDIRECT_URI!;
 
-// Default OAuth2 scopes (always required for all authenticated commands)
-export const DEFAULT_SCOPES = ['identify', 'applications.commands', 'email'];
+// OAuth2 scopes for user authentication only
+export const USER_AUTH_SCOPES = ['identify', 'email'];
+
+// OAuth2 scopes for user-installable app (includes slash commands)
+export const USER_INSTALL_SCOPES = ['identify', 'email', 'applications.commands'];
 
 /**
- * Generate Discord OAuth2 authorization URL
- * Always requests the default scopes: identify, applications.commands, email
+ * Generate Discord OAuth2 authorization URL for user authentication
+ * Requests scopes: identify, email
  * @param state - Random state for CSRF protection
  * @returns Authorization URL
  */
 export function generateAuthUrl(state: string): string {
-  const scopes = DEFAULT_SCOPES;
+  const scopes = USER_AUTH_SCOPES;
 
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
@@ -23,6 +26,28 @@ export function generateAuthUrl(state: string): string {
     response_type: 'code',
     scope: scopes.join(' '),
     state: state,
+  });
+
+  return `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+}
+
+/**
+ * Generate Discord OAuth2 authorization URL for user-installable app
+ * Requests scopes: identify, email, applications.commands
+ * Sets integration_type=1 for user installation (not server installation)
+ * @param state - Random state for CSRF protection
+ * @returns Authorization URL
+ */
+export function generateUserInstallUrl(state: string): string {
+  const scopes = USER_INSTALL_SCOPES;
+
+  const params = new URLSearchParams({
+    client_id: CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
+    response_type: 'code',
+    scope: scopes.join(' '),
+    state: state,
+    integration_type: '1', // 0 = Guild Install, 1 = User Install
   });
 
   return `https://discord.com/api/oauth2/authorize?${params.toString()}`;

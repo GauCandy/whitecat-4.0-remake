@@ -1,12 +1,14 @@
 import archiver from 'archiver';
-import { createWriteStream, existsSync } from 'fs';
+import { createWriteStream, existsSync, unlinkSync } from 'fs';
 import { mkdir } from 'fs/promises';
 import { join } from 'path';
 
 const mode = process.argv[2]; // 'prod' or 'source'
 
 async function createArchive() {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
+  // Format: YYYY-MM-DD-HH-MM-SS
+  const now = new Date();
+  const timestamp = now.toISOString().replace(/[:.]/g, '-').replace('T', '-').split('.')[0];
   const archivesDir = join(process.cwd(), 'archives');
 
   // Ensure archives directory exists
@@ -29,6 +31,13 @@ async function createArchive() {
  */
 async function archiveProduction(archivesDir: string, timestamp: string) {
   const outputPath = join(archivesDir, `whitecat-prod-${timestamp}.zip`);
+
+  // Delete old file if exists
+  if (existsSync(outputPath)) {
+    console.log(`🗑️  Deleting old file: ${outputPath}`);
+    unlinkSync(outputPath);
+  }
+
   const output = createWriteStream(outputPath);
   const archive = archiver('zip', { zlib: { level: 9 } });
 
@@ -78,6 +87,13 @@ async function archiveProduction(archivesDir: string, timestamp: string) {
  */
 async function archiveSource(archivesDir: string, timestamp: string) {
   const outputPath = join(archivesDir, `whitecat-source-${timestamp}.zip`);
+
+  // Delete old file if exists
+  if (existsSync(outputPath)) {
+    console.log(`🗑️  Deleting old file: ${outputPath}`);
+    unlinkSync(outputPath);
+  }
+
   const output = createWriteStream(outputPath);
   const archive = archiver('zip', { zlib: { level: 9 } });
 

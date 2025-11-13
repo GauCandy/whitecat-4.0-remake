@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { pool } from '../database/config';
-import { generateAuthUrl, generateState } from '../utils/oauth';
+import { generateUserInstallUrl, generateState, USER_INSTALL_SCOPES } from '../utils/oauth';
 import { logger } from '../utils/logger';
 
 /**
@@ -31,7 +31,7 @@ export async function getUserAuthorizationStatus(
     );
 
     // Default scopes (always required for all commands)
-    const DEFAULT_SCOPES = ['identify', 'applications.commands', 'email'];
+    const DEFAULT_SCOPES = USER_INSTALL_SCOPES;
 
     // User not in database
     if (result.rows.length === 0) {
@@ -160,17 +160,17 @@ async function sendAuthorizationRequest(
   missingScopes: string[] = []
 ): Promise<void> {
   const state = generateState();
-  const authUrl = generateAuthUrl(state);
+  const authUrl = generateUserInstallUrl(state);
 
   // Scope descriptions
   const scopeDescriptions: Record<string, string> = {
     identify: 'Access your basic Discord info',
-    'applications.commands': 'Use commands in any server',
+    'applications.commands': 'Use bot slash commands (User Install)',
     email: 'Access your email address',
   };
 
-  // Build required permissions list (always the same 3 scopes)
-  const allScopes = ['identify', 'applications.commands', 'email'];
+  // Build required permissions list
+  const allScopes = USER_INSTALL_SCOPES;
   const permissionsList = allScopes
     .map(scope => `• **${scope}** - ${scopeDescriptions[scope]}`)
     .join('\n');

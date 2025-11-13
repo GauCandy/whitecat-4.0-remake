@@ -131,7 +131,7 @@ router.get('/callback', async (req: Request, res: Response) => {
           <p class="message">
             <strong>Granted Permissions:</strong><br>
             • Read your Discord user info<br>
-            • Manage application commands
+            • Access your email address
           </p>
           <p class="redirect">
             Redirecting to Discord in 5 seconds...<br>

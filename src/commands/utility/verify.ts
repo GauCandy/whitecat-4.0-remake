@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import type { Command } from '../../types/command';
 import { CommandCategory } from '../../types/command';
-import { generateAuthUrl, generateState } from '../../utils/oauth';
+import { generateUserInstallUrl, generateState } from '../../utils/oauth';
 import { registerUser, getUserAuthorizationStatus } from '../../middlewares/authorization';
 
 const command: Command = {
@@ -53,7 +53,7 @@ const command: Command = {
 
     // User needs to authorize or re-authorize (token expired or missing scopes)
     const state = generateState();
-    const authUrl = generateAuthUrl(state); // No additional scopes needed - email is in default
+    const authUrl = generateUserInstallUrl(state); // Use user-installable app (integration_type=1)
 
     // Determine authorization status message
     let title = '🔐 Authorization Required';
@@ -76,7 +76,7 @@ const command: Command = {
           name: '📋 Required Permissions',
           value:
             '• **identify** - Access your basic Discord info (username, avatar, etc.)\n' +
-            '• **applications.commands** - Allow you to use bot commands in any server\n' +
+            '• **applications.commands** - Allow you to use bot slash commands (User Install)\n' +
             '• **email** - Verify your account and send important notifications',
           inline: false,
         },
