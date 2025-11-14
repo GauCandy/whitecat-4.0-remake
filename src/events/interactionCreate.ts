@@ -1,7 +1,7 @@
 import { Collection } from 'discord.js';
 import type { Event } from '../types/event';
 import type { ExtendedClient } from '../types/client';
-import { logger } from '../utils/logger';
+import { botLogger } from '../utils/logger';
 import { checkAuthorization, registerUser } from '../middlewares/authorization';
 
 const event: Event<'interactionCreate'> = {
@@ -14,7 +14,7 @@ const event: Event<'interactionCreate'> = {
     const command = client.commands.get(interaction.commandName);
 
     if (!command) {
-      logger.warn(`Command not found: ${interaction.commandName}`);
+      botLogger.warn(`Command not found: ${interaction.commandName}`);
       return;
     }
 
@@ -66,12 +66,12 @@ const event: Event<'interactionCreate'> = {
 
     // Execute command
     try {
-      logger.info(
+      botLogger.info(
         `Command executed: ${command.data.name} by ${interaction.user.tag} in ${interaction.guild?.name || 'DM'}`
       );
       await command.execute(interaction);
     } catch (error) {
-      logger.error(`Error executing command ${command.data.name}:`, error);
+      botLogger.error(`Error executing command ${command.data.name}:`, error);
 
       const errorMessage = {
         content: '❌ There was an error executing this command!',

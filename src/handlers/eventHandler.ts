@@ -1,6 +1,6 @@
 import { readdirSync } from 'fs';
 import { join } from 'path';
-import { logger } from '../utils/logger';
+import { botLogger } from '../utils/logger';
 import type { ExtendedClient } from '../types/client';
 import type { Event } from '../types/event';
 
@@ -27,18 +27,18 @@ export async function loadEvents(client: ExtendedClient): Promise<void> {
             client.on(event.name, (...args) => event.execute(...args));
           }
 
-          logger.info(`✅ Loaded event: ${event.name}`);
+          botLogger.info(`✅ Loaded event: ${event.name}`);
         } else {
-          logger.warn(`⚠️  Event ${file} missing required properties`);
+          botLogger.warn(`⚠️  Event ${file} missing required properties`);
         }
       } catch (error) {
-        logger.error(`❌ Error loading event ${file}:`, error);
+        botLogger.error(`❌ Error loading event ${file}:`, error);
       }
     }
 
-    logger.info(`📦 Loaded ${eventFiles.length} events total`);
+    botLogger.info(`📦 Loaded ${eventFiles.length} events total`);
   } catch (error) {
-    logger.error('❌ Error loading events:', error);
+    botLogger.error('❌ Error loading events:', error);
     throw error;
   }
 }

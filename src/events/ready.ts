@@ -1,14 +1,14 @@
 import type { Event } from '../types/event';
-import { logger } from '../utils/logger';
+import { botLogger } from '../utils/logger';
 
 const event: Event<'clientReady'> = {
   name: 'clientReady',
   once: true,
 
   execute(client) {
-    logger.info(`✅ Bot is ready! Logged in as ${client.user?.tag}`);
-    logger.info(`📊 Serving ${client.guilds.cache.size} guilds`);
-    logger.info(`👥 Serving ${client.users.cache.size} users`);
+    botLogger.info(`✅ Bot is ready! Logged in as ${client.user?.tag}`);
+    botLogger.info(`📊 Serving ${client.guilds.cache.size} guilds`);
+    botLogger.info(`👥 Serving ${client.users.cache.size} users`);
 
     // Set bot status
     client.user?.setPresence({

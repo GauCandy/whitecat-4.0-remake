@@ -10,25 +10,31 @@
 
 ## 🎯 PHASE 1: MVP - CƠ SỞ (Tuần 1-8)
 
-### ✅ Tuần 1-2: Foundation & Setup
+### ✅ Tuần 1-2: Foundation & Setup (COMPLETED ✅)
 
 | Task | Mô tả | Độ ưu tiên | Thời gian | Status |
 |------|-------|-----------|-----------|--------|
-| **Setup project** | Initialize Node.js, Discord.js v15 | 🔴 Critical | 1 ngày | ⬜ Todo |
-| **Project structure** | Tạo folders: commands/, events/, utils/, database/ | 🔴 Critical | 1 ngày | ⬜ Todo |
-| **Database setup** | PostgreSQL + Sequelize/TypeORM setup | 🔴 Critical | 2 ngày | ⬜ Todo |
-| **Config system** | .env, config files, constants | 🔴 Critical | 1 ngày | ⬜ Todo |
-| **Logger** | Winston logger setup | 🟡 High | 1 ngày | ⬜ Todo |
-| **Bot connection** | Connect bot to Discord, basic ping | 🔴 Critical | 1 ngày | ⬜ Todo |
-| **Command handler** | Dynamic command loading system | 🔴 Critical | 2 ngày | ⬜ Todo |
-| **Event handler** | Dynamic event loading system | 🔴 Critical | 1 ngày | ⬜ Todo |
-| **Error handling** | Global error handler, try-catch wrapper | 🟡 High | 1 ngày | ⬜ Todo |
+| **Setup project** | TypeScript + Discord.js v14 (v15 chưa ra) | 🔴 Critical | 1 ngày | ✅ Done |
+| **Project structure** | Tạo folders: commands/, events/, utils/, database/, web/ | 🔴 Critical | 1 ngày | ✅ Done |
+| **Database setup** | PostgreSQL với raw SQL (13 tables) | 🔴 Critical | 2 ngày | ✅ Done |
+| **Config system** | .env, dotenv setup | 🔴 Critical | 1 ngày | ✅ Done |
+| **Logger** | Winston logger với file + console | 🟡 High | 1 ngày | ✅ Done |
+| **Bot connection** | Connect bot + `/ping` command | 🔴 Critical | 1 ngày | ✅ Done |
+| **Command handler** | Dynamic command loading từ folders | 🔴 Critical | 2 ngày | ✅ Done |
+| **Event handler** | Dynamic event loading system | 🔴 Critical | 1 ngày | ✅ Done |
+| **Error handling** | Global error handler, try-catch wrapper | 🟡 High | 1 ngày | ✅ Done |
+| **OAuth2 System** 🎁 | User-Installable App với OAuth2 | 🔴 Critical | 3 ngày | ✅ Done |
+| **Web Server** 🎁 | Express.js cho OAuth2 callbacks | 🟡 High | 1 ngày | ✅ Done |
+| **Archive Scripts** 🎁 | Production & source code archiving | 🟢 Medium | 1 ngày | ✅ Done |
 
 **📦 Deliverables:**
 - ✅ Bot online và phản hồi được
-- ✅ Command system hoạt động
-- ✅ Database connected
-- ✅ Logging system
+- ✅ Command system hoạt động (TypeScript)
+- ✅ Database connected (PostgreSQL 13 tables)
+- ✅ Logging system (Winston)
+- ✅ **BONUS:** OAuth2 User-Installable App (vượt roadmap!)
+- ✅ **BONUS:** Web server cho callbacks
+- ✅ **BONUS:** Deployment & archive scripts
 
 ---
 

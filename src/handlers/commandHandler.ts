@@ -1,6 +1,6 @@
 import { readdirSync } from 'fs';
 import { join } from 'path';
-import { logger } from '../utils/logger';
+import { botLogger } from '../utils/logger';
 import type { ExtendedClient } from '../types/client';
 import type { Command } from '../types/command';
 
@@ -28,23 +28,23 @@ export async function loadCommands(client: ExtendedClient): Promise<void> {
 
             if ('data' in command && 'execute' in command) {
               client.commands.set(command.data.name, command);
-              logger.info(`✅ Loaded command: ${command.data.name} (${folder})`);
+              botLogger.info(`✅ Loaded command: ${command.data.name} (${folder})`);
             } else {
-              logger.warn(`⚠️  Command ${file} missing required properties`);
+              botLogger.warn(`⚠️  Command ${file} missing required properties`);
             }
           } catch (error) {
-            logger.error(`❌ Error loading command ${file}:`, error);
+            botLogger.error(`❌ Error loading command ${file}:`, error);
           }
         }
       } catch (error) {
         // Folder might not be accessible or empty
-        logger.warn(`⚠️  Could not read folder ${folder}:`, error);
+        botLogger.warn(`⚠️  Could not read folder ${folder}:`, error);
       }
     }
 
-    logger.info(`📦 Loaded ${client.commands.size} commands total`);
+    botLogger.info(`📦 Loaded ${client.commands.size} commands total`);
   } catch (error) {
-    logger.error('❌ Error loading commands:', error);
+    botLogger.error('❌ Error loading commands:', error);
     throw error;
   }
 }

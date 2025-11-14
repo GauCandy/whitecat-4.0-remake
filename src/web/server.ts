@@ -103,15 +103,4 @@ app.listen(PORT, () => {
   logger.info(`🏥 Health check: http://localhost:${PORT}/health`);
 });
 
-// Graceful shutdown
-process.on('SIGINT', () => {
-  logger.info('🛑 Web server shutting down...');
-  process.exit(0);
-});
-
-process.on('SIGTERM', () => {
-  logger.info('🛑 Web server shutting down...');
-  process.exit(0);
-});
-
 export default app;
