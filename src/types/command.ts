@@ -2,10 +2,11 @@ import {
   SlashCommandBuilder,
   ChatInputCommandInteraction,
   PermissionResolvable,
+  SlashCommandOptionsOnlyBuilder,
 } from 'discord.js';
 
 export interface Command {
-  data: SlashCommandBuilder;
+  data: SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
   category: CommandCategory;
   permissions?: PermissionResolvable[];
   cooldown?: number; // in seconds
