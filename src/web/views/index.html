@@ -6,7 +6,7 @@
     <title>WhiteCat Cloud - Premium Game Server Hosting</title>
     <meta name="description" content="WhiteCat Cloud - Affordable and reliable game server hosting with instant setup, 24/7 support, and powerful hardware.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -19,6 +19,7 @@
             --primary-dark: #4f46e5;
             --secondary: #8b5cf6;
             --accent: #ec4899;
+            --success: #10b981;
             --dark: #0f172a;
             --gray-50: #f8fafc;
             --gray-100: #f1f5f9;
@@ -28,10 +29,11 @@
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             color: var(--dark);
             line-height: 1.7;
             overflow-x: hidden;
@@ -39,17 +41,28 @@
             font-size: 16px;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Header & Navigation */
         header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             padding: 1.25rem 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid var(--gray-200);
-            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
         }
 
         nav {
@@ -63,8 +76,10 @@
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease infinite;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -72,6 +87,32 @@
             align-items: center;
             gap: 0.5rem;
             letter-spacing: -0.5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            transform: rotate(90deg);
         }
 
         .nav-links {
@@ -135,12 +176,19 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            animation: heroGradient 15s ease infinite;
             color: white;
             padding: 180px 2rem 120px;
             text-align: center;
             position: relative;
             overflow: hidden;
+        }
+
+        @keyframes heroGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .hero::before {
@@ -150,14 +198,44 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            background:
+                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 60%);
+            pointer-events: none;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 50px, rgba(255,255,255,0.03) 51px),
+                repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 50px, rgba(255,255,255,0.03) 51px);
             pointer-events: none;
         }
 
         .hero > * {
             position: relative;
             z-index: 1;
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
         .hero h1 {
@@ -240,18 +318,43 @@
 
         .feature-card {
             padding: 2.5rem;
-            background: white;
-            border-radius: 20px;
-            border: 1px solid var(--gray-200);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .feature-card:hover::before {
+            opacity: 0.05;
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
+            transform: translateY(-12px) rotateX(5deg);
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
             border-color: var(--primary);
+        }
+
+        .feature-card > * {
+            position: relative;
+            z-index: 1;
         }
 
         .feature-icon {
@@ -259,6 +362,12 @@
             margin-bottom: 1.5rem;
             display: block;
             filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotateY(10deg);
+            filter: drop-shadow(0 8px 16px rgba(99, 102, 241, 0.3));
         }
 
         .feature-card h3 {
@@ -295,31 +404,68 @@
         }
 
         .pricing-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             padding: 3rem 2.5rem;
-            border-radius: 24px;
+            border-radius: 28px;
             text-align: center;
             border: 2px solid var(--gray-200);
-            box-shadow: var(--shadow-sm);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--primary), transparent);
+            opacity: 0;
+            transition: all 0.5s ease;
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .pricing-card:hover::before {
+            opacity: 0.1;
         }
 
         .pricing-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
+        }
+
+        .pricing-card > * {
+            position: relative;
+            z-index: 1;
         }
 
         .pricing-card.featured {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 200% 200%;
+            animation: featuredGradient 8s ease infinite;
             color: white;
             transform: scale(1.05);
             border: 2px solid transparent;
-            box-shadow: 0 20px 40px -10px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes featuredGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .pricing-card.featured:hover {
-            transform: scale(1.08) translateY(-8px);
+            transform: scale(1.08) translateY(-12px);
+            box-shadow: 0 25px 80px rgba(102, 126, 234, 0.6);
         }
 
         .pricing-card.featured::before {
@@ -378,11 +524,164 @@
             border-bottom: none;
         }
 
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 80px 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .stats-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: white;
+            animation: fadeInUp 0.8s ease backwards;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            display: block;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 100px 2rem;
+            background: white;
+        }
+
+        .testimonials-container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--primary);
+            opacity: 0.1;
+            font-family: Georgia, serif;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 48px rgba(99, 102, 241, 0.2);
+        }
+
+        .testimonial-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--gray-800);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .author-info h4 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
         /* Footer */
         footer {
             background: var(--dark);
             color: white;
             padding: 4rem 2rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
         }
 
         .footer-content {
@@ -444,6 +743,18 @@
             }
         }
 
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero {
@@ -459,7 +770,38 @@
             }
 
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 0;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+                padding: 1rem 0;
+                border-bottom: 1px solid var(--gray-200);
+            }
+
+            .nav-links a {
+                font-size: 1.2rem;
+                display: block;
+                width: 100%;
+            }
+
+            .mobile-menu-btn {
+                display: block;
             }
 
             .hero-buttons {
@@ -481,6 +823,14 @@
             .pricing-card.featured:hover {
                 transform: translateY(-8px);
             }
+
+            .stat-number {
+                font-size: 2.5rem;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -491,29 +841,35 @@
             .plan-price {
                 font-size: 2.5rem;
             }
+
+            .stat-number {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 <body>
     <!-- Header -->
-    <header>
+    <header id="header">
         <nav>
             <div class="logo">
                 <span>🐱</span>
                 <span>WhiteCat Cloud</span>
             </div>
-            <ul class="nav-links">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-                <li><a href="/auth">Discord Login</a></li>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#features" onclick="closeMenu()">Features</a></li>
+                <li><a href="#pricing" onclick="closeMenu()">Pricing</a></li>
+                <li><a href="#testimonials" onclick="closeMenu()">Testimonials</a></li>
+                <li><a href="/auth" onclick="closeMenu()">Discord Login</a></li>
             </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMenu()">☰</button>
             <a href="/auth" class="btn btn-primary">Get Started</a>
         </nav>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1>🐱 Premium Game Server Hosting</h1>
+        <h1 class="floating">🐱 Premium Game Server Hosting</h1>
         <p>Lightning-fast servers, instant setup, and 24/7 support. Start your gaming adventure today!</p>
         <div class="hero-buttons">
             <a href="/auth" class="btn btn-primary btn-hero">Get Started Free</a>
@@ -521,8 +877,32 @@
         </div>
     </section>
 
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" data-count="5000">0</span>
+                    <span class="stat-label">Active Servers</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="99.9">0</span>
+                    <span class="stat-label">Uptime %</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="24">0</span>
+                    <span class="stat-label">24/7 Support</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" data-count="10000">0</span>
+                    <span class="stat-label">Happy Customers</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Features Section -->
-    <section class="features" id="features">
+    <section class="features reveal" id="features">
         <h2 class="section-title">Why Choose WhiteCat?</h2>
         <p class="section-subtitle">Everything you need to run your game servers flawlessly</p>
         <div class="features-grid">
@@ -560,7 +940,7 @@
     </section>
 
     <!-- Pricing Section -->
-    <section class="pricing" id="pricing">
+    <section class="pricing reveal" id="pricing">
         <div class="pricing-container">
             <h2 class="section-title">Simple, Transparent Pricing</h2>
             <p class="section-subtitle">Choose the perfect plan for your gaming needs</p>
@@ -610,6 +990,52 @@
         </div>
     </section>
 
+    <!-- Testimonials Section -->
+    <section class="testimonials reveal" id="testimonials">
+        <div class="testimonials-container">
+            <h2 class="section-title">What Our Customers Say</h2>
+            <p class="section-subtitle">Join thousands of satisfied gamers</p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "WhiteCat Cloud has been absolutely amazing! The server setup was instant and the performance is incredible. Best hosting provider I've ever used!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">🎮</div>
+                        <div class="author-info">
+                            <h4>Minh Nguyen</h4>
+                            <p>Minecraft Server Owner</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "The 24/7 support team is incredibly responsive and helpful. I had my Discord bot up and running in minutes. Highly recommended!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">🤖</div>
+                        <div class="author-info">
+                            <h4>Tuan Le</h4>
+                            <p>Discord Bot Developer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">
+                        "Outstanding performance and reliability! Our gaming community has grown significantly thanks to WhiteCat's powerful infrastructure."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👾</div>
+                        <div class="author-info">
+                            <h4>Hoa Pham</h4>
+                            <p>Gaming Community Leader</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
@@ -645,5 +1071,118 @@
             <p>&copy; 2024 WhiteCat Cloud. All rights reserved. Made with 💜 by WhiteCat Team</p>
         </div>
     </footer>
+
+    <script>
+        // Mobile Menu Toggle
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            navLinks.classList.toggle('active');
+            menuBtn.textContent = navLinks.classList.contains('active') ? '✕' : '☰';
+        }
+
+        function closeMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            navLinks.classList.remove('active');
+            menuBtn.textContent = '☰';
+        }
+
+        // Header Scroll Effect
+        let lastScroll = 0;
+        const header = document.getElementById('header');
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Scroll Reveal Animation
+        const reveals = document.querySelectorAll('.reveal');
+
+        const revealOnScroll = () => {
+            reveals.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                if (elementTop < windowHeight - 100) {
+                    element.classList.add('active');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', revealOnScroll);
+        window.addEventListener('load', revealOnScroll);
+
+        // Animated Counter for Stats
+        const counters = document.querySelectorAll('.stat-number');
+        let counted = false;
+
+        const animateCounters = () => {
+            if (counted) return;
+
+            const statsSection = document.querySelector('.stats');
+            const statsSectionTop = statsSection.getBoundingClientRect().top;
+            const windowHeight = window.innerHeight;
+
+            if (statsSectionTop < windowHeight - 100) {
+                counted = true;
+
+                counters.forEach(counter => {
+                    const target = parseFloat(counter.getAttribute('data-count'));
+                    const duration = 2000;
+                    const increment = target / (duration / 16);
+                    let current = 0;
+                    const isDecimal = target % 1 !== 0;
+
+                    const updateCounter = () => {
+                        current += increment;
+
+                        if (current < target) {
+                            counter.textContent = isDecimal ? current.toFixed(1) : Math.floor(current).toLocaleString();
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = isDecimal ? target.toFixed(1) : target.toLocaleString();
+                            if (target === 99.9) counter.textContent += '%';
+                            if (target === 24) counter.textContent += '/7';
+                        }
+                    };
+
+                    updateCounter();
+                });
+            }
+        };
+
+        window.addEventListener('scroll', animateCounters);
+        window.addEventListener('load', animateCounters);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add parallax effect to hero section
+        window.addEventListener('scroll', () => {
+            const hero = document.querySelector('.hero');
+            const scrolled = window.pageYOffset;
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+    </script>
 </body>
 </html>
