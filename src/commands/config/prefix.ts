@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 import type { Command } from '../../types/command';
 import { CommandCategory } from '../../types/command';
 import { pool } from '../../database/config';
@@ -26,7 +26,7 @@ const command: Command = {
     if (!interaction.guild) {
       await interaction.reply({
         content: '❌ This command can only be used in a server!',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -60,7 +60,7 @@ const command: Command = {
 
       await interaction.reply({
         content: '❌ Failed to update prefix. Please try again later.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },
