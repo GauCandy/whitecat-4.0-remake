@@ -8,232 +8,516 @@
   },
   "commands": {
     "fun": {
-      "poke": {
-        "name": "poke",
-        "description": "Poke someone",
-        "success": "{user} poked {target}!",
-        "self": "You can't poke yourself!"
-      },
-      "peck": {
-        "name": "peck",
-        "description": "Give someone a peck",
-        "success": "{user} pecked {target}!",
-        "self": "You can't peck yourself!"
-      },
-      "tickle": {
-        "name": "tickle",
-        "description": "Tickle someone",
-        "success": "{user} tickled {target}!",
-        "self": "You can't tickle yourself!"
-      },
-      "highfive": {
-        "name": "highfive",
-        "description": "Give someone a high five",
-        "success": "{user} high fived {target}!",
-        "self": "You can't high five yourself!"
-      },
-      "feed": {
-        "name": "feed",
-        "description": "Feed someone",
-        "success": "{user} fed {target}!",
-        "self": "You can't feed yourself!"
-      },
-      "bite": {
-        "name": "bite",
-        "description": "Bite someone",
-        "success": "{user} bit {target}!",
-        "self": "You can't bite yourself!"
-      },
-      "cuddle": {
-        "name": "cuddle",
-        "description": "Cuddle with someone",
-        "success": "{user} cuddled with {target}!",
-        "self": "You can't cuddle yourself!"
-      },
-      "kick": {
-        "name": "kick",
-        "description": "Kick someone",
-        "success": "{user} kicked {target}!",
-        "self": "You can't kick yourself!"
-      },
-      "hug": {
-        "name": "hug",
-        "description": "Hug someone",
-        "success": "{user} hugged {target}!",
-        "self": "You can't hug yourself!"
-      },
-      "pat": {
-        "name": "pat",
-        "description": "Pat someone on the head",
-        "success": "{user} patted {target} on the head!",
-        "self": "You can't pat yourself!"
-      },
-      "kiss": {
-        "name": "kiss",
-        "description": "Kiss someone",
-        "success": "{user} kissed {target}!",
-        "self": "You can't kiss yourself!"
-      },
-      "punch": {
-        "name": "punch",
-        "description": "Punch someone",
-        "success": "{user} punched {target}!",
-        "self": "You can't punch yourself!"
-      },
-      "handshake": {
-        "name": "handshake",
-        "description": "Shake hands with someone",
-        "success": "{user} shook hands with {target}!",
-        "self": "You can't shake hands with yourself!"
-      },
-      "slap": {
-        "name": "slap",
-        "description": "Slap someone",
-        "success": "{user} slapped {target}!",
-        "self": "You can't slap yourself!"
-      },
-      "handhold": {
-        "name": "handhold",
-        "description": "Hold hands with someone",
-        "success": "{user} is holding hands with {target}!",
-        "self": "You can't hold hands with yourself!"
-      },
-      "yeet": {
-        "name": "yeet",
-        "description": "Yeet someone",
-        "success": "{user} yeeted {target}!",
-        "self": "You can't yeet yourself!"
-      },
-      "lurk": {
-        "name": "lurk",
-        "description": "Lurk in the shadows",
-        "success": "{user} is lurking... 👀"
-      },
-      "shoot": {
-        "name": "shoot",
-        "description": "Shoot",
-        "success": "{user} shoots! 🔫"
-      },
-      "sleep": {
-        "name": "sleep",
-        "description": "Go to sleep",
-        "success": "{user} is sleeping... 💤"
-      },
-      "shrug": {
-        "name": "shrug",
-        "description": "Shrug",
-        "success": "{user} shrugs 🤷"
-      },
-      "stare": {
-        "name": "stare",
-        "description": "Stare intensely",
-        "success": "{user} is staring... 👁️"
-      },
-      "wave": {
-        "name": "wave",
-        "description": "Wave hello",
-        "success": "{user} waves! 👋"
-      },
-      "smile": {
-        "name": "smile",
-        "description": "Smile",
-        "success": "{user} smiles! 😊"
-      },
-      "wink": {
-        "name": "wink",
-        "description": "Wink",
-        "success": "{user} winks! 😉"
-      },
-      "blush": {
-        "name": "blush",
-        "description": "Blush",
-        "success": "{user} is blushing! 😳"
-      },
-      "smug": {
-        "name": "smug",
-        "description": "Look smug",
-        "success": "{user} looks smug! 😏"
-      },
-      "think": {
-        "name": "think",
-        "description": "Think deeply",
-        "success": "{user} is thinking... 🤔"
-      },
-      "bored": {
-        "name": "bored",
-        "description": "Look bored",
-        "success": "{user} is bored... 😑"
-      },
-      "nom": {
-        "name": "nom",
-        "description": "Eat something",
-        "success": "{user} is eating! 😋"
-      },
-      "yawn": {
-        "name": "yawn",
-        "description": "Yawn",
-        "success": "{user} yawns! 🥱"
-      },
-      "facepalm": {
-        "name": "facepalm",
-        "description": "Facepalm",
-        "success": "{user} facepalms! 🤦"
-      },
-      "happy": {
-        "name": "happy",
-        "description": "Feel happy",
-        "success": "{user} is happy! 😄"
+      "angry": {
+        "name": "angry",
+        "description": "Get angry",
+        "message": [
+          "{user} is angry! 😠",
+          "{user} is super mad! 😡",
+          "{user} is furious! 💢"
+        ]
       },
       "baka": {
         "name": "baka",
         "description": "Call someone baka",
-        "success": "{user} says baka! 😤"
+        "message": [
+          "{user} says: Baka! 😤",
+          "{user}: Baka baka baka! バカ！",
+          "{user} calls you a baka! 😤"
+        ]
       },
-      "angry": {
-        "name": "angry",
-        "description": "Get angry",
-        "success": "{user} is angry! 😠"
+      "blush": {
+        "name": "blush",
+        "description": "Blush",
+        "message": [
+          "{user} is blushing! 😊",
+          "{user} blushes~ 😳",
+          "{user} is so shy! >//< 😊"
+        ]
       },
-      "run": {
-        "name": "run",
-        "description": "Run away",
-        "success": "{user} is running! 🏃"
-      },
-      "nod": {
-        "name": "nod",
-        "description": "Nod in agreement",
-        "success": "{user} nods!"
-      },
-      "nope": {
-        "name": "nope",
-        "description": "Disagree",
-        "success": "{user} says nope!"
-      },
-      "dance": {
-        "name": "dance",
-        "description": "Dance",
-        "success": "{user} is dancing! 💃"
+      "bored": {
+        "name": "bored",
+        "description": "Look bored",
+        "message": [
+          "{user} is bored... 😑",
+          "{user} is so bored~ 😴",
+          "{user} finds this boring... =_="
+        ]
       },
       "cry": {
         "name": "cry",
         "description": "Cry",
-        "success": "{user} is crying... 😢"
+        "message": [
+          "{user} is crying! 😭",
+          "{user} bursts into tears... 😢",
+          "{user} cries... 😭😭"
+        ]
       },
-      "pout": {
-        "name": "pout",
-        "description": "Pout",
-        "success": "{user} is pouting! 😤"
+      "dance": {
+        "name": "dance",
+        "description": "Dance",
+        "message": [
+          "{user} is dancing! 💃",
+          "{user} dances like crazy! 🕺",
+          "{user} is having a dance party! 💃✨"
+        ]
       },
-      "thumbsup": {
-        "name": "thumbsup",
-        "description": "Give a thumbs up",
-        "success": "{user} gives a thumbs up! 👍"
+      "facepalm": {
+        "name": "facepalm",
+        "description": "Facepalm",
+        "message": [
+          "{user} facepalms... 🤦",
+          "{user} facepalms in disappointment... 🤦‍♂️",
+          "{user} facepalms so hard! 🤦"
+        ]
+      },
+      "happy": {
+        "name": "happy",
+        "description": "Feel happy",
+        "message": [
+          "{user} is happy! 😄",
+          "{user} is super happy! 🥰",
+          "{user} is filled with joy! ✨😊"
+        ]
       },
       "laugh": {
         "name": "laugh",
         "description": "Laugh",
-        "success": "{user} is laughing! 😂"
-      }
+        "message": [
+          "{user} is laughing! 😂",
+          "{user} laughs like crazy! 🤣",
+          "{user} can't stop laughing! 😂😂"
+        ]
+      },
+      "lurk": {
+        "name": "lurk",
+        "description": "Lurk in the shadows",
+        "message": [
+          "{user} is lurking... 👀",
+          "{user} hides in the shadows... 🕵️",
+          "{user} sneakily observes... 👁️"
+        ]
+      },
+      "nod": {
+        "name": "nod",
+        "description": "Nod in agreement",
+        "message": [
+          "{user} nods 👍",
+          "{user} agrees! ✅",
+          "{user} nods yes~ 👌"
+        ]
+      },
+      "nope": {
+        "name": "nope",
+        "description": "Disagree",
+        "message": [
+          "{user} says nope! 🙅",
+          "{user} disagrees! ❌",
+          "{user} refuses! 🙅‍♂️"
+        ]
+      },
+      "pout": {
+        "name": "pout",
+        "description": "Pout",
+        "message": [
+          "{user} is pouting 😾",
+          "{user} pouts cutely~ 😤",
+          "{user} makes a pouty face... 😾"
+        ]
+      },
+      "run": {
+        "name": "run",
+        "description": "Run away",
+        "message": [
+          "{user} is running! 🏃",
+          "{user} runs super fast! 💨",
+          "{user} runs like the wind! 🏃‍♂️💨"
+        ]
+      },
+      "shrug": {
+        "name": "shrug",
+        "description": "Shrug",
+        "message": [
+          "{user} shrugs 🤷",
+          "{user} doesn't care~ ¯\\_(ツ)_/¯",
+          "{user} shrugs indifferently... 🤷‍♂️"
+        ]
+      },
+      "sleep": {
+        "name": "sleep",
+        "description": "Go to sleep",
+        "message": [
+          "{user} is sleeping... 😴",
+          "{user} fell asleep~ 💤",
+          "{user} is fast asleep... zzZ"
+        ]
+      },
+      "smile": {
+        "name": "smile",
+        "description": "Smile",
+        "message": [
+          "{user} smiles! 😊",
+          "{user} smiles brightly! ☺️",
+          "{user} gives a warm smile! 😌"
+        ]
+      },
+      "smug": {
+        "name": "smug",
+        "description": "Look smug",
+        "message": [
+          "{user} looks smug 😏",
+          "{user} smirks smugly~ 😎",
+          "{user} has a smug grin 😏"
+        ]
+      },
+      "stare": {
+        "name": "stare",
+        "description": "Stare intensely",
+        "message": [
+          "{user} is staring... 👁️",
+          "{user} stares intensely... 👀",
+          "{user} stares without blinking... ಠ_ಠ"
+        ]
+      },
+      "think": {
+        "name": "think",
+        "description": "Think deeply",
+        "message": [
+          "{user} is thinking... 🤔",
+          "{user} ponders... 💭",
+          "{user} is deep in thought... 🤔💭"
+        ]
+      },
+      "thumbsup": {
+        "name": "thumbsup",
+        "description": "Give a thumbs up",
+        "message": [
+          "{user} gives a thumbs up! 👍",
+          "{user} likes this! 👍✨",
+          "{user} approves! 👍😎"
+        ]
+      },
+      "yawn": {
+        "name": "yawn",
+        "description": "Yawn",
+        "message": [
+          "{user} yawns... 🥱",
+          "{user} yawns widely... 😮‍💨",
+          "{user} is so sleepy... 🥱💤"
+        ]
+      },
+      "nom": {
+        "name": "nom",
+        "description": "Eat something",
+        "message": [
+          "{user} is eating! 😋",
+          "{user} nom nom nom! 🍽️",
+          "{user} enjoys their meal! 😋✨"
+        ]
+      },
+      "shoot": {
+        "name": "shoot",
+        "description": "Shoot",
+        "message": [
+          "{user} shoots! 🔫",
+          "{user} fires away! 💥",
+          "{user} takes aim and shoots! 🎯"
+        ]
+      },
+      "wave": {
+        "name": "wave",
+        "description": "Wave hello",
+        "message": [
+          "{user} waves! 👋",
+          "{user} waves hello! 👋✨",
+          "{user} greets everyone! 👋😊"
+        ]
+      },
+      "wink": {
+        "name": "wink",
+        "description": "Wink",
+        "message": [
+          "{user} winks! 😉",
+          "{user} winks playfully~ 😉",
+          "{user} gives a cheeky wink! 😉✨"
+        ]
+      },
+      "bite": {
+        "name": "bite",
+        "description": "Bite someone",
+        "message": [
+          "{user} bites {target}! 🦷",
+          "{user} chomps on {target}! 😈",
+          "{user} gives {target} a little bite~ 🦷✨"
+        ],
+        "self": [
+          "{user} tries to bite themselves... Ouch! 🦷",
+          "{user} bites their own hand... That hurts! 😭"
+        ],
+        "bot": [
+          "{user} tries to bite me! Hey! 🦷",
+          "{user} wants to bite me! Don't! 😤"
+        ]
+      },
+      "cuddle": {
+        "name": "cuddle",
+        "description": "Cuddle with someone",
+        "message": [
+          "{user} cuddles {target}! 🤗",
+          "{user} snuggles with {target}! 💕",
+          "{user} cuddles {target} warmly! 🥰"
+        ],
+        "self": [
+          "{user} cuddles themselves... Feeling lonely? 🤗",
+          "{user} hugs themselves... So lonely! 😢"
+        ],
+        "bot": [
+          "{user} cuddles me! So warm! 🤗",
+          "{user} snuggles me! Thank you! 💕"
+        ]
+      },
+      "feed": {
+        "name": "feed",
+        "description": "Feed someone",
+        "message": [
+          "{user} feeds {target}! 🍔",
+          "{user} feeds {target} delicious food! 🍰",
+          "{user} gives {target} a tasty treat! 🍜"
+        ],
+        "self": [
+          "{user} feeds themselves! 🍔",
+          "{user} eats alone... 😋"
+        ],
+        "bot": [
+          "{user} feeds me! Yummy! 🍔",
+          "{user} gives me food! So delicious! 😋"
+        ]
+      },
+      "handhold": {
+        "name": "handhold",
+        "description": "Hold hands with someone",
+        "message": [
+          "{user} holds {target}'s hand! 🤝",
+          "{user} holds {target}'s hand tightly! 💑",
+          "{user} and {target} hold hands warmly! 🥰"
+        ],
+        "self": [
+          "{user} holds their own hands... 🤝",
+          "{user} holds their own hand... Forever alone!"
+        ],
+        "bot": [
+          "{user} holds my hand! 🤝",
+          "{user} holds my hand tightly! So warm! 💕"
+        ]
+      },
+      "handshake": {
+        "name": "handshake",
+        "description": "Shake hands with someone",
+        "message": [
+          "{user} shakes hands with {target}! 🤝",
+          "{user} and {target} shake hands! 🤝✨",
+          "{user} gives {target} a friendly handshake! 😊"
+        ],
+        "self": [
+          "{user} shakes their own hand? 🤝",
+          "{user} shakes hands with themselves... Weird! 😅"
+        ],
+        "bot": [
+          "{user} shakes hands with me! 🤝",
+          "{user} gives me a handshake! Nice to meet you! 😊"
+        ]
+      },
+      "highfive": {
+        "name": "highfive",
+        "description": "Give someone a high five",
+        "message": [
+          "{user} high fives {target}! ✋",
+          "{user} gives {target} a high five! 🙌",
+          "{user} and {target} high five perfectly! ✨"
+        ],
+        "self": [
+          "{user} high fives themselves! ✋",
+          "{user} high fives alone... Forever alone! 😢"
+        ],
+        "bot": [
+          "{user} high fives me! ✋",
+          "{user} gives me a high five! Yeah! 🙌"
+        ]
+      },
+      "hug": {
+        "name": "hug",
+        "description": "Hug someone",
+        "message": [
+          "{user} hugs {target}! 🤗",
+          "{user} gives {target} a warm hug! 💕",
+          "{user} embraces {target} tightly! 🥰",
+          "{user} hugs {target} lovingly! 🫂"
+        ],
+        "self": [
+          "{user} hugs themselves... Are you okay? 🤗",
+          "{user} self-hugs... So lonely! 😢"
+        ],
+        "bot": [
+          "{user} hugs me! Thank you! 🤗",
+          "{user} gives me a hug! So warm! 💕"
+        ]
+      },
+      "kick": {
+        "name": "kick",
+        "description": "Kick someone",
+        "message": [
+          "{user} kicks {target}! 👟",
+          "{user} kicks {target} hard! 💥",
+          "{user} kicks {target} away! 🦵"
+        ],
+        "self": [
+          "{user} kicks themselves... Why?! 👟",
+          "{user} self-kicks... That hurts! 😭"
+        ],
+        "bot": [
+          "{user} tries to kick me! Rude! 👟",
+          "{user} kicks me! Hey hey! 😤"
+        ]
+      },
+      "kiss": {
+        "name": "kiss",
+        "description": "Kiss someone",
+        "message": [
+          "{user} kisses {target}! 💋",
+          "{user} gives {target} a sweet kiss! 😘",
+          "{user} kisses {target} lovingly! 💕",
+          "{user} smooches {target}! 😚"
+        ],
+        "self": [
+          "{user} kisses themselves... Narcissist? 💋",
+          "{user} kisses the mirror... Weird! 🪞"
+        ],
+        "bot": [
+          "{user} kisses me! >//< 💋",
+          "{user} gives me a kiss! So embarrassing! 😳"
+        ]
+      },
+      "pat": {
+        "name": "pat",
+        "description": "Pat someone on the head",
+        "message": [
+          "{user} pats {target}'s head! 👋",
+          "{user} pats {target} gently! 🥰",
+          "{user} pets {target}! ✨",
+          "{user} gives {target} headpats! 💕"
+        ],
+        "self": [
+          "{user} pats their own head! 👋",
+          "{user} self-pats... Good job! 😊"
+        ],
+        "bot": [
+          "{user} pats my head! *purrs* 👋",
+          "{user} gives me headpats! So nice! 🥰"
+        ]
+      },
+      "peck": {
+        "name": "peck",
+        "description": "Give someone a peck",
+        "message": [
+          "{user} pecks {target}! 😘",
+          "{user} gives {target} a light kiss! 😚",
+          "{user} blows {target} a kiss! 💋✨"
+        ],
+        "self": [
+          "{user} blows themselves a kiss! 😘",
+          "{user} air kisses! 💋"
+        ],
+        "bot": [
+          "{user} pecks me! 😘",
+          "{user} gives me a kiss! Kyaaa! 😳"
+        ]
+      },
+      "poke": {
+        "name": "poke",
+        "description": "Poke someone",
+        "message": [
+          "{user} pokes {target}! 👉",
+          "{user} pokes {target} playfully! 👈",
+          "{user} gently pokes {target}! 👉👈"
+        ],
+        "self": [
+          "{user} pokes themselves! 👉",
+          "{user} self-pokes... 😅"
+        ],
+        "bot": [
+          "{user} pokes me! 👉",
+          "{user} keeps poking me! Stop it! 😤"
+        ]
+      },
+      "punch": {
+        "name": "punch",
+        "description": "Punch someone",
+        "message": [
+          "{user} punches {target}! 👊",
+          "{user} punches {target} hard! 💥",
+          "{user} gives {target} a punch! 🥊"
+        ],
+        "self": [
+          "{user} punches themselves... Violence? 👊",
+          "{user} self-punches... Why?! 😭"
+        ],
+        "bot": [
+          "{user} tries to punch me! 👊",
+          "{user} punches me! Ouch! 😤"
+        ]
+      },
+      "slap": {
+        "name": "slap",
+        "description": "Slap someone",
+        "message": [
+          "{user} slaps {target}! ✋",
+          "{user} slaps {target} hard! 💥",
+          "{user} gives {target} a slap! 😤"
+        ],
+        "self": [
+          "{user} slaps themselves! ✋",
+          "{user} self-slaps... Wake up! 😵"
+        ],
+        "bot": [
+          "{user} slaps me! ✋",
+          "{user} gives me a slap! That hurts! 😭"
+        ]
+      },
+      "tickle": {
+        "name": "tickle",
+        "description": "Tickle someone",
+        "message": [
+          "{user} tickles {target}! 🤗",
+          "{user} tickles {target} mercilessly! 😂",
+          "{user} makes {target} laugh! 🤣"
+        ],
+        "self": [
+          "{user} tickles themselves! 🤗",
+          "{user} self-tickles... Does it work? 😅"
+        ],
+        "bot": [
+          "{user} tickles me! Haha! 🤗",
+          "{user} won't stop tickling! Stop! 😂😂"
+        ]
+      },
+      "yeet": {
+        "name": "yeet",
+        "description": "Yeet someone",
+        "message": [
+          "{user} yeets {target}! 🚀",
+          "{user} throws {target} into space! 💨",
+          "{user} yeets {target} far away! 🌌"
+        ],
+        "self": [
+          "{user} yeets themselves into space! 🚀",
+          "{user} self-yeets! Wheee! 🌠"
+        ],
+        "bot": [
+          "{user} yeets me! 🚀",
+          "{user} throws me away! Oh no! 😱"
+        ]
+      },
+      "error": "❌ Failed to load GIF!"
     }
   },
   "events": {
