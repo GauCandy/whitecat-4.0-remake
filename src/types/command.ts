@@ -33,4 +33,5 @@ export enum CommandCategory {
   Utility = 'utility',
   Config = 'config',
   Giveaway = 'giveaway',
+  Fun = 'fun',
 }
