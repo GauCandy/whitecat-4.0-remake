@@ -1,17 +1,19 @@
 /**
  * Nekobest API Utility
- * https://nekobest.xyz/
+ * https://nekos.best/
  * API for anime reaction GIFs
  */
 
 import axios from 'axios';
 import logger from './logger';
 
-const NEKOBEST_API_BASE = 'https://nekobest.xyz/api/v2';
+const NEKOBEST_API_BASE = 'https://nekos.best/api/v2';
 
 export interface NekobestResponse {
-    url: string;
-    anime_name?: string;
+    results: Array<{
+        url: string;
+        anime_name: string;
+    }>;
 }
 
 export enum NekobestAction {
@@ -81,8 +83,8 @@ export async function getNekobest(endpoint: NekobestAction | NekobestExpression)
             }
         );
 
-        if (response.data && response.data.url) {
-            return response.data.url;
+        if (response.data && response.data.results && response.data.results.length > 0) {
+            return response.data.results[0].url;
         } else {
             logger.warn(`Nekobest API returned invalid response for ${endpoint}`);
             throw new Error('Invalid response from Nekobest API');

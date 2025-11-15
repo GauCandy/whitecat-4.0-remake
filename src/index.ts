@@ -18,7 +18,7 @@ config();
 
 // Express app setup
 const app = express();
-const PORT = process.env.API_PORT || 3000;
+const PORT = parseInt(process.env.API_PORT || '3000', 10);
 const HOST = '0.0.0.0'; // Listen on all network interfaces
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
