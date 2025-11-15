@@ -1,4 +1,4 @@
-import { Collection } from 'discord.js';
+import { Collection, MessageFlags } from 'discord.js';
 import type { Event } from '../types/event';
 import type { ExtendedClient } from '../types/client';
 import { botLogger } from '../utils/logger';
@@ -35,7 +35,7 @@ const event: Event<'interactionCreate'> = {
         const timeLeft = (expirationTime - now) / 1000;
         await interaction.reply({
           content: `⏳ Please wait ${timeLeft.toFixed(1)} more seconds before using \`/${command.data.name}\` again.`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -70,15 +70,18 @@ const event: Event<'interactionCreate'> = {
     } catch (error) {
       botLogger.error(`Error executing command ${command.data.name}:`, error);
 
-      const errorMessage = {
-        content: '❌ There was an error executing this command!',
-        ephemeral: true,
-      };
+      const errorContent = '❌ There was an error executing this command!';
 
       if (interaction.replied || interaction.deferred) {
-        await interaction.followUp(errorMessage);
+        await interaction.followUp({
+          content: errorContent,
+          flags: MessageFlags.Ephemeral
+        });
       } else {
-        await interaction.reply(errorMessage);
+        await interaction.reply({
+          content: errorContent,
+          flags: MessageFlags.Ephemeral
+        });
       }
     }
   },

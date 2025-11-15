@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
 import { pool } from '../database/config';
 import { generateUserInstallUrl, generateState, USER_INSTALL_SCOPES } from '../utils/oauth';
 import { logger } from '../utils/logger';
@@ -142,7 +142,7 @@ export async function checkAuthorization(
     logger.error('Error checking authorization:', error);
     await interaction.reply({
       content: '❌ An error occurred while checking your authorization status.',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return false;
   }
@@ -228,7 +228,7 @@ async function sendAuthorizationRequest(
         ],
       },
     ],
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   });
 }
 

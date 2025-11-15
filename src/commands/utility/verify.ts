@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, MessageFlags } from 'discord.js';
 import type { Command } from '../../types/command';
 import { CommandCategory } from '../../types/command';
 import { generateUserInstallUrl, generateState } from '../../utils/oauth';
@@ -46,7 +46,7 @@ const command: Command = {
 
       await interaction.reply({
         embeds: [embed],
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -129,7 +129,7 @@ const command: Command = {
           ],
         },
       ],
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   },
 };
