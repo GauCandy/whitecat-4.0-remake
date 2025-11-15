@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits, Collection } from 'discord.js';
 import { config } from 'dotenv';
 import express from 'express';
 import cors from 'cors';
+import { join } from 'path';
 import { logger, botLogger, webLogger } from './utils/logger';
 import { loadCommands } from './handlers/commandHandler';
 import { loadTextCommands } from './handlers/textCommandHandler';
@@ -17,6 +18,7 @@ config();
 // Express app setup
 const app = express();
 const PORT = process.env.API_PORT || 3000;
+const HOST = '0.0.0.0'; // Listen on all network interfaces
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
 // Middleware
@@ -45,46 +47,9 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Root endpoint
+// Root endpoint - Serve homepage
 app.get('/', (req, res) => {
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>WhiteCat Bot API</title>
-      <style>
-        body {
-          font-family: Arial, sans-serif;
-          text-align: center;
-          padding: 50px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: #fff;
-        }
-        .container {
-          background: rgba(255,255,255,0.1);
-          border-radius: 10px;
-          padding: 40px;
-          max-width: 600px;
-          margin: 0 auto;
-          backdrop-filter: blur(10px);
-        }
-        h1 { font-size: 36px; margin: 20px 0; }
-        .emoji { font-size: 64px; margin: 20px 0; }
-        .status { color: #57f287; font-size: 18px; }
-        a { color: #00aff4; text-decoration: none; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="emoji">🐱</div>
-        <h1>WhiteCat Bot API</h1>
-        <p class="status">✅ Server is running</p>
-        <p>OAuth2 callback endpoint: <code>/auth/callback</code></p>
-        <p>Health check: <a href="/health">/health</a></p>
-      </div>
-    </body>
-    </html>
-  `);
+  res.sendFile(join(__dirname, 'web', 'views', 'index.html'));
 });
 
 // 404 handler
@@ -125,10 +90,11 @@ async function start(): Promise<void> {
     logger.info('🚀 Starting WhiteCat Bot & Web Server...');
 
     // Start web server
-    app.listen(PORT, () => {
-      webLogger.info(`🌐 Web server listening on port ${PORT}`);
+    app.listen(PORT, HOST, () => {
+      webLogger.info(`🌐 Web server listening on ${HOST}:${PORT}`);
       webLogger.info(`📍 OAuth callback URL: http://localhost:${PORT}/auth/callback`);
       webLogger.info(`🏥 Health check: http://localhost:${PORT}/health`);
+      webLogger.info(`🏠 Homepage: http://localhost:${PORT}/`);
     });
 
     // Load slash commands

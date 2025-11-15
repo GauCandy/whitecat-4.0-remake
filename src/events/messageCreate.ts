@@ -112,9 +112,6 @@ export default {
       }
 
       // Execute text command
-      botLogger.info(
-        `Text command executed: ${command.name} by ${message.author.tag} in ${message.guild.name}`
-      );
       await command.execute(message, args);
     } catch (error) {
       botLogger.error(`Error executing text command ${command.name}:`, error);

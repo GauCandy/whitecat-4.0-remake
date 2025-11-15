@@ -66,9 +66,6 @@ const event: Event<'interactionCreate'> = {
 
     // Execute command
     try {
-      botLogger.info(
-        `Command executed: ${command.data.name} by ${interaction.user.tag} in ${interaction.guild?.name || 'DM'}`
-      );
       await command.execute(interaction);
     } catch (error) {
       botLogger.error(`Error executing command ${command.data.name}:`, error);
