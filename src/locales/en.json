@@ -1,0 +1,246 @@
+{
+  "common": {
+    "error": "An error occurred",
+    "success": "Success!",
+    "no_permission": "You don't have permission to use this command",
+    "cooldown": "Please wait {time} before using this command again",
+    "invalid_user": "Please mention a valid user"
+  },
+  "commands": {
+    "fun": {
+      "poke": {
+        "name": "poke",
+        "description": "Poke someone",
+        "success": "{user} poked {target}!",
+        "self": "You can't poke yourself!"
+      },
+      "peck": {
+        "name": "peck",
+        "description": "Give someone a peck",
+        "success": "{user} pecked {target}!",
+        "self": "You can't peck yourself!"
+      },
+      "tickle": {
+        "name": "tickle",
+        "description": "Tickle someone",
+        "success": "{user} tickled {target}!",
+        "self": "You can't tickle yourself!"
+      },
+      "highfive": {
+        "name": "highfive",
+        "description": "Give someone a high five",
+        "success": "{user} high fived {target}!",
+        "self": "You can't high five yourself!"
+      },
+      "feed": {
+        "name": "feed",
+        "description": "Feed someone",
+        "success": "{user} fed {target}!",
+        "self": "You can't feed yourself!"
+      },
+      "bite": {
+        "name": "bite",
+        "description": "Bite someone",
+        "success": "{user} bit {target}!",
+        "self": "You can't bite yourself!"
+      },
+      "cuddle": {
+        "name": "cuddle",
+        "description": "Cuddle with someone",
+        "success": "{user} cuddled with {target}!",
+        "self": "You can't cuddle yourself!"
+      },
+      "kick": {
+        "name": "kick",
+        "description": "Kick someone",
+        "success": "{user} kicked {target}!",
+        "self": "You can't kick yourself!"
+      },
+      "hug": {
+        "name": "hug",
+        "description": "Hug someone",
+        "success": "{user} hugged {target}!",
+        "self": "You can't hug yourself!"
+      },
+      "pat": {
+        "name": "pat",
+        "description": "Pat someone on the head",
+        "success": "{user} patted {target} on the head!",
+        "self": "You can't pat yourself!"
+      },
+      "kiss": {
+        "name": "kiss",
+        "description": "Kiss someone",
+        "success": "{user} kissed {target}!",
+        "self": "You can't kiss yourself!"
+      },
+      "punch": {
+        "name": "punch",
+        "description": "Punch someone",
+        "success": "{user} punched {target}!",
+        "self": "You can't punch yourself!"
+      },
+      "handshake": {
+        "name": "handshake",
+        "description": "Shake hands with someone",
+        "success": "{user} shook hands with {target}!",
+        "self": "You can't shake hands with yourself!"
+      },
+      "slap": {
+        "name": "slap",
+        "description": "Slap someone",
+        "success": "{user} slapped {target}!",
+        "self": "You can't slap yourself!"
+      },
+      "handhold": {
+        "name": "handhold",
+        "description": "Hold hands with someone",
+        "success": "{user} is holding hands with {target}!",
+        "self": "You can't hold hands with yourself!"
+      },
+      "yeet": {
+        "name": "yeet",
+        "description": "Yeet someone",
+        "success": "{user} yeeted {target}!",
+        "self": "You can't yeet yourself!"
+      },
+      "lurk": {
+        "name": "lurk",
+        "description": "Lurk in the shadows",
+        "success": "{user} is lurking... 👀"
+      },
+      "shoot": {
+        "name": "shoot",
+        "description": "Shoot",
+        "success": "{user} shoots! 🔫"
+      },
+      "sleep": {
+        "name": "sleep",
+        "description": "Go to sleep",
+        "success": "{user} is sleeping... 💤"
+      },
+      "shrug": {
+        "name": "shrug",
+        "description": "Shrug",
+        "success": "{user} shrugs 🤷"
+      },
+      "stare": {
+        "name": "stare",
+        "description": "Stare intensely",
+        "success": "{user} is staring... 👁️"
+      },
+      "wave": {
+        "name": "wave",
+        "description": "Wave hello",
+        "success": "{user} waves! 👋"
+      },
+      "smile": {
+        "name": "smile",
+        "description": "Smile",
+        "success": "{user} smiles! 😊"
+      },
+      "wink": {
+        "name": "wink",
+        "description": "Wink",
+        "success": "{user} winks! 😉"
+      },
+      "blush": {
+        "name": "blush",
+        "description": "Blush",
+        "success": "{user} is blushing! 😳"
+      },
+      "smug": {
+        "name": "smug",
+        "description": "Look smug",
+        "success": "{user} looks smug! 😏"
+      },
+      "think": {
+        "name": "think",
+        "description": "Think deeply",
+        "success": "{user} is thinking... 🤔"
+      },
+      "bored": {
+        "name": "bored",
+        "description": "Look bored",
+        "success": "{user} is bored... 😑"
+      },
+      "nom": {
+        "name": "nom",
+        "description": "Eat something",
+        "success": "{user} is eating! 😋"
+      },
+      "yawn": {
+        "name": "yawn",
+        "description": "Yawn",
+        "success": "{user} yawns! 🥱"
+      },
+      "facepalm": {
+        "name": "facepalm",
+        "description": "Facepalm",
+        "success": "{user} facepalms! 🤦"
+      },
+      "happy": {
+        "name": "happy",
+        "description": "Feel happy",
+        "success": "{user} is happy! 😄"
+      },
+      "baka": {
+        "name": "baka",
+        "description": "Call someone baka",
+        "success": "{user} says baka! 😤"
+      },
+      "angry": {
+        "name": "angry",
+        "description": "Get angry",
+        "success": "{user} is angry! 😠"
+      },
+      "run": {
+        "name": "run",
+        "description": "Run away",
+        "success": "{user} is running! 🏃"
+      },
+      "nod": {
+        "name": "nod",
+        "description": "Nod in agreement",
+        "success": "{user} nods!"
+      },
+      "nope": {
+        "name": "nope",
+        "description": "Disagree",
+        "success": "{user} says nope!"
+      },
+      "dance": {
+        "name": "dance",
+        "description": "Dance",
+        "success": "{user} is dancing! 💃"
+      },
+      "cry": {
+        "name": "cry",
+        "description": "Cry",
+        "success": "{user} is crying... 😢"
+      },
+      "pout": {
+        "name": "pout",
+        "description": "Pout",
+        "success": "{user} is pouting! 😤"
+      },
+      "thumbsup": {
+        "name": "thumbsup",
+        "description": "Give a thumbs up",
+        "success": "{user} gives a thumbs up! 👍"
+      },
+      "laugh": {
+        "name": "laugh",
+        "description": "Laugh",
+        "success": "{user} is laughing! 😂"
+      }
+    }
+  },
+  "events": {
+    "guildCreate": {
+      "welcome_title": "👋 Thanks for inviting WhiteCat Cloud!",
+      "welcome_description": "I'm WhiteCat Cloud - your premium game server hosting bot!\n\n**Getting Started:**\n• Use `/help` to see all available commands\n• Set up your server with `/setup`\n• Change my prefix with `/prefix`\n\n**Features:**\n🎮 Game server hosting\n💰 Virtual economy system\n🎉 Giveaways and fun commands\n\nNeed help? Join our support server!",
+      "locale_detected": "Detected server language: **{locale}**"
+    }
+  }
+}
