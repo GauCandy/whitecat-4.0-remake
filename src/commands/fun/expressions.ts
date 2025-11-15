@@ -7,7 +7,7 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestExpression } from '../../utils/nekobest';
-import { getGuildLocale, t } from '../../utils/i18n';
+import { getGuildLocale, t, Locale } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
 // Define all expression commands
@@ -51,20 +51,20 @@ function createExpressionCommand(expression: typeof expressions[0]): Command {
     return {
         data: new SlashCommandBuilder()
             .setName(expression.name)
-            .setDescription(t('en', expression.descriptionKey))
+            .setDescription(t(Locale.English, expression.descriptionKey))
             .setDescriptionLocalizations({
-                vi: t('vi', expression.descriptionKey),
+                vi: t(Locale.Vietnamese, expression.descriptionKey),
             }) as SlashCommandBuilder,
 
         category: CommandCategory.Fun,
         cooldown: 3,
 
-        async execute(interaction: ChatInputCommandInteraction) {
+        async execute(interaction: ChatInputCommandInteraction): Promise<void> {
             try {
                 const guildId = interaction.guildId;
 
                 // Get guild locale for translations
-                const locale = guildId ? await getGuildLocale(guildId) : 'en';
+                const locale = guildId ? await getGuildLocale(guildId) : Locale.English;
 
                 // Defer reply as API call might take a moment
                 await interaction.deferReply();
@@ -72,13 +72,17 @@ function createExpressionCommand(expression: typeof expressions[0]): Command {
                 // Fetch GIF from Nekobest API
                 const gifUrl = await getNekobest(expression.name);
 
+                // Get random message from array
+                const messages = t(locale, `commands.fun.${expression.name}.message`);
+                const message = Array.isArray(messages)
+                    ? messages[Math.floor(Math.random() * messages.length)]
+                    : messages;
+
                 // Create embed with the expression
                 const embed = new EmbedBuilder()
                     .setColor('#FFB300')
                     .setDescription(
-                        t(locale, `commands.fun.${expression.name}.success`, {
-                            user: `**${interaction.user.username}**`
-                        })
+                        message.replace('{user}', `**${interaction.user.username}**`)
                     )
                     .setImage(gifUrl)
                     .setFooter({
@@ -92,14 +96,12 @@ function createExpressionCommand(expression: typeof expressions[0]): Command {
             } catch (error) {
                 logger.error(`Error in ${expression.name} command:`, error);
 
-                const errorMessage = interaction.deferred
-                    ? { content: t('en', 'common.error'), embeds: [] }
-                    : { content: t('en', 'common.error'), ephemeral: true };
+                const errorMessage = t(Locale.English, 'commands.fun.error');
 
                 if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply(errorMessage);
+                    await interaction.editReply({ content: errorMessage, embeds: [] });
                 } else {
-                    await interaction.reply(errorMessage);
+                    await interaction.reply({ content: errorMessage, ephemeral: true });
                 }
             }
         }

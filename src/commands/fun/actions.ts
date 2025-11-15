@@ -7,7 +7,7 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestAction } from '../../utils/nekobest';
-import { getGuildLocale, t } from '../../utils/i18n';
+import { getGuildLocale, t, Locale } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
 // Define all action commands
@@ -41,9 +41,9 @@ function createActionCommand(action: typeof actions[0]): Command {
     return {
         data: new SlashCommandBuilder()
             .setName(action.name)
-            .setDescription(t('en', action.descriptionKey))
+            .setDescription(t(Locale.English, action.descriptionKey))
             .setDescriptionLocalizations({
-                vi: t('vi', action.descriptionKey),
+                vi: t(Locale.Vietnamese, action.descriptionKey),
             })
             .addUserOption(option =>
                 option
@@ -58,20 +58,29 @@ function createActionCommand(action: typeof actions[0]): Command {
         category: CommandCategory.Fun,
         cooldown: 3,
 
-        async execute(interaction: ChatInputCommandInteraction) {
+        async execute(interaction: ChatInputCommandInteraction): Promise<void> {
             try {
                 const targetUser = interaction.options.getUser('user', true);
                 const guildId = interaction.guildId;
 
                 // Get guild locale for translations
-                const locale = guildId ? await getGuildLocale(guildId) : 'en';
+                const locale = guildId ? await getGuildLocale(guildId) : Locale.English;
+
+                // Check if targeting bot
+                const isBot = targetUser.id === interaction.client.user.id;
 
                 // Prevent self-targeting
                 if (targetUser.id === interaction.user.id) {
-                    return interaction.reply({
-                        content: t(locale, `commands.fun.${action.name}.self`),
+                    const selfMessages = t(locale, `commands.fun.${action.name}.self`);
+                    const message = Array.isArray(selfMessages)
+                        ? selfMessages[Math.floor(Math.random() * selfMessages.length)]
+                        : selfMessages;
+
+                    await interaction.reply({
+                        content: message.replace('{user}', `**${interaction.user.username}**`),
                         ephemeral: true
                     });
+                    return;
                 }
 
                 // Defer reply as API call might take a moment
@@ -80,14 +89,20 @@ function createActionCommand(action: typeof actions[0]): Command {
                 // Fetch GIF from Nekobest API
                 const gifUrl = await getNekobest(action.name);
 
+                // Get message (handle bot case or normal)
+                const messageKey = isBot ? `commands.fun.${action.name}.bot` : `commands.fun.${action.name}.message`;
+                const messages = t(locale, messageKey);
+                const message = Array.isArray(messages)
+                    ? messages[Math.floor(Math.random() * messages.length)]
+                    : messages;
+
                 // Create embed with the action
                 const embed = new EmbedBuilder()
                     .setColor('#FFB300')
                     .setDescription(
-                        t(locale, `commands.fun.${action.name}.success`, {
-                            user: `**${interaction.user.username}**`,
-                            target: `**${targetUser.username}**`
-                        })
+                        message
+                            .replace('{user}', `**${interaction.user.username}**`)
+                            .replace('{target}', `**${targetUser.username}**`)
                     )
                     .setImage(gifUrl)
                     .setFooter({
@@ -101,14 +116,12 @@ function createActionCommand(action: typeof actions[0]): Command {
             } catch (error) {
                 logger.error(`Error in ${action.name} command:`, error);
 
-                const errorMessage = interaction.deferred
-                    ? { content: t('en', 'common.error'), embeds: [] }
-                    : { content: t('en', 'common.error'), ephemeral: true };
+                const errorMessage = t(Locale.English, 'commands.fun.error');
 
                 if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply(errorMessage);
+                    await interaction.editReply({ content: errorMessage, embeds: [] });
                 } else {
-                    await interaction.reply(errorMessage);
+                    await interaction.reply({ content: errorMessage, ephemeral: true });
                 }
             }
         }
