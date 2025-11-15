@@ -7,6 +7,7 @@ import { logger, botLogger, webLogger } from './utils/logger';
 import { loadCommands } from './handlers/commandHandler';
 import { loadTextCommands } from './handlers/textCommandHandler';
 import { loadEvents } from './handlers/eventHandler';
+import { initI18n } from './utils/i18n';
 import authRoutes from './web/routes/auth';
 import type { ExtendedClient } from './types/client';
 import type { Command } from './types/command';
@@ -96,6 +97,9 @@ async function start(): Promise<void> {
       webLogger.info(`🏥 Health check: http://localhost:${PORT}/health`);
       webLogger.info(`🏠 Homepage: http://localhost:${PORT}/`);
     });
+
+    // Initialize i18n system
+    initI18n();
 
     // Load slash commands
     await loadCommands(client);

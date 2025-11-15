@@ -1,0 +1,246 @@
+{
+  "common": {
+    "error": "Đã xảy ra lỗi",
+    "success": "Thành công!",
+    "no_permission": "Bạn không có quyền sử dụng lệnh này",
+    "cooldown": "Vui lòng đợi {time} trước khi sử dụng lại lệnh này",
+    "invalid_user": "Vui lòng mention một người dùng hợp lệ"
+  },
+  "commands": {
+    "fun": {
+      "poke": {
+        "name": "poke",
+        "description": "Chọc ai đó",
+        "success": "{user} đã chọc {target}!",
+        "self": "Bạn không thể tự chọc mình!"
+      },
+      "peck": {
+        "name": "peck",
+        "description": "Hôn nhẹ ai đó",
+        "success": "{user} đã hôn nhẹ {target}!",
+        "self": "Bạn không thể tự hôn mình!"
+      },
+      "tickle": {
+        "name": "tickle",
+        "description": "Cù ai đó",
+        "success": "{user} đã cù {target}!",
+        "self": "Bạn không thể tự cù mình!"
+      },
+      "highfive": {
+        "name": "highfive",
+        "description": "Vỗ tay với ai đó",
+        "success": "{user} đã vỗ tay với {target}!",
+        "self": "Bạn không thể tự vỗ tay với mình!"
+      },
+      "feed": {
+        "name": "feed",
+        "description": "Cho ai đó ăn",
+        "success": "{user} đã cho {target} ăn!",
+        "self": "Bạn không thể tự cho mình ăn!"
+      },
+      "bite": {
+        "name": "bite",
+        "description": "Cắn ai đó",
+        "success": "{user} đã cắn {target}!",
+        "self": "Bạn không thể tự cắn mình!"
+      },
+      "cuddle": {
+        "name": "cuddle",
+        "description": "Ôm ấp ai đó",
+        "success": "{user} đã ôm ấp {target}!",
+        "self": "Bạn không thể tự ôm ấp mình!"
+      },
+      "kick": {
+        "name": "kick",
+        "description": "Đá ai đó",
+        "success": "{user} đã đá {target}!",
+        "self": "Bạn không thể tự đá mình!"
+      },
+      "hug": {
+        "name": "hug",
+        "description": "Ôm ai đó",
+        "success": "{user} đã ôm {target}!",
+        "self": "Bạn không thể tự ôm mình!"
+      },
+      "pat": {
+        "name": "pat",
+        "description": "Vỗ/xoa đầu ai đó",
+        "success": "{user} đã vỗ đầu {target}!",
+        "self": "Bạn không thể tự vỗ đầu mình!"
+      },
+      "kiss": {
+        "name": "kiss",
+        "description": "Hôn ai đó",
+        "success": "{user} đã hôn {target}!",
+        "self": "Bạn không thể tự hôn mình!"
+      },
+      "punch": {
+        "name": "punch",
+        "description": "Đấm ai đó",
+        "success": "{user} đã đấm {target}!",
+        "self": "Bạn không thể tự đấm mình!"
+      },
+      "handshake": {
+        "name": "handshake",
+        "description": "Bắt tay với ai đó",
+        "success": "{user} đã bắt tay với {target}!",
+        "self": "Bạn không thể tự bắt tay với mình!"
+      },
+      "slap": {
+        "name": "slap",
+        "description": "Tát ai đó",
+        "success": "{user} đã tát {target}!",
+        "self": "Bạn không thể tự tát mình!"
+      },
+      "handhold": {
+        "name": "handhold",
+        "description": "Nắm tay ai đó",
+        "success": "{user} đang nắm tay {target}!",
+        "self": "Bạn không thể tự nắm tay mình!"
+      },
+      "yeet": {
+        "name": "yeet",
+        "description": "Ném ai đó",
+        "success": "{user} đã ném {target}!",
+        "self": "Bạn không thể tự ném mình!"
+      },
+      "lurk": {
+        "name": "lurk",
+        "description": "Ẩn mình trong bóng tối",
+        "success": "{user} đang ẩn mình... 👀"
+      },
+      "shoot": {
+        "name": "shoot",
+        "description": "Bắn",
+        "success": "{user} đang bắn! 🔫"
+      },
+      "sleep": {
+        "name": "sleep",
+        "description": "Đi ngủ",
+        "success": "{user} đang ngủ... 💤"
+      },
+      "shrug": {
+        "name": "shrug",
+        "description": "Nhún vai",
+        "success": "{user} nhún vai 🤷"
+      },
+      "stare": {
+        "name": "stare",
+        "description": "Nhìn chằm chằm",
+        "success": "{user} đang nhìn chằm chằm... 👁️"
+      },
+      "wave": {
+        "name": "wave",
+        "description": "Vẫy tay chào",
+        "success": "{user} vẫy tay! 👋"
+      },
+      "smile": {
+        "name": "smile",
+        "description": "Mỉm cười",
+        "success": "{user} mỉm cười! 😊"
+      },
+      "wink": {
+        "name": "wink",
+        "description": "Nháy mắt",
+        "success": "{user} nháy mắt! 😉"
+      },
+      "blush": {
+        "name": "blush",
+        "description": "Đỏ mặt",
+        "success": "{user} đang đỏ mặt! 😳"
+      },
+      "smug": {
+        "name": "smug",
+        "description": "Tỏ vẻ tự mãn",
+        "success": "{user} trông tự mãn! 😏"
+      },
+      "think": {
+        "name": "think",
+        "description": "Suy nghĩ",
+        "success": "{user} đang suy nghĩ... 🤔"
+      },
+      "bored": {
+        "name": "bored",
+        "description": "Cảm thấy chán",
+        "success": "{user} đang chán... 😑"
+      },
+      "nom": {
+        "name": "nom",
+        "description": "Ăn gì đó",
+        "success": "{user} đang ăn! 😋"
+      },
+      "yawn": {
+        "name": "yawn",
+        "description": "Ngáp",
+        "success": "{user} ngáp! 🥱"
+      },
+      "facepalm": {
+        "name": "facepalm",
+        "description": "Úp mặt",
+        "success": "{user} úp mặt! 🤦"
+      },
+      "happy": {
+        "name": "happy",
+        "description": "Cảm thấy vui",
+        "success": "{user} đang vui! 😄"
+      },
+      "baka": {
+        "name": "baka",
+        "description": "Gọi ai đó là ngốc",
+        "success": "{user} nói baka! 😤"
+      },
+      "angry": {
+        "name": "angry",
+        "description": "Tức giận",
+        "success": "{user} đang tức giận! 😠"
+      },
+      "run": {
+        "name": "run",
+        "description": "Chạy trốn",
+        "success": "{user} đang chạy! 🏃"
+      },
+      "nod": {
+        "name": "nod",
+        "description": "Gật đầu đồng ý",
+        "success": "{user} gật đầu!"
+      },
+      "nope": {
+        "name": "nope",
+        "description": "Không đồng ý",
+        "success": "{user} nói không!"
+      },
+      "dance": {
+        "name": "dance",
+        "description": "Nhảy múa",
+        "success": "{user} đang nhảy! 💃"
+      },
+      "cry": {
+        "name": "cry",
+        "description": "Khóc",
+        "success": "{user} đang khóc... 😢"
+      },
+      "pout": {
+        "name": "pout",
+        "description": "Bĩu môi",
+        "success": "{user} đang bĩu môi! 😤"
+      },
+      "thumbsup": {
+        "name": "thumbsup",
+        "description": "Thích/Like",
+        "success": "{user} thích điều này! 👍"
+      },
+      "laugh": {
+        "name": "laugh",
+        "description": "Cười",
+        "success": "{user} đang cười! 😂"
+      }
+    }
+  },
+  "events": {
+    "guildCreate": {
+      "welcome_title": "👋 Cảm ơn bạn đã mời WhiteCat Cloud!",
+      "welcome_description": "Tôi là WhiteCat Cloud - bot hosting game server cao cấp của bạn!\n\n**Bắt đầu:**\n• Dùng `/help` để xem tất cả lệnh\n• Thiết lập server với `/setup`\n• Đổi prefix với `/prefix`\n\n**Tính năng:**\n🎮 Hosting game server\n💰 Hệ thống kinh tế ảo\n🎉 Giveaway và lệnh giải trí\n\nCần hỗ trợ? Tham gia server hỗ trợ của chúng tôi!",
+      "locale_detected": "Đã phát hiện ngôn ngữ server: **{locale}**"
+    }
+  }
+}
