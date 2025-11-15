@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhiteCat Cloud - Premium Game Server Hosting</title>
-    <meta name="description" content="WhiteCat Cloud - Affordable and reliable game server hosting with instant setup, 24/7 support, and powerful hardware.">
+    <title>WhiteCat Cloud ☁️ - Premium Game Server Hosting</title>
+    <meta name="description" content="WhiteCat Cloud - Hosting mèo trắng nhanh như chớp với cloud infrastructure mạnh mẽ. Instant setup, 24/7 support.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -14,40 +14,123 @@
             box-sizing: border-box;
         }
 
+        /* Light Theme - Vàng nhạt (Warm & Cozy) */
+        :root[data-theme="light"] {
+            --bg-primary: #FFF8E1;
+            --bg-secondary: #FFFBF0;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-primary: #2D1B00;
+            --text-secondary: #5D4E37;
+            --text-muted: #8B7355;
+            --accent-1: #FFB300;
+            --accent-2: #FFA000;
+            --accent-3: #FF8F00;
+            --gradient-hero: linear-gradient(135deg, #FFE082 0%, #FFD54F 25%, #FFCA28 50%, #FFC107 75%, #FFB300 100%);
+            --gradient-card: linear-gradient(135deg, rgba(255, 224, 130, 0.3), rgba(255, 193, 7, 0.2));
+            --shadow-sm: 0 2px 8px rgba(255, 179, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(255, 179, 0, 0.15);
+            --shadow-lg: 0 8px 32px rgba(255, 179, 0, 0.2);
+            --shadow-xl: 0 16px 48px rgba(255, 179, 0, 0.25);
+            --border-color: rgba(255, 179, 0, 0.2);
+            --cloud-color: rgba(255, 255, 255, 0.8);
+            --star-color: rgba(255, 215, 0, 0.6);
+        }
+
+        /* Dark Theme - Cosmic Universe (Xanh tím vũ trụ) */
+        :root[data-theme="dark"] {
+            --bg-primary: #0A0E27;
+            --bg-secondary: #151932;
+            --bg-card: rgba(21, 25, 50, 0.8);
+            --text-primary: #E8E9F3;
+            --text-secondary: #B8B9D0;
+            --text-muted: #7B7D9D;
+            --accent-1: #7209B7;
+            --accent-2: #560BAD;
+            --accent-3: #3C096C;
+            --gradient-hero: linear-gradient(135deg, #0A0E27 0%, #1a1a3e 25%, #2E1A47 50%, #560BAD 75%, #7209B7 100%);
+            --gradient-card: linear-gradient(135deg, rgba(114, 9, 183, 0.2), rgba(86, 11, 173, 0.1));
+            --shadow-sm: 0 2px 8px rgba(114, 9, 183, 0.2);
+            --shadow-md: 0 4px 16px rgba(114, 9, 183, 0.3);
+            --shadow-lg: 0 8px 32px rgba(114, 9, 183, 0.4);
+            --shadow-xl: 0 16px 48px rgba(114, 9, 183, 0.5);
+            --border-color: rgba(114, 9, 183, 0.3);
+            --cloud-color: rgba(86, 11, 173, 0.3);
+            --star-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Default theme */
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #8b5cf6;
-            --accent: #ec4899;
-            --success: #10b981;
-            --dark: #0f172a;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-800: #1e293b;
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --bg-primary: #FFF8E1;
+            --bg-secondary: #FFFBF0;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-primary: #2D1B00;
+            --text-secondary: #5D4E37;
+            --text-muted: #8B7355;
+            --accent-1: #FFB300;
+            --accent-2: #FFA000;
+            --accent-3: #FF8F00;
+            --gradient-hero: linear-gradient(135deg, #FFE082 0%, #FFD54F 25%, #FFCA28 50%, #FFC107 75%, #FFB300 100%);
+            --gradient-card: linear-gradient(135deg, rgba(255, 224, 130, 0.3), rgba(255, 193, 7, 0.2));
+            --shadow-sm: 0 2px 8px rgba(255, 179, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(255, 179, 0, 0.15);
+            --shadow-lg: 0 8px 32px rgba(255, 179, 0, 0.2);
+            --shadow-xl: 0 16px 48px rgba(255, 179, 0, 0.25);
+            --border-color: rgba(255, 179, 0, 0.2);
+            --cloud-color: rgba(255, 255, 255, 0.8);
+            --star-color: rgba(255, 215, 0, 0.6);
         }
 
         body {
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            color: var(--dark);
+            color: var(--text-primary);
             line-height: 1.7;
             overflow-x: hidden;
-            background: var(--gray-50);
+            background: var(--bg-primary);
             font-size: 16px;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
 
         html {
             scroll-behavior: smooth;
         }
 
+        /* Theme Switcher Button */
+        .theme-switcher {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-switcher:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .theme-switcher .icon {
+            font-size: 1.8rem;
+            transition: transform 0.5s ease;
+        }
+
+        .theme-switcher:hover .icon {
+            transform: rotate(360deg);
+        }
+
         /* Header & Navigation */
         header {
-            background: rgba(255, 255, 255, 0.8);
+            background: var(--bg-card);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             padding: 1.25rem 0;
@@ -55,14 +138,13 @@
             width: 100%;
             top: 0;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         header.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            box-shadow: var(--shadow-lg);
         }
 
         nav {
@@ -77,7 +159,7 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
             background-size: 200% 200%;
             animation: gradientShift 3s ease infinite;
             -webkit-background-clip: text;
@@ -95,6 +177,16 @@
             transform: scale(1.05);
         }
 
+        .logo .cat-emoji {
+            font-size: 2rem;
+            animation: catFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes catFloat {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-8px) rotate(5deg); }
+        }
+
         @keyframes gradientShift {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -106,7 +198,7 @@
             border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: var(--dark);
+            color: var(--text-primary);
             padding: 0.5rem;
             transition: transform 0.3s ease;
         }
@@ -122,9 +214,9 @@
         }
 
         .nav-links a {
-            color: var(--gray-800);
+            color: var(--text-secondary);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.95rem;
             transition: color 0.3s ease;
             position: relative;
@@ -138,12 +230,12 @@
             bottom: -4px;
             left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             transition: width 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: var(--primary);
+            color: var(--accent-1);
         }
 
         .nav-links a:hover::after {
@@ -164,7 +256,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             color: white;
             box-shadow: var(--shadow-md);
         }
@@ -176,10 +268,10 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: var(--gradient-hero);
             background-size: 200% 200%;
             animation: heroGradient 15s ease infinite;
-            color: white;
+            color: var(--text-primary);
             padding: 180px 2rem 120px;
             text-align: center;
             position: relative;
@@ -191,37 +283,63 @@
             50% { background-position: 100% 50%; }
         }
 
+        /* Floating Clouds Animation */
         .hero::before {
-            content: '';
+            content: '☁️';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(255,255,255,0.15) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 60%);
-            pointer-events: none;
-            animation: pulse 8s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            font-size: 4rem;
+            opacity: 0.3;
+            top: 20%;
+            left: 10%;
+            animation: cloudFloat1 20s ease-in-out infinite;
         }
 
         .hero::after {
-            content: '';
+            content: '☁️';
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.25;
+            top: 60%;
+            right: 15%;
+            animation: cloudFloat2 25s ease-in-out infinite;
+        }
+
+        @keyframes cloudFloat1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, -50px); }
+        }
+
+        @keyframes cloudFloat2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-80px, 40px); }
+        }
+
+        /* Stars for dark theme */
+        [data-theme="dark"] .hero {
+            position: relative;
+        }
+
+        [data-theme="dark"] .hero .stars {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background-image:
-                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 50px, rgba(255,255,255,0.03) 51px),
-                repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0px, transparent 1px, transparent 50px, rgba(255,255,255,0.03) 51px);
+            width: 100%;
+            height: 100%;
             pointer-events: none;
+        }
+
+        [data-theme="dark"] .hero .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--star-color);
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
         }
 
         .hero > * {
@@ -240,11 +358,23 @@
 
         .hero h1 {
             font-size: 4rem;
-            font-weight: 800;
+            font-weight: 900;
             margin-bottom: 1.5rem;
             line-height: 1.2;
             letter-spacing: -2px;
             animation: fadeInUp 0.8s ease;
+            text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero h1 .cat-icon {
+            display: inline-block;
+            animation: waveCat 2s ease-in-out infinite;
+        }
+
+        @keyframes waveCat {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
         }
 
         .hero p {
@@ -254,7 +384,7 @@
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            font-weight: 400;
+            font-weight: 500;
             line-height: 1.8;
             animation: fadeInUp 0.8s 0.2s backwards;
         }
@@ -273,15 +403,16 @@
         }
 
         .btn-secondary {
-            background: rgba(255,255,255,0.15);
-            color: white;
+            background: var(--bg-card);
+            color: var(--text-primary);
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: rgba(255,255,255,0.25);
-            border-color: rgba(255,255,255,0.5);
+            background: var(--accent-1);
+            color: white;
+            border-color: var(--accent-1);
         }
 
         /* Features Section */
@@ -289,6 +420,19 @@
             padding: 100px 2rem;
             max-width: 1280px;
             margin: 0 auto;
+            position: relative;
+        }
+
+        /* Decorative clouds in background */
+        .features::before {
+            content: '☁️';
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.05;
+            top: 10%;
+            right: 5%;
+            z-index: 0;
+            animation: cloudFloat1 30s ease-in-out infinite;
         }
 
         .section-title {
@@ -296,14 +440,16 @@
             font-size: 2.75rem;
             margin-bottom: 1rem;
             font-weight: 800;
-            color: var(--dark);
+            color: var(--text-primary);
             letter-spacing: -1.5px;
+            position: relative;
+            z-index: 1;
         }
 
         .section-subtitle {
             text-align: center;
             font-size: 1.15rem;
-            color: #64748b;
+            color: var(--text-muted);
             margin-bottom: 4rem;
             max-width: 600px;
             margin-left: auto;
@@ -314,15 +460,17 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         .feature-card {
             padding: 2.5rem;
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--bg-card);
             backdrop-filter: blur(10px);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-md);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             position: relative;
@@ -336,20 +484,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--gradient-card);
             opacity: 0;
             transition: opacity 0.5s ease;
             z-index: 0;
         }
 
         .feature-card:hover::before {
-            opacity: 0.05;
+            opacity: 1;
         }
 
         .feature-card:hover {
-            transform: translateY(-12px) rotateX(5deg);
-            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
-            border-color: var(--primary);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-1);
         }
 
         .feature-card > * {
@@ -366,20 +514,20 @@
         }
 
         .feature-card:hover .feature-icon {
-            transform: scale(1.1) rotateY(10deg);
-            filter: drop-shadow(0 8px 16px rgba(99, 102, 241, 0.3));
+            transform: scale(1.2) rotateY(360deg);
+            filter: drop-shadow(0 8px 16px var(--accent-1));
         }
 
         .feature-card h3 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
             font-weight: 700;
-            color: var(--dark);
+            color: var(--text-primary);
             letter-spacing: -0.5px;
         }
 
         .feature-card p {
-            color: #64748b;
+            color: var(--text-muted);
             line-height: 1.8;
             font-size: 1rem;
         }
@@ -387,12 +535,28 @@
         /* Pricing Section */
         .pricing {
             padding: 100px 2rem;
-            background: linear-gradient(to bottom, var(--gray-50), white);
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative elements */
+        .pricing::before {
+            content: '🐱';
+            position: absolute;
+            font-size: 15rem;
+            opacity: 0.03;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
         }
 
         .pricing-container {
             max-width: 1280px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
 
         .pricing-grid {
@@ -404,13 +568,13 @@
         }
 
         .pricing-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: var(--bg-card);
             backdrop-filter: blur(10px);
             padding: 3rem 2.5rem;
             border-radius: 28px;
             text-align: center;
-            border: 2px solid var(--gray-200);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-md);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -423,7 +587,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: conic-gradient(from 0deg, transparent, var(--primary), transparent);
+            background: conic-gradient(from 0deg, transparent, var(--accent-1), transparent);
             opacity: 0;
             transition: all 0.5s ease;
             animation: rotate 4s linear infinite;
@@ -439,8 +603,8 @@
 
         .pricing-card:hover {
             transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-1);
         }
 
         .pricing-card > * {
@@ -449,13 +613,13 @@
         }
 
         .pricing-card.featured {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2), var(--accent-3));
             background-size: 200% 200%;
             animation: featuredGradient 8s ease infinite;
             color: white;
             transform: scale(1.05);
             border: 2px solid transparent;
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.5);
+            box-shadow: var(--shadow-xl);
         }
 
         @keyframes featuredGradient {
@@ -465,23 +629,28 @@
 
         .pricing-card.featured:hover {
             transform: scale(1.08) translateY(-12px);
-            box-shadow: 0 25px 80px rgba(102, 126, 234, 0.6);
         }
 
-        .pricing-card.featured::before {
-            content: '⭐ POPULAR';
+        .pricing-card.featured::after {
+            content: '⭐ PHỔ BIẾN';
             position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 0.5rem 1.5rem;
+            padding: 0.5rem 1rem;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 0.5px;
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(10px);
+        }
+
+        .pricing-card.featured h3,
+        .pricing-card.featured .plan-price,
+        .pricing-card.featured p {
+            color: white;
         }
 
         .plan-name {
@@ -496,6 +665,7 @@
             font-weight: 800;
             margin-bottom: 0.5rem;
             letter-spacing: -2px;
+            color: var(--text-primary);
         }
 
         .plan-price span {
@@ -512,12 +682,14 @@
 
         .plan-features li {
             padding: 1rem 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid var(--border-color);
             font-size: 0.95rem;
+            color: var(--text-secondary);
         }
 
         .pricing-card.featured .plan-features li {
-            border-bottom-color: rgba(255,255,255,0.15);
+            border-bottom-color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.95);
         }
 
         .plan-features li:last-child {
@@ -526,7 +698,7 @@
 
         /* Stats Section */
         .stats {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             padding: 80px 2rem;
             position: relative;
             overflow: hidden;
@@ -584,7 +756,7 @@
         /* Testimonials Section */
         .testimonials {
             padding: 100px 2rem;
-            background: white;
+            background: var(--bg-primary);
         }
 
         .testimonials-container {
@@ -600,11 +772,11 @@
         }
 
         .testimonial-card {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            background: var(--bg-card);
             padding: 2.5rem;
             border-radius: 24px;
-            border: 1px solid var(--gray-200);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-md);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -617,20 +789,21 @@
             left: 20px;
             font-size: 8rem;
             font-weight: 900;
-            color: var(--primary);
+            color: var(--accent-1);
             opacity: 0.1;
             font-family: Georgia, serif;
         }
 
         .testimonial-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 48px rgba(99, 102, 241, 0.2);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--accent-1);
         }
 
         .testimonial-text {
             font-size: 1.05rem;
             line-height: 1.8;
-            color: var(--gray-800);
+            color: var(--text-secondary);
             margin-bottom: 2rem;
             position: relative;
             z-index: 1;
@@ -646,28 +819,28 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            box-shadow: var(--shadow-md);
         }
 
         .author-info h4 {
             font-weight: 700;
-            color: var(--dark);
+            color: var(--text-primary);
             margin-bottom: 0.25rem;
         }
 
         .author-info p {
             font-size: 0.9rem;
-            color: #64748b;
+            color: var(--text-muted);
         }
 
         /* Footer */
         footer {
-            background: var(--dark);
+            background: var(--text-primary);
             color: white;
             padding: 4rem 2rem 2rem;
             position: relative;
@@ -775,13 +948,13 @@
                 left: -100%;
                 width: 100%;
                 height: calc(100vh - 80px);
-                background: rgba(255, 255, 255, 0.98);
+                background: var(--bg-card);
                 backdrop-filter: blur(20px);
                 flex-direction: column;
                 padding: 2rem;
                 gap: 0;
                 transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                box-shadow: var(--shadow-lg);
             }
 
             .nav-links.active {
@@ -791,7 +964,7 @@
             .nav-links li {
                 width: 100%;
                 padding: 1rem 0;
-                border-bottom: 1px solid var(--gray-200);
+                border-bottom: 1px solid var(--border-color);
             }
 
             .nav-links a {
@@ -831,6 +1004,17 @@
             .testimonials-grid {
                 grid-template-columns: 1fr;
             }
+
+            .theme-switcher {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+            }
+
+            .theme-switcher .icon {
+                font-size: 1.5rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -849,31 +1033,37 @@
     </style>
 </head>
 <body>
+    <!-- Theme Switcher -->
+    <div class="theme-switcher" id="themeSwitcher">
+        <span class="icon" id="themeIcon">☀️</span>
+    </div>
+
     <!-- Header -->
     <header id="header">
         <nav>
             <div class="logo">
-                <span>🐱</span>
+                <span class="cat-emoji">🐱</span>
                 <span>WhiteCat Cloud</span>
             </div>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#features" onclick="closeMenu()">Features</a></li>
-                <li><a href="#pricing" onclick="closeMenu()">Pricing</a></li>
-                <li><a href="#testimonials" onclick="closeMenu()">Testimonials</a></li>
+                <li><a href="#features" onclick="closeMenu()">Tính năng</a></li>
+                <li><a href="#pricing" onclick="closeMenu()">Bảng giá</a></li>
+                <li><a href="#testimonials" onclick="closeMenu()">Đánh giá</a></li>
                 <li><a href="/auth" onclick="closeMenu()">Discord Login</a></li>
             </ul>
             <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMenu()">☰</button>
-            <a href="/auth" class="btn btn-primary">Get Started</a>
+            <a href="/auth" class="btn btn-primary">Bắt đầu ngay</a>
         </nav>
     </header>
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1 class="floating">🐱 Premium Game Server Hosting</h1>
-        <p>Lightning-fast servers, instant setup, and 24/7 support. Start your gaming adventure today!</p>
+        <div class="stars" id="starsContainer"></div>
+        <h1 class="floating"><span class="cat-icon">🐱</span> WhiteCat Cloud Hosting</h1>
+        <p>☁️ Hosting nhanh như mèo trắng, mạnh mẽ như đám mây! Khởi tạo tức thì, hỗ trợ 24/7.</p>
         <div class="hero-buttons">
-            <a href="/auth" class="btn btn-primary btn-hero">Get Started Free</a>
-            <a href="#pricing" class="btn btn-secondary btn-hero">View Pricing</a>
+            <a href="/auth" class="btn btn-primary btn-hero">Dùng thử miễn phí</a>
+            <a href="#pricing" class="btn btn-secondary btn-hero">Xem bảng giá</a>
         </div>
     </section>
 
@@ -883,7 +1073,7 @@
             <div class="stats-grid">
                 <div class="stat-item">
                     <span class="stat-number" data-count="5000">0</span>
-                    <span class="stat-label">Active Servers</span>
+                    <span class="stat-label">Server đang hoạt động</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" data-count="99.9">0</span>
@@ -891,11 +1081,11 @@
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" data-count="24">0</span>
-                    <span class="stat-label">24/7 Support</span>
+                    <span class="stat-label">Hỗ trợ 24/7</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" data-count="10000">0</span>
-                    <span class="stat-label">Happy Customers</span>
+                    <span class="stat-label">Khách hàng hài lòng</span>
                 </div>
             </div>
         </div>
@@ -903,38 +1093,38 @@
 
     <!-- Features Section -->
     <section class="features reveal" id="features">
-        <h2 class="section-title">Why Choose WhiteCat?</h2>
-        <p class="section-subtitle">Everything you need to run your game servers flawlessly</p>
+        <h2 class="section-title">Tại sao chọn WhiteCat? 🐱☁️</h2>
+        <p class="section-subtitle">Mọi thứ bạn cần để chạy game server hoàn hảo</p>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
-                <h3>Instant Setup</h3>
-                <p>Your server is ready in seconds. No waiting, no hassle. Just pure gaming performance.</p>
+                <h3>Khởi tạo tức thì</h3>
+                <p>Server sẵn sàng trong vài giây. Không chờ đợi, không rắc rối. Chỉ có hiệu suất gaming thuần túy.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🛡️</div>
-                <h3>DDoS Protection</h3>
-                <p>Enterprise-grade DDoS protection keeps your server online 24/7, no matter what.</p>
+                <h3>Bảo vệ DDoS</h3>
+                <p>Bảo vệ DDoS cấp doanh nghiệp giữ server online 24/7, bất kể điều gì xảy ra.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💎</div>
-                <h3>Premium Hardware</h3>
-                <p>Latest generation CPUs and NVMe SSDs for unmatched performance.</p>
+                <h3>Phần cứng cao cấp</h3>
+                <p>CPU thế hệ mới nhất và NVMe SSD cho hiệu suất vô song.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🎮</div>
-                <h3>One-Click Install</h3>
-                <p>Install Minecraft, Discord bots, and more with just one click.</p>
+                <h3>Cài đặt 1 Click</h3>
+                <p>Cài Minecraft, Discord bot và nhiều hơn nữa chỉ với một cú nhấp chuột.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
-                <h3>Full Control Panel</h3>
-                <p>Powered by Pterodactyl - manage everything from an intuitive dashboard.</p>
+                <h3>Control Panel đầy đủ</h3>
+                <p>Được hỗ trợ bởi Pterodactyl - quản lý mọi thứ từ bảng điều khiển trực quan.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💬</div>
-                <h3>Discord Integration</h3>
-                <p>Manage your servers directly from Discord with our powerful bot.</p>
+                <h3>Tích hợp Discord</h3>
+                <p>Quản lý server trực tiếp từ Discord với bot mạnh mẽ của chúng tôi.</p>
             </div>
         </div>
     </section>
@@ -942,49 +1132,49 @@
     <!-- Pricing Section -->
     <section class="pricing reveal" id="pricing">
         <div class="pricing-container">
-            <h2 class="section-title">Simple, Transparent Pricing</h2>
-            <p class="section-subtitle">Choose the perfect plan for your gaming needs</p>
+            <h2 class="section-title">Bảng giá minh bạch 💰</h2>
+            <p class="section-subtitle">Chọn gói phù hợp với nhu cầu gaming của bạn</p>
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="plan-name">Starter</div>
-                    <div class="plan-price">5,000<span>đ/month</span></div>
+                    <div class="plan-price">5K<span>đ/tháng</span></div>
                     <ul class="plan-features">
                         <li>✅ 512 MB RAM</li>
                         <li>✅ 0.5 CPU Cores</li>
                         <li>✅ 5 GB Storage</li>
-                        <li>✅ DDoS Protection</li>
-                        <li>✅ 24/7 Support</li>
+                        <li>✅ Bảo vệ DDoS</li>
+                        <li>✅ Hỗ trợ 24/7</li>
                     </ul>
-                    <a href="/auth" class="btn btn-primary">Get Started</a>
+                    <a href="/auth" class="btn btn-primary">Chọn gói này</a>
                 </div>
 
                 <div class="pricing-card featured">
                     <div class="plan-name">Popular</div>
-                    <div class="plan-price">10,000<span>đ/month</span></div>
+                    <div class="plan-price">10K<span>đ/tháng</span></div>
                     <ul class="plan-features">
                         <li>✅ 1 GB RAM</li>
                         <li>✅ 1 CPU Core</li>
                         <li>✅ 10 GB Storage</li>
-                        <li>✅ DDoS Protection</li>
-                        <li>✅ Priority Support</li>
-                        <li>✅ Auto Backups</li>
+                        <li>✅ Bảo vệ DDoS</li>
+                        <li>✅ Hỗ trợ ưu tiên</li>
+                        <li>✅ Backup tự động</li>
                     </ul>
-                    <a href="/auth" class="btn btn-primary">Get Started</a>
+                    <a href="/auth" class="btn btn-primary">Chọn gói này</a>
                 </div>
 
                 <div class="pricing-card">
                     <div class="plan-name">Pro</div>
-                    <div class="plan-price">18,000<span>đ/month</span></div>
+                    <div class="plan-price">18K<span>đ/tháng</span></div>
                     <ul class="plan-features">
                         <li>✅ 2 GB RAM</li>
                         <li>✅ 2 CPU Cores</li>
                         <li>✅ 20 GB Storage</li>
-                        <li>✅ DDoS Protection</li>
-                        <li>✅ VIP Support</li>
-                        <li>✅ Daily Backups</li>
+                        <li>✅ Bảo vệ DDoS</li>
+                        <li>✅ Hỗ trợ VIP</li>
+                        <li>✅ Backup hằng ngày</li>
                         <li>✅ Custom Domain</li>
                     </ul>
-                    <a href="/auth" class="btn btn-primary">Get Started</a>
+                    <a href="/auth" class="btn btn-primary">Chọn gói này</a>
                 </div>
             </div>
         </div>
@@ -993,42 +1183,42 @@
     <!-- Testimonials Section -->
     <section class="testimonials reveal" id="testimonials">
         <div class="testimonials-container">
-            <h2 class="section-title">What Our Customers Say</h2>
-            <p class="section-subtitle">Join thousands of satisfied gamers</p>
+            <h2 class="section-title">Khách hàng nói gì về chúng tôi 💬</h2>
+            <p class="section-subtitle">Tham gia cùng hàng nghìn game thủ hài lòng</p>
             <div class="testimonials-grid">
                 <div class="testimonial-card">
                     <p class="testimonial-text">
-                        "WhiteCat Cloud has been absolutely amazing! The server setup was instant and the performance is incredible. Best hosting provider I've ever used!"
+                        "WhiteCat Cloud thật tuyệt vời! Server được khởi tạo ngay lập tức và hiệu suất cực kỳ ấn tượng. Nhà cung cấp hosting tốt nhất tôi từng dùng!"
                     </p>
                     <div class="testimonial-author">
                         <div class="author-avatar">🎮</div>
                         <div class="author-info">
-                            <h4>Minh Nguyen</h4>
-                            <p>Minecraft Server Owner</p>
+                            <h4>Minh Nguyễn</h4>
+                            <p>Chủ Minecraft Server</p>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
                     <p class="testimonial-text">
-                        "The 24/7 support team is incredibly responsive and helpful. I had my Discord bot up and running in minutes. Highly recommended!"
+                        "Đội hỗ trợ 24/7 cực kỳ nhanh nhẹn và hữu ích. Discord bot của tôi đã hoạt động trong vài phút. Rất đáng để thử!"
                     </p>
                     <div class="testimonial-author">
                         <div class="author-avatar">🤖</div>
                         <div class="author-info">
-                            <h4>Tuan Le</h4>
+                            <h4>Tuấn Lê</h4>
                             <p>Discord Bot Developer</p>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
                     <p class="testimonial-text">
-                        "Outstanding performance and reliability! Our gaming community has grown significantly thanks to WhiteCat's powerful infrastructure."
+                        "Hiệu suất và độ tin cậy xuất sắc! Cộng đồng gaming của chúng tôi đã phát triển đáng kể nhờ hạ tầng mạnh mẽ của WhiteCat."
                     </p>
                     <div class="testimonial-author">
                         <div class="author-avatar">👾</div>
                         <div class="author-info">
-                            <h4>Hoa Pham</h4>
-                            <p>Gaming Community Leader</p>
+                            <h4>Hoa Phạm</h4>
+                            <p>Trưởng nhóm Gaming Community</p>
                         </div>
                     </div>
                 </div>
@@ -1040,30 +1230,30 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>WhiteCat Cloud</h3>
-                <p>Premium game server hosting with instant setup and 24/7 support.</p>
+                <h3>🐱 WhiteCat Cloud</h3>
+                <p>Hosting game server cao cấp với khởi tạo tức thì và hỗ trợ 24/7. Nhanh như mèo, mạnh như cloud!</p>
             </div>
             <div class="footer-section">
-                <h3>Quick Links</h3>
+                <h3>Liên kết nhanh</h3>
                 <ul>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#features">Tính năng</a></li>
+                    <li><a href="#pricing">Bảng giá</a></li>
                     <li><a href="/auth">Discord Login</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h3>Support</h3>
+                <h3>Hỗ trợ</h3>
                 <ul>
                     <li><a href="https://discord.gg/whitecat">Discord Server</a></li>
-                    <li><a href="/health">Status Page</a></li>
+                    <li><a href="/health">Trang trạng thái</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h3>Legal</h3>
+                <h3>Pháp lý</h3>
                 <ul>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Refund Policy</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Chính sách hoàn tiền</a></li>
                 </ul>
             </div>
         </div>
@@ -1073,6 +1263,50 @@
     </footer>
 
     <script>
+        // Theme Switcher
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlElement = document.documentElement;
+        const starsContainer = document.getElementById('starsContainer');
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        // Generate stars for dark theme
+        function generateStars() {
+            if (htmlElement.getAttribute('data-theme') === 'dark') {
+                starsContainer.innerHTML = '';
+                for (let i = 0; i < 100; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    starsContainer.appendChild(star);
+                }
+            } else {
+                starsContainer.innerHTML = '';
+            }
+        }
+
+        generateStars();
+
+        themeSwitcher.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            generateStars();
+        });
+
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'light' ? '☀️' : '🌙';
+        }
+
         // Mobile Menu Toggle
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
