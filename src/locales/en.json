@@ -21,22 +21,24 @@
         "name": "baka",
         "description": "Call someone baka (バカ)",
         "message": [
-          "{user} points at {target}: **BAKA!** バカ！😤",
-          "{user} blushes while calling {target} a baka~ 😳💢",
-          "{user}: {target} is such an idiot! I-It's not like I like you or anything! バカ！ 💢",
-          "{user} *bonks* {target}: B-baka! 😤",
-          "{user} glares at {target}... \"Tch, baka.\" 😒",
-          "{user}: {target}-baka desu! ばか〜 (｡•ˇ‸ˇ•｡)"
+          "{target} baka! バカ！😤",
+          "{target} is such an idiot~ 😳💢",
+          "{target}! I-It's not like I like you or anything, b-baka! 💢",
+          "{target}-baka! 😤",
+          "Tch, {target} you idiot... 😒",
+          "{target}-baka desu! ばか〜 (｡•ˇ‸ˇ•｡)",
+          "{target} you're so dumb! バカバカ！ 💢",
+          "Oi {target}, why are you so stupid! 😤"
         ],
         "self": [
-          "{user} calls themselves a baka... Are you okay? 😅💦",
-          "{user} bonks their own head: \"I'm such a baka!\" 🤦‍♂️✨",
-          "{user}: \"Watashi wa baka desu...\" *nervous laugh* 😔"
+          "I'm such an idiot... 😅💦",
+          "I'm such a baka! 🤦‍♂️",
+          "Watashi wa baka desu... 😔"
         ],
         "bot": [
-          "{user} dares to call me a baka!? Hmph! 😤💢",
-          "{user}: \"This bot is such a baka!\" - Hey, I'm trying my best here! 😢",
-          "I'm not a baka, {user}-baka! ヽ(｀Д´)ﾉ"
+          "How dare you call me baka, {user}!? 😤💢",
+          "I'm a baka, {user}? I'm trying my best here! 😢",
+          "{user}-baka! I'm not stupid! ヽ(｀Д´)ﾉ"
         ]
       },
       "blush": {
