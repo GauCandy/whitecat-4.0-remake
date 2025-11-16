@@ -2,6 +2,11 @@ import { pool } from '../database/config';
 import { PoolClient } from 'pg';
 
 /**
+ * Default currency (WhiteCat Coins)
+ */
+export const DEFAULT_CURRENCY_ID = 1;
+
+/**
  * Transaction type enum
  */
 export enum TransactionType {
@@ -10,6 +15,8 @@ export enum TransactionType {
   TransferReceive = 'transfer_receive',
   Refund = 'refund',
   AdminGrant = 'admin_grant',
+  Daily = 'daily',
+  Work = 'work',
 }
 
 /**
@@ -42,22 +49,23 @@ export interface TransferResult {
 }
 
 /**
- * Get user balance
+ * Get user balance for specific currency
  * @param userId - Internal user ID (from users table)
+ * @param currencyId - Currency ID (default: 1 = COIN)
  * @returns Current balance or null if not found
  */
-export async function getBalance(userId: number): Promise<number | null> {
+export async function getBalance(userId: number, currencyId: number = DEFAULT_CURRENCY_ID): Promise<number | null> {
   try {
     const result = await pool.query(
-      'SELECT coins FROM user_economy WHERE user_id = $1',
-      [userId]
+      'SELECT balance FROM user_economy WHERE user_id = $1 AND currency_id = $2',
+      [userId, currencyId]
     );
 
     if (result.rows.length === 0) {
       return null;
     }
 
-    return parseInt(result.rows[0].coins);
+    return parseInt(result.rows[0].balance);
   } catch (error) {
     console.error('Error getting balance:', error);
     throw error;
@@ -93,6 +101,7 @@ export async function getUserIdFromDiscordId(discordId: string): Promise<number 
  * @param amount - Amount to add (positive number)
  * @param type - Transaction type
  * @param metadata - Additional transaction data
+ * @param currencyId - Currency ID (default: 1 = COIN)
  * @param client - Optional existing transaction client
  * @returns Economy operation result
  */
@@ -101,6 +110,7 @@ export async function addCoins(
   amount: number,
   type: TransactionType,
   metadata: TransactionMetadata = {},
+  currencyId: number = DEFAULT_CURRENCY_ID,
   client?: PoolClient
 ): Promise<EconomyResult> {
   // Use provided client or get a new one
@@ -114,30 +124,31 @@ export async function addCoins(
 
     // Get current balance
     const balanceResult = await dbClient.query(
-      'SELECT coins FROM user_economy WHERE user_id = $1 FOR UPDATE',
-      [userId]
+      'SELECT balance FROM user_economy WHERE user_id = $1 AND currency_id = $2 FOR UPDATE',
+      [userId, currencyId]
     );
 
     if (balanceResult.rows.length === 0) {
       throw new Error('User economy account not found');
     }
 
-    const balanceBefore = parseInt(balanceResult.rows[0].coins);
+    const balanceBefore = parseInt(balanceResult.rows[0].balance);
     const balanceAfter = balanceBefore + amount;
 
     // Update balance
     await dbClient.query(
-      'UPDATE user_economy SET coins = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2',
-      [balanceAfter, userId]
+      'UPDATE user_economy SET balance = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND currency_id = $3',
+      [balanceAfter, userId, currencyId]
     );
 
     // Log transaction
     await dbClient.query(
       `INSERT INTO transactions
-       (user_id, type, amount, balance_before, balance_after, related_user_id, related_hosting_id, description, metadata)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+       (user_id, currency_id, type, amount, balance_before, balance_after, related_user_id, related_hosting_id, description, metadata)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         userId,
+        currencyId,
         type,
         amount,
         balanceBefore,
@@ -180,6 +191,7 @@ export async function addCoins(
  * @param amount - Amount to deduct (positive number)
  * @param type - Transaction type
  * @param metadata - Additional transaction data
+ * @param currencyId - Currency ID (default: 1 = COIN)
  * @param client - Optional existing transaction client
  * @returns Economy operation result
  */
@@ -188,6 +200,7 @@ export async function deductCoins(
   amount: number,
   type: TransactionType,
   metadata: TransactionMetadata = {},
+  currencyId: number = DEFAULT_CURRENCY_ID,
   client?: PoolClient
 ): Promise<EconomyResult> {
   // Use provided client or get a new one
@@ -201,15 +214,15 @@ export async function deductCoins(
 
     // Get current balance
     const balanceResult = await dbClient.query(
-      'SELECT coins FROM user_economy WHERE user_id = $1 FOR UPDATE',
-      [userId]
+      'SELECT balance FROM user_economy WHERE user_id = $1 AND currency_id = $2 FOR UPDATE',
+      [userId, currencyId]
     );
 
     if (balanceResult.rows.length === 0) {
       throw new Error('User economy account not found');
     }
 
-    const balanceBefore = parseInt(balanceResult.rows[0].coins);
+    const balanceBefore = parseInt(balanceResult.rows[0].balance);
 
     // Check if user has enough balance
     if (balanceBefore < amount) {
@@ -220,17 +233,18 @@ export async function deductCoins(
 
     // Update balance
     await dbClient.query(
-      'UPDATE user_economy SET coins = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2',
-      [balanceAfter, userId]
+      'UPDATE user_economy SET balance = $1, updated_at = CURRENT_TIMESTAMP WHERE user_id = $2 AND currency_id = $3',
+      [balanceAfter, userId, currencyId]
     );
 
     // Log transaction (amount is stored as positive, but it's a deduction)
     await dbClient.query(
       `INSERT INTO transactions
-       (user_id, type, amount, balance_before, balance_after, related_user_id, related_hosting_id, description, metadata)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+       (user_id, currency_id, type, amount, balance_before, balance_after, related_user_id, related_hosting_id, description, metadata)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         userId,
+        currencyId,
         type,
         amount,
         balanceBefore,
@@ -273,13 +287,15 @@ export async function deductCoins(
  * @param toUserId - Recipient's internal user ID
  * @param amount - Amount to transfer
  * @param description - Transfer description
+ * @param currencyId - Currency ID (default: 1 = COIN)
  * @returns Transfer result
  */
 export async function transferCoins(
   fromUserId: number,
   toUserId: number,
   amount: number,
-  description?: string
+  description?: string,
+  currencyId: number = DEFAULT_CURRENCY_ID
 ): Promise<TransferResult> {
   const client = await pool.connect();
 
@@ -295,6 +311,7 @@ export async function transferCoins(
         related_user_id: toUserId,
         description: description || 'Transfer to another user',
       },
+      currencyId,
       client
     );
 
@@ -311,6 +328,7 @@ export async function transferCoins(
         related_user_id: fromUserId,
         description: description || 'Transfer from another user',
       },
+      currencyId,
       client
     );
 
@@ -343,18 +361,20 @@ export async function transferCoins(
  * Create or initialize user economy account
  * @param userId - Internal user ID
  * @param initialBalance - Initial balance (default: 0)
+ * @param currencyId - Currency ID (default: 1 = COIN)
  * @returns Success status
  */
 export async function createEconomyAccount(
   userId: number,
-  initialBalance: number = 0
+  initialBalance: number = 0,
+  currencyId: number = DEFAULT_CURRENCY_ID
 ): Promise<boolean> {
   try {
     await pool.query(
-      `INSERT INTO user_economy (user_id, coins)
-       VALUES ($1, $2)
-       ON CONFLICT (user_id) DO NOTHING`,
-      [userId, initialBalance]
+      `INSERT INTO user_economy (user_id, currency_id, balance)
+       VALUES ($1, $2, $3)
+       ON CONFLICT (user_id, currency_id) DO NOTHING`,
+      [userId, currencyId, initialBalance]
     );
 
     return true;
@@ -367,18 +387,47 @@ export async function createEconomyAccount(
 /**
  * Check if user has economy account
  * @param userId - Internal user ID
+ * @param currencyId - Currency ID (default: 1 = COIN)
  * @returns True if account exists
  */
-export async function hasEconomyAccount(userId: number): Promise<boolean> {
+export async function hasEconomyAccount(userId: number, currencyId: number = DEFAULT_CURRENCY_ID): Promise<boolean> {
   try {
     const result = await pool.query(
-      'SELECT 1 FROM user_economy WHERE user_id = $1',
-      [userId]
+      'SELECT 1 FROM user_economy WHERE user_id = $1 AND currency_id = $2',
+      [userId, currencyId]
     );
 
     return result.rows.length > 0;
   } catch (error) {
     console.error('Error checking economy account:', error);
     return false;
+  }
+}
+
+/**
+ * Get currency info
+ * @param currencyId - Currency ID
+ * @returns Currency info or null
+ */
+export async function getCurrencyInfo(currencyId: number): Promise<{
+  id: number;
+  code: string;
+  name: string;
+  symbol: string;
+} | null> {
+  try {
+    const result = await pool.query(
+      'SELECT id, code, name, symbol FROM currencies WHERE id = $1 AND is_active = true',
+      [currencyId]
+    );
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error getting currency info:', error);
+    return null;
   }
 }
