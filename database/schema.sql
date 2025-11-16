@@ -58,6 +58,11 @@ CREATE TABLE IF NOT EXISTS users (
   oauth_scopes TEXT,                           -- Các quyền đã cấp (identify,email,...)
   terms_accepted_at TIMESTAMP,                 -- Thời điểm chấp nhận điều khoản
 
+  -- Anti-clone tracking
+  last_verify_ip VARCHAR(45),                  -- IP address từ lần xác thực OAuth cuối (IPv4/IPv6)
+  last_verify_user_agent TEXT,                 -- User agent từ lần xác thực OAuth cuối
+  last_verify_at TIMESTAMP,                    -- Thời điểm xác thực OAuth cuối cùng
+
   -- Metadata
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -67,6 +72,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Index để tìm kiếm nhanh
 CREATE INDEX idx_users_discord_id ON users(discord_id);
 CREATE INDEX idx_users_pterodactyl_user_id ON users(pterodactyl_user_id);
+CREATE INDEX idx_users_last_verify_ip ON users(last_verify_ip);
 
 -- ==========================================
 -- 2. BẢNG CURRENCIES (Tiền tệ)
@@ -357,6 +363,7 @@ CREATE TABLE IF NOT EXISTS giveaways (
   -- Yêu cầu để tham gia (tùy chọn)
   required_role_id VARCHAR(20),                -- Phải có role này mới được vào
   min_account_age_days INTEGER,                -- Tuổi tài khoản Discord tối thiểu
+  prevent_alts BOOLEAN DEFAULT false,          -- Ngăn tài khoản clone/alt (kiểm tra IP trùng)
 
   -- Trạng thái
   ends_at TIMESTAMP NOT NULL,                  -- Thời điểm kết thúc
