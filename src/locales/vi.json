@@ -409,21 +409,21 @@
         "name": "kiss",
         "description": "Hôn ai đó",
         "message": [
-          "*hôn {target}* 💋",
-          "{user} hôn {target}! 😘",
-          "Hôn {target} nhẹ nhàng~ 💕",
-          "{user} *chu má {target}* Mwah! 😚",
-          "{target}~ *hôn* >//< 💋✨"
+          "*hun {target}* 💋",
+          "{user} hun {target}! 😘",
+          "Hun {target} nhẹ nhàng~ 💕",
+          "{user} *hun má {target}* Mwah! 😚",
+          "{target}~ *hun hun* >//< 💋✨"
         ],
         "self": [
-          "{user} tự hôn mình... Narcissist à? 💋😅",
-          "Sao {user} lại tự hôn bản thân? 🪞✨",
-          "{user} hôn gương... Tự yêu mình quá mức rồi! 😂"
+          "{user} tự hun mình... Narcissist à? 💋😅",
+          "Sao {user} lại tự hun bản thân? 🪞✨",
+          "{user} hun gương... Tự yêu mình quá mức rồi! 😂"
         ],
         "bot": [
-          "{user} hôn tớ rồi nè! Thích ghê! 😻💕",
-          "*purrs* {user} hôn tớ! Hạnh phúc quá~ (=^･ω･^=) 💋",
-          "Nyaa~ {user} hôn tớ! Tớ thích! >//< 💕✨"
+          "{user} hun tớ rồi nè! Thích ghê! 😻💕",
+          "*purrs* {user} hun tớ! Hạnh phúc quá~ (=^･ω･^=) 💋",
+          "Nyaa~ {user} hun tớ! Tớ thích! >//< 💕✨"
         ]
       },
       "pat": {
@@ -451,18 +451,18 @@
         "name": "peck",
         "description": "Hôn nhẹ ai đó",
         "message": [
-          "*hôn nhẹ {target}* 😘",
-          "{user} chu nhẹ {target}! 😚",
-          "Hôn gió {target}~ 💋✨",
-          "{user} *hôn má {target}* Mwah~ (づ ̄ ³ ̄)づ"
+          "*hun nhẹ {target}* 😘",
+          "{user} hun {target} nhẹ nhàng! 😚",
+          "Hun gió {target}~ 💋✨",
+          "{user} *hun má {target}* Mwah~ (づ ̄ ³ ̄)づ"
         ],
         "self": [
-          "{user} tự hôn nhẹ mình... 😘💦",
-          "{user} hôn gió cho bản thân! Đáng yêu quá! 💋✨"
+          "{user} tự hun nhẹ mình... 😘💦",
+          "{user} hun gió cho bản thân! Đáng yêu quá! 💋✨"
         ],
         "bot": [
-          "{user} hôn nhẹ tớ! Dễ thương ghê~ 😻",
-          "{user} chu tớ! *purrs* Thích lắm! (=^･ω･^=) 💕"
+          "{user} hun nhẹ tớ! Dễ thương ghê~ 😻",
+          "{user} hun tớ! *purrs* Thích lắm! (=^･ω･^=) 💕"
         ]
       },
       "poke": {
