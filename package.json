@@ -23,8 +23,6 @@
     "db:drop": "ts-node src/database/init.ts drop",
     "db:reset": "ts-node src/database/init.ts reset",
     "db:cleanup": "ts-node src/database/init.ts cleanup",
-    "guilds:stats": "ts-node src/scripts/cleanup-guilds.ts",
-    "guilds:cleanup": "ts-node src/scripts/cleanup-guilds.ts --cleanup"
   },
   "keywords": [
     "discord",
