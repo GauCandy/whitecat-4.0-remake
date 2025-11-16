@@ -58,9 +58,9 @@ async function seedTestUser() {
 
   // Create user economy with starting balance
   await pool.query(
-    `INSERT INTO user_economy (user_id, coins)
-     VALUES ($1, $2)`,
-    [userId, 100000] // 100,000 starting coins
+    `INSERT INTO user_economy (user_id, currency_id, balance)
+     VALUES ($1, $2, $3)`,
+    [userId, 1, 100000] // 100,000 starting coins (currency_id = 1 = COIN)
   );
 
   console.log('✅ Test user created with 100,000 coins');
