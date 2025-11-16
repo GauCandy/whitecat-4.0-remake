@@ -164,6 +164,22 @@ export class PterodactylAPI {
   }
 
   /**
+   * Update user password
+   */
+  async updateUserPassword(userId: number, newPassword: string): Promise<void> {
+    try {
+      await this.getClient().patch(`/api/application/users/${userId}`, {
+        password: newPassword,
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(`Failed to update password: ${error.response?.data?.errors?.[0]?.detail || error.message}`);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Test API connection
    */
   async testConnection(): Promise<boolean> {
