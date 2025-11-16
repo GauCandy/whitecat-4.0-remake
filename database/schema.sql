@@ -128,16 +128,11 @@ CREATE TABLE IF NOT EXISTS guilds (
   id BIGSERIAL PRIMARY KEY,
 
   guild_id VARCHAR(20) UNIQUE NOT NULL,        -- Discord guild ID (snowflake)
-  owner_id VARCHAR(20),                        -- Discord ID của chủ server
-  prefix VARCHAR(10) DEFAULT '!',              -- Prefix cho lệnh text
   locale VARCHAR(10) DEFAULT 'en-US',          -- Ngôn ngữ: 'en-US', 'vi', etc.
-  member_count INTEGER DEFAULT 0,              -- Số lượng thành viên
-  icon VARCHAR(255),                           -- Icon hash của guild
+  prefix VARCHAR(10) DEFAULT '!',              -- Prefix cho lệnh text
 
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  left_at TIMESTAMP,                           -- Thời điểm bot rời khỏi guild
-  is_active BOOLEAN DEFAULT true,              -- Bot còn trong guild không?
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  left_at TIMESTAMP                            -- Thời điểm bot rời khỏi guild
 );
 
 CREATE INDEX idx_guilds_guild_id ON guilds(guild_id);
@@ -468,9 +463,6 @@ CREATE TRIGGER update_user_hosting_updated_at BEFORE UPDATE ON user_hosting
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_statistics_updated_at BEFORE UPDATE ON statistics
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_guilds_updated_at BEFORE UPDATE ON guilds
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ==========================================
