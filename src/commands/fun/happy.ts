@@ -2,7 +2,7 @@
  * Happy Expression Command
  */
 
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType, MessageFlags } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestExpression } from '../../utils/nekobest';
 import { getGuildLocale, t, Locale, buildLocalizedCommand } from '../../utils/i18n';
@@ -58,7 +58,7 @@ const command: Command = {
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });
             } else {
-                await interaction.reply({ content: errorMessage, ephemeral: true });
+                await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
             }
         }
     }
