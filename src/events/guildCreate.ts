@@ -36,17 +36,15 @@ const event: Event<'guildCreate'> = {
                 // Update existing guild
                 await pool.query(
                     `UPDATE guilds
-                     SET guild_name = $1,
-                         owner_id = $2,
-                         locale = $3,
-                         member_count = $4,
-                         icon = $5,
+                     SET owner_id = $1,
+                         locale = $2,
+                         member_count = $3,
+                         icon = $4,
                          is_active = true,
                          left_at = NULL,
                          updated_at = CURRENT_TIMESTAMP
-                     WHERE guild_id = $6`,
+                     WHERE guild_id = $5`,
                     [
-                        guild.name,
                         guild.ownerId,
                         mappedLocale,
                         guild.memberCount,
@@ -59,11 +57,10 @@ const event: Event<'guildCreate'> = {
             } else {
                 // Insert new guild into database
                 await pool.query(
-                    `INSERT INTO guilds (guild_id, guild_name, owner_id, locale, member_count, icon, prefix)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    `INSERT INTO guilds (guild_id, owner_id, locale, member_count, icon, prefix)
+                     VALUES ($1, $2, $3, $4, $5, $6)`,
                     [
                         guild.id,
-                        guild.name,
                         guild.ownerId,
                         mappedLocale,
                         guild.memberCount,
