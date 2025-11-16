@@ -589,7 +589,7 @@
       "prefix_modal_placeholder": "Gõ prefix bạn muốn (như !, ?, $, v.v.)",
       "prefix_invalid": "❌ Úi! Prefix phải từ 1-10 ký tự nha.",
       "setup_complete": "Xong Rồi!",
-      "setup_complete_description": "**Ngôn ngữ:** {locale}\n**Prefix:** {prefix}\n\n**Mẹo nhỏ:**\n• `/help` - Xem tất cả lệnh slash\n• `{prefix}help` - Xem tất cả lệnh text\n\nChà, server này trông vui đây! Hẹn gặp lại nha 🎉"
+      "setup_complete_description": "**Ngôn ngữ:** {locale}\n**Prefix:** {prefix}\n\n**Mẹo nhỏ:**\n• `/help` - Xem tất cả lệnh slash\n• `{prefix}help` - Xem tất cả lệnh text\n\nChà, server này có vẻ thú vị đây! Chắc mình sẽ thích ở đây lắm 🎉"
     }
   }
 }

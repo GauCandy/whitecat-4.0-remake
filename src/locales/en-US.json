@@ -588,7 +588,7 @@
       "prefix_modal_placeholder": "Type your prefix (like !, ?, $, etc.)",
       "prefix_invalid": "❌ Oops! Prefix must be 1-10 characters.",
       "setup_complete": "You're All Set!",
-      "setup_complete_description": "**Language:** {locale}\n**Prefix:** {prefix}\n\n**Quick Tips:**\n• `/help` - See all slash commands\n• `{prefix}help` - See all text commands\n\nThis server looks fun! Can't wait to hang out here 🎉"
+      "setup_complete_description": "**Language:** {locale}\n**Prefix:** {prefix}\n\n**Quick Tips:**\n• `/help` - See all slash commands\n• `{prefix}help` - See all text commands\n\nThis server looks awesome! I think I'm gonna like it here 🎉"
     }
   }
 }
