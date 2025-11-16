@@ -33,40 +33,22 @@ const event: Event<'guildCreate'> = {
             if (existingGuild.rows.length > 0) {
                 logger.warn(`Guild ${guild.name} already exists in database. Updating...`);
 
-                // Update existing guild
+                // Update existing guild - reset left_at and update locale
                 await pool.query(
                     `UPDATE guilds
-                     SET owner_id = $1,
-                         locale = $2,
-                         member_count = $3,
-                         icon = $4,
-                         is_active = true,
-                         left_at = NULL,
-                         updated_at = CURRENT_TIMESTAMP
-                     WHERE guild_id = $5`,
-                    [
-                        guild.ownerId,
-                        mappedLocale,
-                        guild.memberCount,
-                        guild.icon,
-                        guild.id
-                    ]
+                     SET locale = $1,
+                         left_at = NULL
+                     WHERE guild_id = $2`,
+                    [mappedLocale, guild.id]
                 );
 
                 logger.info(`Guild ${guild.name} updated in database`);
             } else {
                 // Insert new guild into database
                 await pool.query(
-                    `INSERT INTO guilds (guild_id, owner_id, locale, member_count, icon, prefix)
-                     VALUES ($1, $2, $3, $4, $5, $6)`,
-                    [
-                        guild.id,
-                        guild.ownerId,
-                        mappedLocale,
-                        guild.memberCount,
-                        guild.icon,
-                        '!' // Default prefix
-                    ]
+                    `INSERT INTO guilds (guild_id, locale, prefix)
+                     VALUES ($1, $2, $3)`,
+                    [guild.id, mappedLocale, '!']
                 );
 
                 logger.info(`Guild ${guild.name} added to database with locale: ${mappedLocale}`);
