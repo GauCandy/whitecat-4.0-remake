@@ -2,7 +2,7 @@
  * Nope Expression Command
  */
 
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestExpression } from '../../utils/nekobest';
 import { getGuildLocale, t, Locale } from '../../utils/i18n';
@@ -14,7 +14,9 @@ const command: Command = {
         .setDescription(t(Locale.English, 'commands.fun.nope.description'))
         .setDescriptionLocalizations({
             vi: t(Locale.Vietnamese, 'commands.fun.nope.description'),
-        }) as SlashCommandBuilder,
+        })
+        .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+        .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel) as SlashCommandBuilder,
 
     category: CommandCategory.Fun,
     cooldown: 3,
@@ -61,7 +63,7 @@ const command: Command = {
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });
             } else {
-                await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
+                await interaction.reply({ content: errorMessage, ephemeral: true });
             }
         }
     }
