@@ -4,6 +4,8 @@
 
 import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 import { pool } from '../../database/config';
+import { getGuildLocale } from '../../utils/i18n';
+import { logGiveawayError } from '../../utils/errorHandler';
 import type { Command } from '../../types/command';
 
 const command: Command = {
@@ -171,9 +173,17 @@ const command: Command = {
         ephemeral: true,
       });
     } catch (error) {
-      console.error('Error starting giveaway:', error);
+      const locale = interaction.guildId ? await getGuildLocale(interaction.guildId) : 'en-US';
+      const errorMessage = logGiveawayError(
+        error,
+        undefined,
+        interaction.user.id,
+        'start giveaway',
+        locale
+      );
+
       await interaction.reply({
-        content: '❌ An error occurred while starting the giveaway.',
+        content: errorMessage,
         ephemeral: true,
       });
     }

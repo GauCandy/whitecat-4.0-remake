@@ -4,6 +4,8 @@
 
 import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { pool } from '../../database/config';
+import { getGuildLocale } from '../../utils/i18n';
+import { logGiveawayError } from '../../utils/errorHandler';
 import type { Command } from '../../types/command';
 import type { ExtendedClient } from '../../types/client';
 import type { Giveaway } from '../../types/giveaway';
@@ -89,17 +91,19 @@ const command: Command = {
         content: `✅ Rerolled ${winners.length} new winner(s)!`,
       });
     } catch (error) {
-      console.error('Error rerolling giveaway:', error);
+      const locale = await getGuildLocale(interaction.guildId!);
+      const errorMessage = logGiveawayError(
+        error,
+        messageId,
+        interaction.user.id,
+        'reroll giveaway',
+        locale
+      );
 
       if (interaction.replied || interaction.deferred) {
-        await interaction.editReply({
-          content: '❌ An error occurred while rerolling the giveaway.',
-        });
+        await interaction.editReply({ content: errorMessage });
       } else {
-        await interaction.reply({
-          content: '❌ An error occurred while rerolling the giveaway.',
-          ephemeral: true,
-        });
+        await interaction.reply({ content: errorMessage, ephemeral: true });
       }
     }
   },

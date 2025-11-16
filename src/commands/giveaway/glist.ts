@@ -4,6 +4,8 @@
 
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { pool } from '../../database/config';
+import { getGuildLocale } from '../../utils/i18n';
+import { logGiveawayError } from '../../utils/errorHandler';
 import type { Command } from '../../types/command';
 import type { Giveaway } from '../../types/giveaway';
 
@@ -70,9 +72,17 @@ const command: Command = {
         embeds: [embed],
       });
     } catch (error) {
-      console.error('Error listing giveaways:', error);
+      const locale = await getGuildLocale(interaction.guildId!);
+      const errorMessage = logGiveawayError(
+        error,
+        undefined,
+        interaction.user.id,
+        'list giveaways',
+        locale
+      );
+
       await interaction.reply({
-        content: '❌ An error occurred while listing giveaways.',
+        content: errorMessage,
         ephemeral: true,
       });
     }

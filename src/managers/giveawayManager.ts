@@ -6,6 +6,7 @@
 import { Client, EmbedBuilder, TextChannel } from 'discord.js';
 import { pool } from '../database/config';
 import { botLogger } from '../utils/logger';
+import { logError } from '../utils/errorHandler';
 import type { Giveaway, GiveawayWinner } from '../types/giveaway';
 
 export class GiveawayManager {
@@ -65,7 +66,9 @@ export class GiveawayManager {
         }
       }
     } catch (error) {
-      botLogger.error('❌ Error checking expired giveaways:', error);
+      logError(error, {
+        action: 'check expired giveaways',
+      });
     }
   }
 
@@ -104,8 +107,11 @@ export class GiveawayManager {
 
       return winners;
     } catch (error) {
-      botLogger.error(`❌ Error ending giveaway ${giveaway.id}:`, error);
-      return [];
+      logError(error, {
+        action: 'end giveaway',
+        guildId: giveaway.guild_discord_id,
+      });
+      throw error;
     }
   }
 
@@ -142,7 +148,10 @@ export class GiveawayManager {
         content: `Congratulations ${winnerMentions}! You won **${giveaway.prize}**! 🎉`,
       });
     } catch (error) {
-      botLogger.error('❌ Error announcing winners:', error);
+      logError(error, {
+        action: 'announce giveaway winners',
+        guildId: giveaway.guild_discord_id,
+      });
     }
   }
 
@@ -165,7 +174,10 @@ export class GiveawayManager {
 
       await message.edit({ embeds: [embed] });
     } catch (error) {
-      botLogger.error('❌ Error announcing no winners:', error);
+      logError(error, {
+        action: 'announce no giveaway winners',
+        guildId: giveaway.channel_id,
+      });
     }
   }
 
@@ -220,7 +232,9 @@ export class GiveawayManager {
 
       return winners;
     } catch (error) {
-      botLogger.error(`❌ Error rerolling giveaway ${giveawayId}:`, error);
+      logError(error, {
+        action: 'reroll giveaway winners',
+      });
       throw error;
     }
   }

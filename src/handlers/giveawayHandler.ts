@@ -5,6 +5,8 @@
 import type { ButtonInteraction } from 'discord.js';
 import { pool } from '../database/config';
 import { botLogger } from '../utils/logger';
+import { getGuildLocale } from '../utils/i18n';
+import { logGiveawayError } from '../utils/errorHandler';
 
 /**
  * Handle giveaway entry button click
@@ -170,10 +172,22 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
 
     botLogger.info(`User ${interaction.user.tag} entered giveaway ${giveaway.id}`);
   } catch (error) {
-    botLogger.error('Error handling giveaway entry:', error);
-    await interaction.reply({
-      content: '❌ An error occurred while entering the giveaway. Please try again later.',
-      ephemeral: true,
-    });
+    const locale = interaction.guildId ? await getGuildLocale(interaction.guildId) : 'en-US';
+    const errorMessage = logGiveawayError(
+      error,
+      undefined,
+      interaction.user.id,
+      'enter giveaway',
+      locale
+    );
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.editReply({ content: errorMessage });
+    } else {
+      await interaction.reply({
+        content: errorMessage,
+        ephemeral: true,
+      });
+    }
   }
 }
