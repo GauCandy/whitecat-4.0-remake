@@ -568,7 +568,23 @@
     "guildCreate": {
       "welcome_title": "👋 Thanks for inviting WhiteCat Cloud!",
       "welcome_description": "I'm WhiteCat Cloud - your premium game server hosting bot!\n\n**Getting Started:**\n• Use `/help` to see all available commands\n• Set up your server with `/setup`\n• Change my prefix with `/prefix`\n\n**Features:**\n🎮 Game server hosting\n💰 Virtual economy system\n🎉 Giveaways and fun commands\n\nNeed help? Join our support server!",
-      "locale_detected": "Detected server language: **{locale}**"
+      "locale_detected": "Detected server language: **{locale}**",
+      "setup_prompt": "{inviter} Please setup your server by selecting a language below!",
+      "language_select_label": "Step 1: Select Language",
+      "language_select_placeholder": "Choose your preferred language...",
+      "prefix_setup_label": "Step 2: Setup Prefix",
+      "language_option_en_us": "English (US)",
+      "language_option_vi": "Tiếng Việt",
+      "button_default_language": "Use Default",
+      "button_custom_prefix": "Custom Prefix",
+      "button_default_prefix": "Default Prefix (!)",
+      "language_updated": "✅ Language updated to: **{locale}**",
+      "prefix_updated": "✅ Prefix updated to: **{prefix}**",
+      "prefix_modal_title": "Set Custom Prefix",
+      "prefix_modal_label": "Prefix",
+      "prefix_modal_placeholder": "Enter your desired prefix (e.g., !, ?, $)",
+      "prefix_invalid": "❌ Invalid prefix! Please use 1-10 characters.",
+      "setup_complete": "🎉 Setup complete! You're all set!"
     }
   }
 }

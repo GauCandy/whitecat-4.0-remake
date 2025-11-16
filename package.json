@@ -23,6 +23,7 @@
     "db:drop": "ts-node src/database/init.ts drop",
     "db:reset": "ts-node src/database/init.ts reset",
     "db:cleanup": "ts-node src/database/init.ts cleanup",
+    "db:migrate": "psql $DATABASE_URL -f database/migrations/001_simplify_guilds.sql"
   },
   "keywords": [
     "discord",
