@@ -356,7 +356,6 @@ CREATE TABLE IF NOT EXISTS giveaways (
 
   -- Yêu cầu để tham gia (tùy chọn)
   required_role_id VARCHAR(20),                -- Phải có role này mới được vào
-  min_account_age_days INTEGER,                -- Tuổi tài khoản Discord tối thiểu
 
   -- Trạng thái
   ends_at TIMESTAMP NOT NULL,                  -- Thời điểm kết thúc

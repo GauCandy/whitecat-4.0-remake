@@ -27,9 +27,9 @@ router.get('/callback', async (req: Request, res: Response) => {
     // Save tokens to database
     await pool.query(
       `UPDATE users
-       SET access_token = $1,
-           refresh_token = $2,
-           token_expires_at = $3,
+       SET oauth_access_token = $1,
+           oauth_refresh_token = $2,
+           oauth_token_expires_at = $3,
            oauth_scopes = $4,
            is_authorized = true,
            email = COALESCE($5, email),
