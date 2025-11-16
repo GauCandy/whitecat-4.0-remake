@@ -567,14 +567,14 @@
   },
   "events": {
     "guildCreate": {
-      "welcome_title": "👋 Cảm ơn bạn đã mời WhiteCat Cloud!",
-      "welcome_description": "Hãy bắt đầu với thiết lập nhanh!\n\n**Bước 1:** Chọn ngôn ngữ bạn muốn\n**Bước 2:** Đặt prefix cho lệnh\n\nChỉ mất vài giây thôi!",
+      "welcome_title": "👋 Cảm ơn bạn đã mời mình nha!",
+      "welcome_description": "Chào bạn! Thiết lập nhanh thôi.\n\nChọn ngôn ngữ rồi đặt prefix - mất có 10 giây!",
       "locale_detected": "Đã phát hiện ngôn ngữ server: **{locale}**",
-      "setup_prompt": "{inviter} Vui lòng hoàn tất thiết lập bên dưới:",
+      "setup_prompt": "{inviter} Cùng thiết lập nào!",
       "language_select_label": "Bước 1: Chọn Ngôn Ngữ",
-      "step1_title": "🌍 Bước 1: Chọn Ngôn Ngữ",
-      "step2_title": "⚙️ Bước 2: Thiết Lập Prefix",
-      "step2_description": "**Ngôn ngữ đã chọn:** {locale}\n\nBây giờ hãy chọn prefix cho lệnh text.\nPrefix được dùng trước các lệnh như `{prefix}help`",
+      "step1_title": "🌍 Bước 1: Chọn Ngôn Ngữ Nha",
+      "step2_title": "⚙️ Bước 2: Chọn Prefix",
+      "step2_description": "Tuyệt! Bạn chọn **{locale}** rồi 🎉\n\nGiờ chọn prefix - dùng trước lệnh text.\nVí dụ: `{prefix}help` để xem hướng dẫn",
       "language_select_placeholder": "Chọn ngôn ngữ bạn muốn...",
       "prefix_setup_label": "Bước 2: Thiết Lập Prefix",
       "language_option_en_us": "English (US)",
@@ -583,13 +583,13 @@
       "button_custom_prefix": "Prefix Tùy Chỉnh",
       "button_default_prefix": "Prefix Mặc Định (!)",
       "language_updated": "✅ Đã cập nhật ngôn ngữ thành: **{locale}**",
-      "prefix_updated": "✅ Prefix đã được đặt thành {prefix}",
-      "prefix_modal_title": "Đặt Prefix Tùy Chỉnh",
+      "prefix_updated": "✅ Prefix của bạn bây giờ là {prefix}",
+      "prefix_modal_title": "Prefix Tùy Chỉnh",
       "prefix_modal_label": "Prefix",
-      "prefix_modal_placeholder": "Nhập prefix bạn muốn (ví dụ: !, ?, $)",
-      "prefix_invalid": "❌ Prefix không hợp lệ! Vui lòng dùng 1-10 ký tự.",
-      "setup_complete": "Thiết Lập Hoàn Tất!",
-      "setup_complete_description": "Xong rồi! Server của bạn đã sẵn sàng sử dụng WhiteCat Cloud.\n\n**Bắt đầu nhanh:**\n• Dùng `/help` để xem tất cả lệnh\n• Thử các lệnh vui như `/hug` hoặc `/kiss`\n• Kiểm tra `/balance` để xem số xu\n\nChúc vui vẻ! 🎉"
+      "prefix_modal_placeholder": "Gõ prefix bạn muốn (như !, ?, $, v.v.)",
+      "prefix_invalid": "❌ Úi! Prefix phải từ 1-10 ký tự nha.",
+      "setup_complete": "Xong Rồi!",
+      "setup_complete_description": "Hoàn tất! 🎉 Server bạn sẵn sàng rồi đó.\n\n**Thử mấy cái này:**\n• `/help` - Xem mình làm được gì\n• `/hug`, `/kiss` - Lệnh tương tác vui\n• `/balance` - Xem số xu của bạn\n\nChúc vui!"
     }
   }
 }
