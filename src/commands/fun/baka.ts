@@ -31,7 +31,7 @@ const command: Command = {
             const guildId = interaction.guildId;
 
             // Get guild locale for translations
-            const locale = guildId ? await getGuildLocale(guildId) : Locale.English;
+            const locale = guildId ? await getGuildLocale(guildId) : Locale.EnglishUS;
 
             // Check if targeting bot
             const isBot = targetUser.id === interaction.client.user.id;
@@ -83,7 +83,7 @@ const command: Command = {
         } catch (error) {
             logger.error('Error in baka command:', error);
 
-            const errorMessage = t(Locale.English, 'commands.fun.error');
+            const errorMessage = t(Locale.EnglishUS, 'commands.fun.error');
 
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });

@@ -131,7 +131,7 @@ async function sendWelcomeMessage(guild: Guild, locale: Locale): Promise<void> {
 
         // Get localized strings
         const localeNames: Record<Locale, string> = {
-            [Locale.English]: 'English',
+            [Locale.EnglishUS]: 'English (US)',
             [Locale.Vietnamese]: 'Tiếng Việt'
         };
 

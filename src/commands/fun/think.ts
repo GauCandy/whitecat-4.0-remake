@@ -21,7 +21,7 @@ const command: Command = {
             const guildId = interaction.guildId;
 
             // Get guild locale for translations
-            const locale = guildId ? await getGuildLocale(guildId) : Locale.English;
+            const locale = guildId ? await getGuildLocale(guildId) : Locale.EnglishUS;
 
             // Defer reply as API call might take a moment
             await interaction.deferReply();
@@ -53,7 +53,7 @@ const command: Command = {
         } catch (error) {
             logger.error('Error in think command:', error);
 
-            const errorMessage = t(Locale.English, 'commands.fun.error');
+            const errorMessage = t(Locale.EnglishUS, 'commands.fun.error');
 
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });
