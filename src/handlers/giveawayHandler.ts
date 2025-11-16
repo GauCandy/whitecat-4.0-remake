@@ -3,6 +3,7 @@
  */
 
 import type { ButtonInteraction } from 'discord.js';
+import { MessageFlags } from 'discord.js';
 import { pool } from '../database/config';
 import { botLogger } from '../utils/logger';
 import { getGuildLocale } from '../utils/i18n';
@@ -27,7 +28,7 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
     if (giveawayResult.rows.length === 0) {
       await interaction.reply({
         content: '❌ This giveaway could not be found.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -38,7 +39,7 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
     if (giveaway.ended) {
       await interaction.reply({
         content: '❌ This giveaway has already ended.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -47,7 +48,7 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
     if (new Date(giveaway.ends_at) < new Date()) {
       await interaction.reply({
         content: '❌ This giveaway has already ended.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -75,21 +76,7 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
       if (!member.roles.cache.has(giveaway.required_role_id)) {
         await interaction.reply({
           content: `❌ You need the <@&${giveaway.required_role_id}> role to enter this giveaway.`,
-          ephemeral: true,
-        });
-        return;
-      }
-    }
-
-    // Check account age (if specified)
-    if (giveaway.min_account_age_days) {
-      const accountAge = Date.now() - interaction.user.createdTimestamp;
-      const requiredAge = giveaway.min_account_age_days * 24 * 60 * 60 * 1000;
-
-      if (accountAge < requiredAge) {
-        await interaction.reply({
-          content: `❌ Your account must be at least ${giveaway.min_account_age_days} days old to enter this giveaway.`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -104,7 +91,7 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
     if (entryCheck.rows.length > 0) {
       await interaction.reply({
         content: '❌ You have already entered this giveaway!',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -125,7 +112,7 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
 
     await interaction.reply({
       content: `✅ You have successfully entered the giveaway! (Total entries: ${totalEntries})`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     botLogger.info(`User ${interaction.user.tag} entered giveaway ${giveaway.id}`);
@@ -144,7 +131,7 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
     } else {
       await interaction.reply({
         content: errorMessage,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   }

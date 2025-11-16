@@ -2,7 +2,7 @@
  * /gstart command - Start a new giveaway
  */
 
-import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags } from 'discord.js';
 import { pool } from '../../database/config';
 import { getGuildLocale } from '../../utils/i18n';
 import { logGiveawayError } from '../../utils/errorHandler';
@@ -41,20 +41,6 @@ const command: Command = {
         .setDescription('Required role to participate')
         .setRequired(false)
     )
-    .addIntegerOption(option =>
-      option
-        .setName('min_account_age')
-        .setDescription('Minimum account age in days (default: none)')
-        .setMinValue(0)
-        .setMaxValue(365)
-        .setRequired(false)
-    )
-    .addBooleanOption(option =>
-      option
-        .setName('prevent_alts')
-        .setDescription('Prevent clone/alt accounts from entering (checks IP duplicates)')
-        .setRequired(false)
-    )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false),
   category: CommandCategory.Giveaway,
@@ -63,7 +49,7 @@ const command: Command = {
     if (!interaction.guildId) {
       await interaction.reply({
         content: '❌ This command can only be used in a server.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -72,8 +58,6 @@ const command: Command = {
     const duration = interaction.options.getInteger('duration') ?? 60;
     const winnerCount = interaction.options.getInteger('winners') ?? 1;
     const requiredRole = interaction.options.getRole('required_role');
-    const minAccountAge = interaction.options.getInteger('min_account_age');
-    const preventAlts = interaction.options.getBoolean('prevent_alts') ?? false;
 
     try {
       // Get or create guild
@@ -122,8 +106,6 @@ const command: Command = {
           `**Ends:** <t:${Math.floor(endsAt.getTime() / 1000)}:R>\n` +
           `**Hosted by:** ${interaction.user}\n\n` +
           (requiredRole ? `**Required Role:** ${requiredRole}\n` : '') +
-          (minAccountAge ? `**Min Account Age:** ${minAccountAge} days\n` : '') +
-          (preventAlts ? `**🛡️ Clone Protection:** Enabled\n` : '') +
           `\nClick the button below to enter!`
         )
         .setColor(0x00ff00)
@@ -146,7 +128,7 @@ const command: Command = {
       if (!giveawayMessage) {
         await interaction.reply({
           content: '❌ Failed to create giveaway message.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -154,8 +136,8 @@ const command: Command = {
       // Insert into database
       await pool.query(
         `INSERT INTO giveaways
-         (guild_id, channel_id, message_id, prize, winner_count, required_role_id, min_account_age_days, prevent_alts, ends_at, created_by)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+         (guild_id, channel_id, message_id, prize, winner_count, required_role_id, ends_at, created_by)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           guildDbId,
           interaction.channelId,
@@ -163,8 +145,6 @@ const command: Command = {
           prize,
           winnerCount,
           requiredRole?.id || null,
-          minAccountAge || null,
-          preventAlts,
           endsAt,
           userDbId,
         ]
@@ -172,7 +152,7 @@ const command: Command = {
 
       await interaction.reply({
         content: `✅ Giveaway started! It will end <t:${Math.floor(endsAt.getTime() / 1000)}:R>`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } catch (error) {
       const locale = interaction.guildId ? await getGuildLocale(interaction.guildId) : 'en-US';
@@ -186,7 +166,7 @@ const command: Command = {
 
       await interaction.reply({
         content: errorMessage,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },

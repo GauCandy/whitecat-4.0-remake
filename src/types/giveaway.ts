@@ -10,8 +10,6 @@ export interface Giveaway {
   prize: string;
   winner_count: number;
   required_role_id?: string;
-  min_account_age_days?: number;
-  prevent_alts: boolean;
   ends_at: Date;
   ended: boolean;
   created_by: number;

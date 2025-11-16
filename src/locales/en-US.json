@@ -571,9 +571,7 @@
           "prize": "The prize for the giveaway",
           "duration": "Duration in minutes (default: 60)",
           "winners": "Number of winners (default: 1)",
-          "required_role": "Required role to participate",
-          "min_account_age": "Minimum account age in days (default: none)",
-          "prevent_alts": "Prevent clone/alt accounts from entering (checks IP duplicates)"
+          "required_role": "Required role to participate"
         },
         "embed": {
           "title": "🎉 GIVEAWAY 🎉",
@@ -582,9 +580,6 @@
           "ends": "Ends",
           "hosted_by": "Hosted by",
           "required_role": "Required Role",
-          "min_account_age": "Min Account Age",
-          "clone_protection": "🛡️ Clone Protection",
-          "enabled": "Enabled",
           "click_to_enter": "Click the button below to enter!",
           "days": "{days} days",
           "footer": "{count} winner(s) | Ends"
@@ -638,9 +633,6 @@
         "error_ended": "❌ This giveaway has already ended.",
         "error_already_entered": "❌ You have already entered this giveaway!",
         "error_role_required": "❌ You need the <@&{roleId}> role to enter this giveaway.",
-        "error_account_age": "❌ Your account must be at least {days} days old to enter this giveaway.",
-        "error_clone_detected": "❌ Clone protection detected a potential duplicate entry from your network. Only one entry per person is allowed.",
-        "error_verify_required": "❌ Clone protection is enabled for this giveaway. Please verify your account first by authorizing the bot.",
         "error_general": "❌ An error occurred while entering the giveaway. Please try again later."
       },
       "manager": {

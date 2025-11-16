@@ -135,8 +135,9 @@ const event: Event<'guildCreate'> = {
         try {
             logger.info(`Bot joined new guild: ${guild.name} (${guild.id})`);
 
-            // Detect guild's preferred locale from Discord
-            const discordLocale = guild.preferredLocale; // Discord API returns locale like "vi", "en-US"
+            // Fetch full guild data to get preferred locale (cache doesn't include this)
+            const fetchedGuild = await guild.fetch();
+            const discordLocale = fetchedGuild.preferredLocale; // Discord API returns locale like "vi", "en-US"
             const mappedLocale = mapDiscordLocale(discordLocale);
 
             logger.info(`Guild ${guild.name} locale detected: ${discordLocale} -> ${mappedLocale}`);

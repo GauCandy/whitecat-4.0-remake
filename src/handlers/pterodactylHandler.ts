@@ -6,6 +6,7 @@ import {
   TextInputStyle,
   ActionRowBuilder,
   EmbedBuilder,
+  MessageFlags,
 } from 'discord.js';
 import { pterodactyl } from '../utils/pterodactyl';
 import { pool } from '../database/config';
@@ -23,7 +24,7 @@ export async function handleResetPasswordButton(interaction: ButtonInteraction):
     if (interaction.user.id !== userId) {
       await interaction.reply({
         content: '❌ This button is not for you!',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -51,7 +52,7 @@ export async function handleResetPasswordButton(interaction: ButtonInteraction):
     console.error('Error showing reset password modal:', error);
     await interaction.reply({
       content: '❌ Failed to show password reset form.',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 }
@@ -60,7 +61,7 @@ export async function handleResetPasswordButton(interaction: ButtonInteraction):
  * Handle Reset Password modal submission
  */
 export async function handleResetPasswordModal(interaction: ModalSubmitInteraction): Promise<void> {
-  await interaction.deferReply({ ephemeral: true });
+  await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
   try {
     // Extract user ID from custom ID

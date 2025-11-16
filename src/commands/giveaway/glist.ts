@@ -2,7 +2,7 @@
  * /glist command - List active giveaways
  */
 
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, MessageFlags } from 'discord.js';
 import { pool } from '../../database/config';
 import { getGuildLocale } from '../../utils/i18n';
 import { logGiveawayError } from '../../utils/errorHandler';
@@ -21,7 +21,7 @@ const command: Command = {
     if (!interaction.guildId) {
       await interaction.reply({
         content: '❌ This command can only be used in a server.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -42,7 +42,7 @@ const command: Command = {
       if (result.rows.length === 0) {
         await interaction.reply({
           content: '📭 There are no active giveaways in this server.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -85,7 +85,7 @@ const command: Command = {
 
       await interaction.reply({
         content: errorMessage,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
   },
