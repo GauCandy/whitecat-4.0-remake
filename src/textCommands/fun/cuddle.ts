@@ -8,12 +8,11 @@ import logger from '../../utils/logger';
 
 const command: TextCommand = {
   name: 'cuddle',
-  aliases: ['ômấp', 'ôm ấp'],
   description: 'Cuddle with someone!',
   usage: 'cuddle @user',
   category: CommandCategory.Fun,
   cooldown: 3,
-  requiresAuth: false,
+  requiresAuth: true,
 
   async execute(message: Message, args: string[]): Promise<void> {
     try {

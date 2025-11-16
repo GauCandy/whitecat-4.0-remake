@@ -8,12 +8,11 @@ import logger from '../../utils/logger';
 
 const command: TextCommand = {
   name: 'hug',
-  aliases: ['ôm'],
   description: 'Give someone a warm hug!',
   usage: 'hug @user [mention more for group hug]',
   category: CommandCategory.Fun,
   cooldown: 3,
-  requiresAuth: false,
+  requiresAuth: true,
 
   async execute(message: Message, args: string[]): Promise<void> {
     try {

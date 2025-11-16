@@ -8,12 +8,11 @@ import logger from '../../utils/logger';
 
 const command: TextCommand = {
   name: 'bite',
-  aliases: ['cắn'],
   description: 'Bite someone!',
   usage: 'bite @user',
   category: CommandCategory.Fun,
   cooldown: 3,
-  requiresAuth: false,
+  requiresAuth: true,
 
   async execute(message: Message, args: string[]): Promise<void> {
     try {
