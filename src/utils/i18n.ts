@@ -1,26 +1,56 @@
 /**
  * i18n (Internationalization) System
  * Supports multiple languages with fallback to English
+ * Auto-discovers supported locales from locales folder
  */
 
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { pool } from '../database/config';
 import { SlashCommandBuilder } from 'discord.js';
 
 // Supported locales
 export enum Locale {
-    English = 'en',
+    EnglishUS = 'en-US',
     Vietnamese = 'vi',
 }
 
 // Translation cache
-const translations: Map<Locale, any> = new Map();
+const translations: Map<string, any> = new Map();
+
+// Supported locales discovered from files
+let supportedLocales: string[] = [];
+
+/**
+ * Discover all supported locales from the locales directory
+ * Scans for .json files and extracts locale codes
+ */
+function discoverSupportedLocales(): string[] {
+    try {
+        const localesPath = join(__dirname, '../locales');
+        const files = readdirSync(localesPath).filter(file => file.endsWith('.json'));
+        return files.map(file => file.replace('.json', ''));
+    } catch (error) {
+        console.error('Error discovering supported locales:', error);
+        return ['en-US']; // Fallback to English US
+    }
+}
+
+/**
+ * Get all supported locales
+ * Returns the list of discovered locale codes
+ */
+export function getSupportedLocales(): string[] {
+    if (supportedLocales.length === 0) {
+        supportedLocales = discoverSupportedLocales();
+    }
+    return supportedLocales;
+}
 
 /**
  * Load translation file for a specific locale
  */
-function loadTranslation(locale: Locale): any {
+function loadTranslation(locale: string): any {
     if (translations.has(locale)) {
         return translations.get(locale);
     }
@@ -33,9 +63,9 @@ function loadTranslation(locale: Locale): any {
         return translation;
     } catch (error) {
         console.error(`Failed to load translation for locale: ${locale}`, error);
-        // Fallback to English if the locale file doesn't exist
-        if (locale !== Locale.English) {
-            return loadTranslation(Locale.English);
+        // Fallback to English US if the locale file doesn't exist
+        if (locale !== Locale.EnglishUS) {
+            return loadTranslation(Locale.EnglishUS);
         }
         return {};
     }
@@ -51,22 +81,22 @@ function getNestedValue(obj: any, path: string): any {
 
 /**
  * Translate a key with optional replacements
- * @param locale - The locale to use
+ * @param locale - The locale to use (can be Locale enum or string)
  * @param key - Translation key (supports dot notation)
  * @param replacements - Object with placeholders to replace
  * @returns Translated string
  *
  * @example
- * t('en', 'commands.fun.poke.success', { user: '@John' })
+ * t('en-US', 'commands.fun.poke.success', { user: '@John' })
  * // Returns: "You poked @John!"
  */
-export function t(locale: Locale, key: string, replacements?: Record<string, string>): string {
+export function t(locale: Locale | string, key: string, replacements?: Record<string, string>): string {
     const translation = loadTranslation(locale);
     let value = getNestedValue(translation, key);
 
     // Fallback to English if translation not found
-    if (value === undefined && locale !== Locale.English) {
-        const fallbackTranslation = loadTranslation(Locale.English);
+    if (value === undefined && locale !== Locale.EnglishUS) {
+        const fallbackTranslation = loadTranslation(Locale.EnglishUS);
         value = getNestedValue(fallbackTranslation, key);
     }
 
@@ -108,8 +138,8 @@ export async function getGuildLocale(guildId: string): Promise<Locale> {
         console.error('Error fetching guild locale:', error);
     }
 
-    // Default to English
-    return Locale.English;
+    // Default to English US
+    return Locale.EnglishUS;
 }
 
 /**
@@ -135,17 +165,19 @@ export async function setGuildLocale(guildId: string, locale: Locale): Promise<v
  * @returns Supported Locale or default English
  */
 export function mapDiscordLocale(discordLocale: string): Locale {
-    // Normalize to lowercase and remove region code
-    const baseLocale = discordLocale.toLowerCase().split('-')[0];
+    // Normalize to lowercase
+    const normalizedLocale = discordLocale.toLowerCase();
 
-    switch (baseLocale) {
+    switch (normalizedLocale) {
         case 'vi':
             return Locale.Vietnamese;
+        case 'en-us':
+        case 'en-gb':
         case 'en':
-            return Locale.English;
+            return Locale.EnglishUS;
         default:
-            // Fallback to English for unsupported locales
-            return Locale.English;
+            // Fallback to English US for unsupported locales
+            return Locale.EnglishUS;
     }
 }
 
@@ -176,9 +208,11 @@ export async function getGuildTranslator(guildId: string): Promise<(key: string,
 export function getLocalizations(key: string): Record<string, string> {
     const localizations: Record<string, string> = {};
 
-    Object.values(Locale).forEach(locale => {
-        // Skip English since it's the default
-        if (locale === Locale.English) {
+    // Auto-discover and iterate through all supported locales
+    const locales = getSupportedLocales();
+    locales.forEach(locale => {
+        // Skip English US since it's the default
+        if (locale === Locale.EnglishUS) {
             return;
         }
 
@@ -211,18 +245,24 @@ export function buildLocalizedCommand(name: string, category: string): SlashComm
 
     return new SlashCommandBuilder()
         .setName(name)
-        .setDescription(t(Locale.English, descriptionKey))
+        .setDescription(t(Locale.EnglishUS, descriptionKey))
         .setDescriptionLocalizations(getLocalizations(descriptionKey));
 }
 
 /**
  * Initialize i18n system
- * Preload all translation files
+ * Auto-discovers and preloads all translation files from locales folder
  */
 export function initI18n(): void {
     console.log('🌍 Initializing i18n system...');
+    console.log('📂 Discovering supported locales...');
 
-    Object.values(Locale).forEach(locale => {
+    // Discover all locales from files
+    const locales = getSupportedLocales();
+    console.log(`   Found ${locales.length} locale(s): ${locales.join(', ')}`);
+
+    // Preload all discovered locales
+    locales.forEach(locale => {
         try {
             loadTranslation(locale);
             console.log(`   ✓ Loaded ${locale} translations`);
@@ -231,5 +271,5 @@ export function initI18n(): void {
         }
     });
 
-    console.log('✅ i18n system initialized');
+    console.log(`✅ i18n system initialized with ${locales.length} language(s)`);
 }
