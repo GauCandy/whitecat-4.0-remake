@@ -574,7 +574,7 @@
       "language_select_label": "Bước 1: Chọn Ngôn Ngữ",
       "step1_title": "🌍 Bước 1: Chọn Ngôn Ngữ Nha",
       "step2_title": "⚙️ Bước 2: Chọn Prefix",
-      "step2_description": "Tuyệt! Bạn chọn **{locale}** rồi 🎉\n\nGiờ chọn prefix - dùng trước lệnh text.\nVí dụ: `{prefix}help` để xem hướng dẫn",
+      "step2_description": "Tuyệt! Từ giờ mình sẽ dùng **{locale}** cho server này nha 🎉\n\nGiờ chọn prefix - dùng trước lệnh text.\nVí dụ: `{prefix}help` để xem hướng dẫn",
       "language_select_placeholder": "Chọn ngôn ngữ bạn muốn...",
       "prefix_setup_label": "Bước 2: Thiết Lập Prefix",
       "language_option_en_us": "English (US)",
@@ -589,7 +589,7 @@
       "prefix_modal_placeholder": "Gõ prefix bạn muốn (như !, ?, $, v.v.)",
       "prefix_invalid": "❌ Úi! Prefix phải từ 1-10 ký tự nha.",
       "setup_complete": "Xong Rồi!",
-      "setup_complete_description": "Hoàn tất! 🎉 Server bạn sẵn sàng rồi đó.\n\n**Thử mấy cái này:**\n• `/help` - Xem mình làm được gì\n• `/hug`, `/kiss` - Lệnh tương tác vui\n• `/balance` - Xem số xu của bạn\n\nChúc vui!"
+      "setup_complete_description": "**Ngôn ngữ:** {locale}\n**Prefix:** {prefix}\n\n**Mẹo nhỏ:**\n• `/help` - Xem tất cả lệnh slash\n• `{prefix}help` - Xem tất cả lệnh text\n\nChà, server này có vẻ thú vị đây! Chắc mình sẽ thích ở đây lắm 🎉"
     }
   }
 }

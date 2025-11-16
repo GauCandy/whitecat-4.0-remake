@@ -1,11 +1,94 @@
 import type { Event } from '../types/event';
 import { botLogger } from '../utils/logger';
+import { pool } from '../database/config';
+import { mapDiscordLocale } from '../utils/i18n';
+
+/**
+ * Sync guilds from Discord to database
+ * This ensures all guilds the bot is in are properly registered
+ */
+async function syncGuilds(client: any) {
+  botLogger.info('🔄 Syncing guilds to database...');
+
+  const startTime = Date.now();
+  let added = 0;
+  let skipped = 0;
+
+  try {
+    // Get all guild IDs from Discord
+    const discordGuildIds = Array.from(client.guilds.cache.keys());
+
+    if (discordGuildIds.length === 0) {
+      botLogger.info('✅ No guilds to sync');
+      return;
+    }
+
+    // Fetch all guilds from database in one query
+    const dbGuilds = await pool.query(
+      'SELECT guild_id FROM guilds WHERE guild_id = ANY($1)',
+      [discordGuildIds]
+    );
+
+    // Create a Set for quick lookup
+    const existingGuildIds = new Set(
+      dbGuilds.rows.map(row => row.guild_id)
+    );
+
+    // Get default locale from ENV
+    const envLocale = process.env.DEFAULT_LOCALE || 'en';
+    const defaultLocale = envLocale === 'vi' ? 'vi' : 'en-US';
+
+    // Prepare bulk insert for new guilds only
+    const guildsToInsert: any[] = [];
+
+    for (const [guildId, guild] of client.guilds.cache) {
+      if (existingGuildIds.has(guildId)) {
+        // Guild already in database - skip (preserve original joined_at)
+        skipped++;
+      } else {
+        // Guild not in database - prepare to add
+        // Use default locale from ENV (guild sync doesn't change existing settings)
+        guildsToInsert.push({
+          guildId,
+          locale: defaultLocale,
+          name: guild.name
+        });
+        added++;
+      }
+    }
+
+    // Bulk insert new guilds
+    if (guildsToInsert.length > 0) {
+      const values = guildsToInsert
+        .map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})`)
+        .join(', ');
+
+      const defaultPrefix = process.env.BOT_PREFIX || '!';
+      const params = guildsToInsert.flatMap(g => [g.guildId, g.locale, defaultPrefix]);
+
+      await pool.query(
+        `INSERT INTO guilds (guild_id, locale, prefix) VALUES ${values}`,
+        params
+      );
+
+      botLogger.info(`➕ Inserted ${guildsToInsert.length} new guilds`);
+    }
+
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    botLogger.info(
+      `✅ Guild sync complete in ${duration}s: ${added} added, ${skipped} skipped`
+    );
+
+  } catch (error) {
+    botLogger.error('❌ Failed to sync guilds:', error);
+  }
+}
 
 const event: Event<'clientReady'> = {
   name: 'clientReady',
   once: true,
 
-  execute(client) {
+  async execute(client) {
     botLogger.info(`✅ Bot is ready! Logged in as ${client.user?.tag}`);
     botLogger.info(`📊 Serving ${client.guilds.cache.size} guilds`);
     botLogger.info(`👥 Serving ${client.users.cache.size} users`);
@@ -15,6 +98,9 @@ const event: Event<'clientReady'> = {
       activities: [{ name: '/help | WhiteCat Hosting' }],
       status: 'online',
     });
+
+    // Sync guilds to database (after bot is ready)
+    await syncGuilds(client);
   },
 };
 

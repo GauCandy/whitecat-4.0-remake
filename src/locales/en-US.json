@@ -573,7 +573,7 @@
       "language_select_label": "Step 1: Select Language",
       "step1_title": "🌍 Step 1: Pick Your Language",
       "step2_title": "⚙️ Step 2: Choose a Prefix",
-      "step2_description": "Nice! You picked **{locale}** 🎉\n\nNow choose a prefix - this goes before text commands.\nFor example: `{prefix}help` to get help",
+      "step2_description": "Awesome! I'll use **{locale}** from now on 🎉\n\nNow choose a prefix - this goes before text commands.\nFor example: `{prefix}help` to get help",
       "language_select_placeholder": "Choose your preferred language...",
       "prefix_setup_label": "Step 2: Setup Prefix",
       "language_option_en_us": "English (US)",
@@ -588,7 +588,7 @@
       "prefix_modal_placeholder": "Type your prefix (like !, ?, $, etc.)",
       "prefix_invalid": "❌ Oops! Prefix must be 1-10 characters.",
       "setup_complete": "You're All Set!",
-      "setup_complete_description": "Done! 🎉 Your server is ready to roll.\n\n**Try these out:**\n• `/help` - See what I can do\n• `/hug`, `/kiss` - Fun interaction commands\n• `/balance` - Check your coins\n\nHave fun!"
+      "setup_complete_description": "**Language:** {locale}\n**Prefix:** {prefix}\n\n**Quick Tips:**\n• `/help` - See all slash commands\n• `{prefix}help` - See all text commands\n\nThis server looks awesome! I think I'm gonna like it here 🎉"
     }
   }
 }
