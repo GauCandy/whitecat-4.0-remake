@@ -27,18 +27,18 @@
           "{target}-baka! 😤",
           "Tch, {target} ngốc thật... 😒",
           "{target}-baka desu! ばか〜 (｡•ˇ‸ˇ•｡)",
-          "{target} ngu quá đi! バカバカ！ 💢",
-          "Ê {target}, sao ngu thế! 😤"
+          "{target} hơi bị ngu á! バカバカ！ 💢",
+          "Ơ kìa {target}, sao ngu thế! 😤"
         ],
         "self": [
-          "Tớ ngốc quá... 😅💦",
-          "Tớ baka quá đi! 🤦‍♂️",
+          "Ơ, tớ ngốc quá... 😅💦",
+          "Tớ baka quá đi! Trời ơi! 🤦‍♂️",
           "Watashi wa baka desu... 😔"
         ],
         "bot": [
-          "Dám gọi tớ là baka hả {user}!? 😤💢",
+          "Ủa {user} dám gọi tớ là baka hả!? 😤💢",
           "Bot tớ baka sao {user}? Tớ cố gắng lắm rồi đó! 😢",
-          "{user}-baka! Tớ đâu có ngốc! ヽ(｀Д´)ﾉ"
+          "{user}-baka! Tớ đâu có ngốc, phải không ta! ヽ(｀Д´)ﾉ"
         ]
       },
       "blush": {
@@ -284,13 +284,13 @@
           "{user} *ôm ấp {target} ấm áp* ⊂(´・ω・`⊂)"
         ],
         "self": [
-          "{user} tự ôm bản thân... Cô đơn à? 🤗💦",
-          "{user} ôm lấy mình... Bạn ổn chứ? Đừng buồn! 😢",
-          "Sao {user} lại tự ôm ấp? Có chuyện gì à? 🥺"
+          "{user} tự ôm bản thân... Ủa cô đơn à? 🤗💦",
+          "{user} ôm lấy mình... Bạn ổn chứ? Trời ơi đừng buồn! 😢",
+          "Sao {user} lại tự ôm ấp? Là sao ta? 🥺"
         ],
         "bot": [
-          "{user} ôm ấp tớ! *purrs* Ấm áp quá! 😻",
-          "{user} ôm tớ! Thích ghê~ 💕",
+          "{user} ôm ấp tớ! *purrs* Hơi bị ấm áp! 😻",
+          "{user} ôm tớ! Ghê quá~ 💕",
           "Nyaa~ {user} ôm tớ! *nằm trong lòng* (=^･ω･^=) 🥰"
         ]
       },
@@ -374,13 +374,13 @@
           "{target}~ *ôm ôm* ⊂(・﹏・⊂)"
         ],
         "self": [
-          "{user} tự ôm lấy mình... Bạn cô đơn à? 🤗💦",
+          "{user} tự ôm lấy mình... Ủa là sao ta? 🤗💦",
           "Sao {user} lại tự ôm mình? Bạn ổn chứ? 😢",
-          "{user} không có ai ôm nên tự ôm... Đừng buồn! 🥺"
+          "{user} không có ai ôm nên tự ôm... Trời ơi đừng buồn! 🥺"
         ],
         "bot": [
           "{user} ôm tớ á! Cảm ơn~ 🤗",
-          "*ôm lại {user}* Ấm áp ghê! 💕",
+          "*ôm lại {user}* Hơi bị ấm áp! 💕",
           "Kyaa~ {user} đừng ôm tớ đột ngột thế! >//< 🤗"
         ]
       },
@@ -395,12 +395,12 @@
           "*đá đít {target}* Cút đi! 💢"
         ],
         "self": [
-          "{user} tự đá mình... Sao lại làm vậy? 👟💦",
+          "{user} tự đá mình... Ơ kìa là sao ta? 👟💦",
           "Ê {user}! Đừng tự đá bản thân! Đau lắm! 😭",
-          "{user} đá chính mình... Bạn điên rồi à?! 🤕"
+          "{user} đá chính mình... Trời ơi bạn điên rồi à?! 🤕"
         ],
         "bot": [
-          "{user} đá tớ á!? Thô lỗ! 👟😤",
+          "{user} đá tớ á!? Hơi bị thô lỗ! 👟😤",
           "Ê {user}! Đừng đá tớ! 💢",
           "*né* {user} đá không trúng đâu~ 😏"
         ]
@@ -416,14 +416,14 @@
           "{target}~ *hun hun* >//< 💋✨"
         ],
         "self": [
-          "{user} tự hun mình... Narcissist à? 💋😅",
-          "Sao {user} lại tự hun bản thân? 🪞✨",
-          "{user} hôn gương... Tự yêu mình quá mức rồi! 😂"
+          "{user} tự hun mình... Ủa narcissist à? 💋😅",
+          "Sao {user} lại tự hun bản thân? Là sao ta? 🪞✨",
+          "{user} hôn gương... Trời ơi tự yêu mình quá mức rồi! 😂"
         ],
         "bot": [
-          "{user} hun tớ rồi nè! Thích ghê! 😻💕",
-          "*purrs* {user} hun tớ! Hạnh phúc quá~ (=^･ω･^=) 💋",
-          "Nyaa~ {user} hun tớ! Tớ thích! >//< 💕✨"
+          "{user} hun tớ rồi nè! Hơi bị thích! 😻💕",
+          "*purrs* {user} hun tớ! Ghê quá~ (=^･ω･^=) 💋",
+          "Nyaa~ {user} hun tớ! Tớ thích lắm! >//< 💕✨"
         ]
       },
       "pat": {
@@ -438,12 +438,12 @@
         ],
         "self": [
           "{user} tự vỗ đầu... Good job mình! 👋😊",
-          "{user} vỗ đầu bản thân... Tự khen à? ✨",
-          "Ôi {user}! Tự vỗ đầu mình sao? Làm tốt lắm! 🥰"
+          "{user} vỗ đầu bản thân... Ủa tự khen à? ✨",
+          "Ôi {user}! Tự vỗ đầu mình sao? Làm tốt lắm nhé! 🥰"
         ],
         "bot": [
           "{user} vỗ đầu tớ nè~ *purrs* 👋",
-          "Pat pat tớ á {user}! Dễ thương! 🥰",
+          "Pat pat tớ á {user}! Hơi bị dễ thương! 🥰",
           "*đưa đầu lại cho {user} vỗ* Vỗ nữa đi! (=^･ω･^=)"
         ]
       },
@@ -495,14 +495,14 @@
           "Ora ora ora! *đấm {target}* ୧(๑•̀ㅁ•́๑)૭✧"
         ],
         "self": [
-          "{user} tự đấm mình... Sao lại làm vậy? 👊💦",
-          "Ê {user}! Đừng tự hại bản thân! 😭",
-          "{user} đấm chính mình... Đau lắm đó! 🤕"
+          "{user} tự đấm mình... Ơ kìa làm sao vậy? 👊💦",
+          "Ê {user}! Đừng tự hại bản thân! Trời ơi! 😭",
+          "{user} đấm chính mình... Vãi đau lắm đó! 🤕"
         ],
         "bot": [
-          "Ê {user}! Đừng đấm tớ! 👊😤",
+          "Ê {user}! Đừng đấm tớ! Hơi bị đau! 👊😤",
           "{user} đấm bot á!? Violence! 💢",
-          "*block* {user} đấm không vào được đâu! 😏"
+          "*block* {user} đấm không vào được đâu~ 😏"
         ]
       },
       "slap": {
@@ -516,13 +516,13 @@
           "Tát {target} thôi! (╯°□°)╯"
         ],
         "self": [
-          "{user} tự tát... Wake up! ✋",
-          "Ê {user}! Sao lại tự tát mình? 😵💫",
-          "{user} tát bản thân tỉnh ngủ... Đau lắm đó! 🤕"
+          "{user} tự tát... Ủa wake up! ✋",
+          "Ê {user}! Sao lại tự tát mình? Là sao ta? 😵💫",
+          "{user} tát bản thân tỉnh ngủ... Vãi đau lắm đó! 🤕"
         ],
         "bot": [
-          "Ê {user}! Đừng tát tớ! ✋😭",
-          "{user} tát tớ á!? Đau quá! 😭💢",
+          "Ê {user}! Đừng tát tớ! Hơi bị đau! ✋😭",
+          "{user} tát tớ á!? Giời ơi đau quá! 😭💢",
           "*né* {user} tát không trúng đâu~ 😏"
         ]
       },
@@ -536,13 +536,13 @@
           "{user} *cù {target} không thương tiếc!* Hehe~ (｡•̀ᴗ-)✧"
         ],
         "self": [
-          "{user} tự cù mình... Sao lại làm vậy? 🤗💦",
-          "{user} cù bản thân... Có được không nhỉ? 😅"
+          "{user} tự cù mình... Ơ kìa làm sao vậy? 🤗💦",
+          "{user} cù bản thân... Ủa có được không nhỉ? 😅"
         ],
         "bot": [
-          "{user} cù tớ! Haha! Ngứa quá! 😂",
-          "{user} cù tớ! *cười lăn lộn* Dừng lại! 🤣🤣",
-          "Nyaa~ {user} đừng cù tớ! Ngứa lắm! (=^･ェ･^=) 😂"
+          "{user} cù tớ! Haha! Hơi bị ngứa! 😂",
+          "{user} cù tớ! *cười lăn lộn* Giời ơi dừng lại! 🤣🤣",
+          "Nyaa~ {user} đừng cù tớ! Vãi ngứa lắm! (=^･ェ･^=) 😂"
         ]
       },
       "yeet": {
