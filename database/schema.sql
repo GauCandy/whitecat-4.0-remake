@@ -131,7 +131,7 @@ CREATE TABLE IF NOT EXISTS guilds (
   guild_name VARCHAR(255) NOT NULL,            -- Tên guild
   owner_id VARCHAR(20),                        -- Discord ID của chủ server
   prefix VARCHAR(10) DEFAULT '!',              -- Prefix cho lệnh text
-  locale VARCHAR(10) DEFAULT 'en',             -- Ngôn ngữ: 'en', 'vi'
+  locale VARCHAR(10) DEFAULT 'en-US',          -- Ngôn ngữ: 'en-US', 'vi', etc.
   member_count INTEGER DEFAULT 0,              -- Số lượng thành viên
   icon VARCHAR(255),                           -- Icon hash của guild
 
