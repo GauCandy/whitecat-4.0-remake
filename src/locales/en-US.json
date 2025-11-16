@@ -1,6 +1,7 @@
 {
   "common": {
     "error": "An error occurred",
+    "error_logged": "❌ An unexpected error occurred. The error has been logged and reported to our developers. Please try again later.\n\n**Error ID:** {errorId}",
     "success": "Success!",
     "no_permission": "You don't have permission to use this command",
     "cooldown": "Please wait {time} before using this command again",

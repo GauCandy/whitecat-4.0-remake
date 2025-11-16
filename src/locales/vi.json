@@ -1,6 +1,7 @@
 {
   "common": {
     "error": "Đã xảy ra lỗi",
+    "error_logged": "❌ Đã xảy ra lỗi không mong muốn. Lỗi đã được ghi nhận và gửi cho nhà phát triển. Vui lòng thử lại sau.\n\n**Mã lỗi:** {errorId}",
     "success": "Thành công!",
     "no_permission": "Bạn không có quyền sử dụng lệnh này",
     "cooldown": "Vui lòng đợi {time} trước khi sử dụng lại lệnh này",

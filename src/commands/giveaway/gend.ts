@@ -4,6 +4,8 @@
 
 import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { pool } from '../../database/config';
+import { getGuildLocale } from '../../utils/i18n';
+import { logGiveawayError } from '../../utils/errorHandler';
 import type { Command } from '../../types/command';
 import type { ExtendedClient } from '../../types/client';
 import type { Giveaway } from '../../types/giveaway';
@@ -82,11 +84,23 @@ const command: Command = {
         content: '✅ Giveaway ended successfully!',
       });
     } catch (error) {
-      console.error('Error ending giveaway:', error);
-      await interaction.reply({
-        content: '❌ An error occurred while ending the giveaway.',
-        ephemeral: true,
-      });
+      const locale = await getGuildLocale(interaction.guildId!);
+      const errorMessage = logGiveawayError(
+        error,
+        messageId,
+        interaction.user.id,
+        'end giveaway',
+        locale
+      );
+
+      if (interaction.replied || interaction.deferred) {
+        await interaction.editReply({ content: errorMessage });
+      } else {
+        await interaction.reply({
+          content: errorMessage,
+          ephemeral: true,
+        });
+      }
     }
   },
 };
