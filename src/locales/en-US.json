@@ -19,11 +19,26 @@
       },
       "baka": {
         "name": "baka",
-        "description": "Call someone baka",
+        "description": "Call someone baka (バカ)",
         "message": [
-          "{user} says: Baka! 😤",
-          "{user}: Baka baka baka! バカ！",
-          "{user} calls you a baka! 😤"
+          "{target} baka! バカ！😤",
+          "{target} is such an idiot~ 😳💢",
+          "{target}! I-It's not like I like you or anything, b-baka! 💢",
+          "{target}-baka! 😤",
+          "Tch, {target} you idiot... 😒",
+          "{target}-baka desu! ばか〜 (｡•ˇ‸ˇ•｡)",
+          "{target} you're so dumb! バカバカ！ 💢",
+          "Oi {target}, why are you so stupid! 😤"
+        ],
+        "self": [
+          "I'm such an idiot... 😅💦",
+          "I'm such a baka! 🤦‍♂️",
+          "Watashi wa baka desu... 😔"
+        ],
+        "bot": [
+          "How dare you call me baka, {user}!? 😤💢",
+          "I'm a baka, {user}? I'm trying my best here! 😢",
+          "{user}-baka! I'm not stupid! ヽ(｀Д´)ﾉ"
         ]
       },
       "blush": {
@@ -263,17 +278,20 @@
         "name": "cuddle",
         "description": "Cuddle with someone",
         "message": [
-          "{user} cuddles {target}! 🤗",
+          "*cuddles {target}* 🤗",
           "{user} snuggles with {target}! 💕",
-          "{user} cuddles {target} warmly! 🥰"
+          "Cuddling {target}~ 🥰",
+          "{user} *cuddles {target} warmly* ⊂(´・ω・`⊂)"
         ],
         "self": [
-          "{user} cuddles themselves... Feeling lonely? 🤗",
-          "{user} hugs themselves... So lonely! 😢"
+          "{user} cuddles themselves... Feeling lonely? 🤗💦",
+          "{user} hugs themselves... Are you okay? Don't be sad! 😢",
+          "Why does {user} cuddle themselves? Everything alright? 🥺"
         ],
         "bot": [
-          "{user} cuddles me! So warm! 🤗",
-          "{user} snuggles me! Thank you! 💕"
+          "{user} cuddles me! *purrs* So warm! 😻",
+          "{user} snuggles me! I love it~ 💕",
+          "Nyaa~ {user} cuddles me! *lies in lap* (=^･ω･^=) 🥰"
         ]
       },
       "feed": {
@@ -348,156 +366,182 @@
         "name": "hug",
         "description": "Hug someone",
         "message": [
-          "{user} hugs {target}! 🤗",
+          "*hugs {target}* 🤗",
           "{user} gives {target} a warm hug! 💕",
-          "{user} embraces {target} tightly! 🥰",
-          "{user} hugs {target} lovingly! 🫂"
+          "Hugging {target}~ 🥰",
+          "{user} *hugs {target} tightly* 🫂",
+          "{target}~ *hug hug* ⊂(・﹏・⊂)"
         ],
         "self": [
-          "{user} hugs themselves... Are you okay? 🤗",
-          "{user} self-hugs... So lonely! 😢"
+          "{user} hugs themselves... Are you lonely? 🤗💦",
+          "Why does {user} hug themselves? Are you okay? 😢",
+          "{user} has no one to hug... Don't be sad! 🥺"
         ],
         "bot": [
-          "{user} hugs me! Thank you! 🤗",
-          "{user} gives me a hug! So warm! 💕"
+          "{user} hugs me! *hugs back* Thank you! 😻",
+          "{user} hugs me! *purrs* So warm! 💕",
+          "Nyaa~ {user} hugs me! I love it! (=^･ω･^=) 🤗"
         ]
       },
       "kick": {
         "name": "kick",
         "description": "Kick someone",
         "message": [
-          "{user} kicks {target}! 👟",
-          "{user} kicks {target} hard! 💥",
-          "{user} kicks {target} away! 🦵"
+          "*kicks {target}* 👟",
+          "{user} kicks {target} away! 💥",
+          "Kicking {target}! 🦵",
+          "{user} *kicks {target} hard* Take that! ⚡👟",
+          "*kicks {target}* Go away! 💢"
         ],
         "self": [
-          "{user} kicks themselves... Why?! 👟",
-          "{user} self-kicks... That hurts! 😭"
+          "{user} kicks themselves... Why would you do that? 👟💦",
+          "Hey {user}! Don't hurt yourself! 😭",
+          "{user} kicks themselves... That must hurt! 🤕"
         ],
         "bot": [
-          "{user} tries to kick me! Rude! 👟",
-          "{user} kicks me! Hey hey! 😤"
+          "{user} kicks me!? Rude! 👟😤",
+          "Hey {user}! Don't kick me! 💢",
+          "*dodges* {user} can't catch me~ 😏"
         ]
       },
       "kiss": {
         "name": "kiss",
         "description": "Kiss someone",
         "message": [
-          "{user} kisses {target}! 💋",
-          "{user} gives {target} a sweet kiss! 😘",
-          "{user} kisses {target} lovingly! 💕",
-          "{user} smooches {target}! 😚"
+          "*kisses {target}* 💋",
+          "{user} kisses {target}! 😘",
+          "Kissing {target} gently~ 💕",
+          "{user} *smooches {target}* Mwah! 😚",
+          "{target}~ *kiss* >//< 💋✨"
         ],
         "self": [
-          "{user} kisses themselves... Narcissist? 💋",
-          "{user} kisses the mirror... Weird! 🪞"
+          "{user} kisses themselves... Narcissist? 💋😅",
+          "Why does {user} kiss themselves? 🪞✨",
+          "{user} kisses the mirror... Self-love! 😂"
         ],
         "bot": [
-          "{user} kisses me! >//< 💋",
-          "{user} gives me a kiss! So embarrassing! 😳"
+          "{user} kisses me! I love it! 😻💕",
+          "*purrs* {user} kisses me! So happy~ (=^･ω･^=) 💋",
+          "Nyaa~ {user} kisses me! I like it! >//< 💕✨"
         ]
       },
       "pat": {
         "name": "pat",
         "description": "Pat someone on the head",
         "message": [
-          "{user} pats {target}'s head! 👋",
+          "*pats {target}* 👋",
           "{user} pats {target} gently! 🥰",
-          "{user} pets {target}! ✨",
-          "{user} gives {target} headpats! 💕"
+          "Patting {target}~ ✨",
+          "{user} *pets {target}* Good! 💕",
+          "Pat pat {target}~ ( ´ ▽ ` ).。ｏ♡"
         ],
         "self": [
-          "{user} pats their own head! 👋",
-          "{user} self-pats... Good job! 😊"
+          "{user} pats themselves... Good job! 👋😊",
+          "{user} pats their own head... Self-praise? ✨",
+          "Oh {user}! Patting yourself? You did well! 🥰"
         ],
         "bot": [
-          "{user} pats my head! *purrs* 👋",
-          "{user} gives me headpats! So nice! 🥰"
+          "{user} pats me~ *purrs* 👋",
+          "Pat pat from {user}! So nice! 🥰",
+          "*leans into {user}'s hand* More pats please! (=^･ω･^=)"
         ]
       },
       "peck": {
         "name": "peck",
         "description": "Give someone a peck",
         "message": [
-          "{user} pecks {target}! 😘",
+          "*pecks {target}* 😘",
           "{user} gives {target} a light kiss! 😚",
-          "{user} blows {target} a kiss! 💋✨"
+          "Blowing {target} a kiss~ 💋✨",
+          "{user} *pecks {target}'s cheek* Mwah~ (づ ̄ ³ ̄)づ"
         ],
         "self": [
-          "{user} blows themselves a kiss! 😘",
-          "{user} air kisses! 💋"
+          "{user} blows themselves a kiss... 😘💦",
+          "{user} air kisses themselves! So lovely! 💋✨"
         ],
         "bot": [
-          "{user} pecks me! 😘",
-          "{user} gives me a kiss! Kyaaa! 😳"
+          "{user} pecks me! So sweet~ 😻",
+          "{user} gives me a kiss! *purrs* I like it! (=^･ω･^=) 💕"
         ]
       },
       "poke": {
         "name": "poke",
         "description": "Poke someone",
         "message": [
-          "{user} pokes {target}! 👉",
+          "*pokes {target}* 👉",
           "{user} pokes {target} playfully! 👈",
-          "{user} gently pokes {target}! 👉👈"
+          "Poking {target}~ 👉👈",
+          "{user} *gently pokes {target}* (づ｡◕‿‿◕｡)づ"
         ],
         "self": [
-          "{user} pokes themselves! 👉",
-          "{user} self-pokes... 😅"
+          "{user} pokes themselves... Why? 👉😅",
+          "Hey {user}! Why poke yourself? 🤔"
         ],
         "bot": [
           "{user} pokes me! 👉",
-          "{user} keeps poking me! Stop it! 😤"
+          "Hey {user}! Stop poking me! 😤",
+          "*pokes {user} back* Poke poke! 👉😏"
         ]
       },
       "punch": {
         "name": "punch",
         "description": "Punch someone",
         "message": [
-          "{user} punches {target}! 👊",
+          "*punches {target}* 👊",
           "{user} punches {target} hard! 💥",
-          "{user} gives {target} a punch! 🥊"
+          "Take this, {target}! 🥊",
+          "{user} *punches {target}* POW! 👊💢",
+          "Ora ora ora! *punches {target}* ୧(๑•̀ㅁ•́๑)૭✧"
         ],
         "self": [
-          "{user} punches themselves... Violence? 👊",
-          "{user} self-punches... Why?! 😭"
+          "{user} punches themselves... Why would you do that? 👊💦",
+          "Hey {user}! Don't hurt yourself! 😭",
+          "{user} punches themselves... That must hurt! 🤕"
         ],
         "bot": [
-          "{user} tries to punch me! 👊",
-          "{user} punches me! Ouch! 😤"
+          "Hey {user}! Don't punch me! 👊😤",
+          "{user} punches me!? Violence! 💢",
+          "*blocks* {user} can't hit me! 😏"
         ]
       },
       "slap": {
         "name": "slap",
         "description": "Slap someone",
         "message": [
-          "{user} slaps {target}! ✋",
+          "*slaps {target}* ✋",
           "{user} slaps {target} hard! 💥",
-          "{user} gives {target} a slap! 😤"
+          "Take that, {target}! 😤",
+          "{user} *slaps {target}* PAK! ✋💢",
+          "Slapping {target}! (╯°□°)╯"
         ],
         "self": [
-          "{user} slaps themselves! ✋",
-          "{user} self-slaps... Wake up! 😵"
+          "{user} slaps themselves... Wake up! ✋",
+          "Hey {user}! Why slap yourself? 😵💫",
+          "{user} slaps themselves awake... That must hurt! 🤕"
         ],
         "bot": [
-          "{user} slaps me! ✋",
-          "{user} gives me a slap! That hurts! 😭"
+          "Hey {user}! Don't slap me! ✋😭",
+          "{user} slaps me!? That hurts! 😭💢",
+          "*dodges* {user} missed~ 😏"
         ]
       },
       "tickle": {
         "name": "tickle",
         "description": "Tickle someone",
         "message": [
-          "{user} tickles {target}! 🤗",
-          "{user} tickles {target} mercilessly! 😂",
-          "{user} makes {target} laugh! 🤣"
+          "*tickles {target}* 🤗",
+          "{user} tickles {target}! 😂",
+          "Tickling {target}! 🤣",
+          "{user} *tickles {target} mercilessly!* Hehe~ (｡•̀ᴗ-)✧"
         ],
         "self": [
-          "{user} tickles themselves! 🤗",
+          "{user} tickles themselves... Why? 🤗💦",
           "{user} self-tickles... Does it work? 😅"
         ],
         "bot": [
-          "{user} tickles me! Haha! 🤗",
-          "{user} won't stop tickling! Stop! 😂😂"
+          "{user} tickles me! Haha! It tickles! 😂",
+          "{user} tickles me! *rolling around* Stop! 🤣🤣",
+          "Nyaa~ {user} stop tickling me! So ticklish! (=^･ェ･^=) 😂"
         ]
       },
       "yeet": {

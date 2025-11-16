@@ -129,12 +129,16 @@ CREATE TABLE IF NOT EXISTS guilds (
 
   guild_id VARCHAR(20) UNIQUE NOT NULL,        -- Discord guild ID (snowflake)
   guild_name VARCHAR(255) NOT NULL,            -- Tên guild
+  owner_id VARCHAR(20),                        -- Discord ID của chủ server
   prefix VARCHAR(10) DEFAULT '!',              -- Prefix cho lệnh text
   locale VARCHAR(10) DEFAULT 'en',             -- Ngôn ngữ: 'en', 'vi'
+  member_count INTEGER DEFAULT 0,              -- Số lượng thành viên
+  icon VARCHAR(255),                           -- Icon hash của guild
 
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   left_at TIMESTAMP,                           -- Thời điểm bot rời khỏi guild
-  is_active BOOLEAN DEFAULT true               -- Bot còn trong guild không?
+  is_active BOOLEAN DEFAULT true,              -- Bot còn trong guild không?
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_guilds_guild_id ON guilds(guild_id);

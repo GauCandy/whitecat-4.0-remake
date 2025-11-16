@@ -2,19 +2,16 @@
  * Blush Expression Command
  */
 
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestExpression } from '../../utils/nekobest';
-import { getGuildLocale, t, Locale } from '../../utils/i18n';
+import { getGuildLocale, t, Locale, buildLocalizedCommand } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
 const command: Command = {
-    data: new SlashCommandBuilder()
-        .setName('blush')
-        .setDescription(t(Locale.English, 'commands.fun.blush.description'))
-        .setDescriptionLocalizations({
-            vi: t(Locale.Vietnamese, 'commands.fun.blush.description'),
-        }) as SlashCommandBuilder,
+    data: buildLocalizedCommand('blush', 'fun')
+        .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+        .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel) as SlashCommandBuilder,
 
     category: CommandCategory.Fun,
     cooldown: 3,
@@ -24,7 +21,7 @@ const command: Command = {
             const guildId = interaction.guildId;
 
             // Get guild locale for translations
-            const locale = guildId ? await getGuildLocale(guildId) : Locale.English;
+            const locale = guildId ? await getGuildLocale(guildId) : Locale.EnglishUS;
 
             // Defer reply as API call might take a moment
             await interaction.deferReply();
@@ -56,12 +53,12 @@ const command: Command = {
         } catch (error) {
             logger.error('Error in blush command:', error);
 
-            const errorMessage = t(Locale.English, 'commands.fun.error');
+            const errorMessage = t(Locale.EnglishUS, 'commands.fun.error');
 
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });
             } else {
-                await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
+                await interaction.reply({ content: errorMessage, ephemeral: true });
             }
         }
     }

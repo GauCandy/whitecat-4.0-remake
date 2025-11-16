@@ -2,19 +2,16 @@
  * Handshake Action Command
  */
 
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestAction } from '../../utils/nekobest';
-import { getGuildLocale, t, Locale } from '../../utils/i18n';
+import { getGuildLocale, t, Locale, buildLocalizedCommand } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
 const command: Command = {
-    data: new SlashCommandBuilder()
-        .setName('handshake')
-        .setDescription(t(Locale.English, 'commands.fun.handshake.description'))
-        .setDescriptionLocalizations({
-            vi: t(Locale.Vietnamese, 'commands.fun.handshake.description'),
-        })
+    data: buildLocalizedCommand('handshake', 'fun')
+        .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+        .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
         .addUserOption(option =>
             option
                 .setName('user')
@@ -34,7 +31,7 @@ const command: Command = {
             const guildId = interaction.guildId;
 
             // Get guild locale for translations
-            const locale = guildId ? await getGuildLocale(guildId) : Locale.English;
+            const locale = guildId ? await getGuildLocale(guildId) : Locale.EnglishUS;
 
             // Check if targeting bot
             const isBot = targetUser.id === interaction.client.user.id;
@@ -48,7 +45,7 @@ const command: Command = {
 
                 await interaction.reply({
                     content: message.replace('{user}', `**${interaction.user.username}**`),
-                    flags: MessageFlags.Ephemeral
+                    ephemeral: true
                 });
                 return;
             }
@@ -86,12 +83,12 @@ const command: Command = {
         } catch (error) {
             logger.error('Error in handshake command:', error);
 
-            const errorMessage = t(Locale.English, 'commands.fun.error');
+            const errorMessage = t(Locale.EnglishUS, 'commands.fun.error');
 
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });
             } else {
-                await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
+                await interaction.reply({ content: errorMessage, ephemeral: true });
             }
         }
     }

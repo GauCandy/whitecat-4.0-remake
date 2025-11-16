@@ -1,48 +1,75 @@
 /**
- * Baka Expression Command
+ * Baka Action Command
  */
 
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
-import { getNekobest, NekobestExpression } from '../../utils/nekobest';
-import { getGuildLocale, t, Locale } from '../../utils/i18n';
+import { getNekobest, NekobestAction } from '../../utils/nekobest';
+import { getGuildLocale, t, Locale, buildLocalizedCommand } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
 const command: Command = {
-    data: new SlashCommandBuilder()
-        .setName('baka')
-        .setDescription(t(Locale.English, 'commands.fun.baka.description'))
-        .setDescriptionLocalizations({
-            vi: t(Locale.Vietnamese, 'commands.fun.baka.description'),
-        }) as SlashCommandBuilder,
+    data: buildLocalizedCommand('baka', 'fun')
+        .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+        .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
+        .addUserOption(option =>
+            option
+                .setName('user')
+                .setDescription('The user to perform this action on')
+                .setDescriptionLocalizations({
+                    vi: 'Người dùng để thực hiện hành động này',
+                })
+                .setRequired(true)
+        ) as SlashCommandBuilder,
 
     category: CommandCategory.Fun,
     cooldown: 3,
 
     async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         try {
+            const targetUser = interaction.options.getUser('user', true);
             const guildId = interaction.guildId;
 
             // Get guild locale for translations
-            const locale = guildId ? await getGuildLocale(guildId) : Locale.English;
+            const locale = guildId ? await getGuildLocale(guildId) : Locale.EnglishUS;
+
+            // Check if targeting bot
+            const isBot = targetUser.id === interaction.client.user.id;
+
+            // Prevent self-targeting
+            if (targetUser.id === interaction.user.id) {
+                const selfMessages = t(locale, 'commands.fun.baka.self');
+                const message = Array.isArray(selfMessages)
+                    ? selfMessages[Math.floor(Math.random() * selfMessages.length)]
+                    : selfMessages;
+
+                await interaction.reply({
+                    content: message.replace('{user}', `**${interaction.user.username}**`),
+                    ephemeral: true
+                });
+                return;
+            }
 
             // Defer reply as API call might take a moment
             await interaction.deferReply();
 
             // Fetch GIF from Nekobest API
-            const gifUrl = await getNekobest(NekobestExpression.Baka);
+            const gifUrl = await getNekobest(NekobestAction.Baka);
 
-            // Get random message from array
-            const messages = t(locale, 'commands.fun.baka.message');
+            // Get message (handle bot case or normal)
+            const messageKey = isBot ? 'commands.fun.baka.bot' : 'commands.fun.baka.message';
+            const messages = t(locale, messageKey);
             const message = Array.isArray(messages)
                 ? messages[Math.floor(Math.random() * messages.length)]
                 : messages;
 
-            // Create embed with the expression
+            // Create embed with the action
             const embed = new EmbedBuilder()
                 .setColor('#FFB300')
                 .setDescription(
-                    message.replace('{user}', `**${interaction.user.username}**`)
+                    message
+                        .replace('{user}', `**${interaction.user.username}**`)
+                        .replace('{target}', `**${targetUser.username}**`)
                 )
                 .setImage(gifUrl)
                 .setFooter({
@@ -56,12 +83,12 @@ const command: Command = {
         } catch (error) {
             logger.error('Error in baka command:', error);
 
-            const errorMessage = t(Locale.English, 'commands.fun.error');
+            const errorMessage = t(Locale.EnglishUS, 'commands.fun.error');
 
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });
             } else {
-                await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
+                await interaction.reply({ content: errorMessage, ephemeral: true });
             }
         }
     }
