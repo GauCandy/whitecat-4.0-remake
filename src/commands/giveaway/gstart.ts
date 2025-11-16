@@ -46,6 +46,12 @@ const command: Command = {
         .setMaxValue(365)
         .setRequired(false)
     )
+    .addBooleanOption(option =>
+      option
+        .setName('prevent_alts')
+        .setDescription('Prevent clone/alt accounts from entering (checks IP duplicates)')
+        .setRequired(false)
+    )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false),
 
@@ -63,6 +69,7 @@ const command: Command = {
     const winnerCount = interaction.options.getInteger('winners') ?? 1;
     const requiredRole = interaction.options.getRole('required_role');
     const minAccountAge = interaction.options.getInteger('min_account_age');
+    const preventAlts = interaction.options.getBoolean('prevent_alts') ?? false;
 
     try {
       // Get or create guild
@@ -111,8 +118,9 @@ const command: Command = {
           `**Ends:** <t:${Math.floor(endsAt.getTime() / 1000)}:R>\n` +
           `**Hosted by:** ${interaction.user}\n\n` +
           (requiredRole ? `**Required Role:** ${requiredRole}\n` : '') +
-          (minAccountAge ? `**Min Account Age:** ${minAccountAge} days\n\n` : '\n') +
-          `Click the button below to enter!`
+          (minAccountAge ? `**Min Account Age:** ${minAccountAge} days\n` : '') +
+          (preventAlts ? `**🛡️ Clone Protection:** Enabled\n` : '') +
+          `\nClick the button below to enter!`
         )
         .setColor(0x00ff00)
         .setFooter({ text: `${winnerCount} winner(s) | Ends` })
@@ -142,8 +150,8 @@ const command: Command = {
       // Insert into database
       await pool.query(
         `INSERT INTO giveaways
-         (guild_id, channel_id, message_id, prize, winner_count, required_role_id, min_account_age_days, ends_at, created_by)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+         (guild_id, channel_id, message_id, prize, winner_count, required_role_id, min_account_age_days, prevent_alts, ends_at, created_by)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
         [
           guildDbId,
           interaction.channelId,
@@ -152,6 +160,7 @@ const command: Command = {
           winnerCount,
           requiredRole?.id || null,
           minAccountAge || null,
+          preventAlts,
           endsAt,
           userDbId,
         ]
