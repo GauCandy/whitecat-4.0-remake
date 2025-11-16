@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 import type { TextCommand } from '../../types/textCommand';
 import { CommandCategory } from '../../types/command';
 import { executeEmotionalAction } from '../../utils/emotionalCommandHelper';
-import { NekobestAction } from '../../utils/nekobest';
+import { NekobestAction, NekobestExpression } from '../../utils/nekobest';
 
 const command: TextCommand = {
   name: 'yeet',

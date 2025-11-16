@@ -3,7 +3,6 @@ import type { Event } from '../types/event';
 import type { ExtendedClient } from '../types/client';
 import { botLogger } from '../utils/logger';
 import { checkAuthorization, registerUser } from '../middlewares/authorization';
-import { handleResetPasswordButton, handleResetPasswordModal } from '../handlers/pterodactylHandler';
 import {
   handleLanguageSelect,
   handleDefaultLanguageButton,
@@ -47,10 +46,6 @@ const event: Event<'interactionCreate'> = {
         return;
       }
 
-      // Existing handlers
-      if (interaction.customId.startsWith('reset_password_')) {
-        await handleResetPasswordButton(interaction);
-      }
       return;
     }
 
@@ -62,10 +57,6 @@ const event: Event<'interactionCreate'> = {
         return;
       }
 
-      // Existing handlers
-      if (interaction.customId.startsWith('reset_password_modal_')) {
-        await handleResetPasswordModal(interaction);
-      }
       return;
     }
 

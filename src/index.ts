@@ -2,7 +2,6 @@ import { Client, GatewayIntentBits, Collection } from 'discord.js';
 import { config } from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { join } from 'path';
 import { logger, botLogger, webLogger } from './utils/logger';
 import { loadCommands } from './handlers/commandHandler';
 import { loadTextCommands } from './handlers/textCommandHandler';
@@ -17,7 +16,7 @@ import type { TextCommand } from './types/textCommand';
 // Load environment variables
 config();
 
-// Express app setup
+// Express app setup for OAuth2 callbacks
 const app = express();
 const PORT = parseInt(process.env.API_PORT || '3000', 10);
 const HOST = '0.0.0.0'; // Listen on all network interfaces
@@ -47,11 +46,6 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
   });
-});
-
-// Root endpoint - Serve homepage
-app.get('/', (req, res) => {
-  res.sendFile(join(__dirname, 'web', 'views', 'index.html'));
 });
 
 // 404 handler
@@ -93,11 +87,11 @@ const giveawayManager = new GiveawayManager(client);
 // Startup function
 async function start(): Promise<void> {
   try {
-    logger.info('🚀 Starting WhiteCat Bot & Web Server...');
+    logger.info('🚀 Starting WhiteCat Bot & OAuth Server...');
 
-    // Start web server
+    // Start OAuth callback server
     app.listen(PORT, HOST, () => {
-      webLogger.info(`🌐 Web server listening on ${HOST}:${PORT} (http://localhost:${PORT})`);
+      webLogger.info(`🌐 OAuth server listening on ${HOST}:${PORT} (http://localhost:${PORT})`);
     });
 
     // Initialize i18n system

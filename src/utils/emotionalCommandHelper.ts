@@ -1,5 +1,5 @@
 import { Message, EmbedBuilder } from 'discord.js';
-import { getNekobest, NekobestAction } from './nekobest';
+import { getNekobest, NekobestAction, NekobestExpression } from './nekobest';
 import { getGuildLocale, t, Locale } from './i18n';
 import logger from './logger';
 
@@ -9,7 +9,7 @@ import logger from './logger';
  */
 export async function executeEmotionalAction(
   message: Message,
-  action: NekobestAction,
+  action: NekobestAction | NekobestExpression,
   commandName: string,
   color: string = '#FFB300'
 ): Promise<void> {
