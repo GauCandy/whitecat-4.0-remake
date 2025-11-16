@@ -22,7 +22,7 @@
     "db:init": "ts-node src/database/init.ts init",
     "db:drop": "ts-node src/database/init.ts drop",
     "db:reset": "ts-node src/database/init.ts reset",
-    "db:cleanup": "ts-node src/database/init.ts cleanup"
+    "db:cleanup": "ts-node src/database/init.ts cleanup",
   },
   "keywords": [
     "discord",

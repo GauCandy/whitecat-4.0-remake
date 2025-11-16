@@ -128,17 +128,11 @@ CREATE TABLE IF NOT EXISTS guilds (
   id BIGSERIAL PRIMARY KEY,
 
   guild_id VARCHAR(20) UNIQUE NOT NULL,        -- Discord guild ID (snowflake)
-  guild_name VARCHAR(255) NOT NULL,            -- Tên guild
-  owner_id VARCHAR(20),                        -- Discord ID của chủ server
+  locale VARCHAR(10) DEFAULT 'en-US',          -- Ngôn ngữ: 'en-US', 'vi', etc.
   prefix VARCHAR(10) DEFAULT '!',              -- Prefix cho lệnh text
-  locale VARCHAR(10) DEFAULT 'en',             -- Ngôn ngữ: 'en', 'vi'
-  member_count INTEGER DEFAULT 0,              -- Số lượng thành viên
-  icon VARCHAR(255),                           -- Icon hash của guild
 
   joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  left_at TIMESTAMP,                           -- Thời điểm bot rời khỏi guild
-  is_active BOOLEAN DEFAULT true,              -- Bot còn trong guild không?
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  left_at TIMESTAMP                            -- Thời điểm bot rời khỏi guild
 );
 
 CREATE INDEX idx_guilds_guild_id ON guilds(guild_id);
@@ -399,25 +393,25 @@ CREATE INDEX idx_giveaway_entries_user_id ON giveaway_entries(user_id);
 -- ==========================================
 -- 13. BẢNG STATISTICS (Thống Kê)
 -- ==========================================
--- Lưu thống kê toàn bot
--- Tự động cập nhật qua triggers
+-- Lưu thống kê toàn bot theo ngày
+-- Theo dõi số liệu như servers joined/left, commands used, etc.
 CREATE TABLE IF NOT EXISTS statistics (
   id BIGSERIAL PRIMARY KEY,
 
-  stat_key VARCHAR(100) UNIQUE NOT NULL,       -- Tên chỉ số
-  stat_value BIGINT DEFAULT 0,                 -- Giá trị chỉ số
+  stat_type VARCHAR(100) NOT NULL,             -- Loại thống kê: 'servers_joined', 'servers_left', etc.
+  stat_value BIGINT DEFAULT 0,                 -- Giá trị thống kê
+  date DATE DEFAULT CURRENT_DATE,              -- Ngày ghi nhận thống kê
   metadata JSONB,                              -- Dữ liệu phụ (định dạng JSON)
 
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+  -- Mỗi loại thống kê chỉ có một bản ghi mỗi ngày
+  UNIQUE(stat_type, date)
 );
 
--- Thêm các thống kê mặc định
-INSERT INTO statistics (stat_key, stat_value) VALUES
-('total_users', 0),                            -- Tổng số user đã đăng ký
-('total_servers', 0),                          -- Tổng số guild bot đang ở
-('total_transactions', 0),                     -- Tổng số giao dịch đã xử lý
-('total_coins_circulating', 0)                 -- Tổng số coin trong hệ thống
-ON CONFLICT (stat_key) DO NOTHING;
+CREATE INDEX idx_statistics_stat_type ON statistics(stat_type);
+CREATE INDEX idx_statistics_date ON statistics(date DESC);
 
 -- ==========================================
 -- 14. BẢNG COMMAND LOGS (Nhật Ký Lệnh)

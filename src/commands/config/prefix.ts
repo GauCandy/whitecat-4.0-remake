@@ -36,11 +36,11 @@ const command: Command = {
     try {
       // Update or insert guild prefix
       await pool.query(
-        `INSERT INTO guilds (guild_id, guild_name, prefix)
-         VALUES ($1, $2, $3)
+        `INSERT INTO guilds (guild_id, prefix)
+         VALUES ($1, $2)
          ON CONFLICT (guild_id)
-         DO UPDATE SET prefix = $3, updated_at = NOW()`,
-        [interaction.guild.id, interaction.guild.name, newPrefix]
+         DO UPDATE SET prefix = $2`,
+        [interaction.guild.id, newPrefix]
       );
 
       const embed = new EmbedBuilder()
