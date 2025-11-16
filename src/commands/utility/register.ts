@@ -11,7 +11,7 @@ const STARTING_BALANCE = 100000; // 100,000 coins starting balance
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('register')
-    .setDescription('Register for a hosting account and receive starting coins'),
+    .setDescription('Register for a hosting account'),
 
   category: CommandCategory.Utility,
   cooldown: 10,
