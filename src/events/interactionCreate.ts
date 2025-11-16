@@ -11,6 +11,7 @@ import {
   handleDefaultPrefixButton,
   handleCustomPrefixModal
 } from '../handlers/setupHandler';
+import { handleGiveawayEntry } from '../handlers/giveawayHandler';
 
 const event: Event<'interactionCreate'> = {
   name: 'interactionCreate',
@@ -26,6 +27,12 @@ const event: Event<'interactionCreate'> = {
 
     // Handle button interactions
     if (interaction.isButton()) {
+      // Giveaway entry handler
+      if (interaction.customId === 'giveaway_enter') {
+        await handleGiveawayEntry(interaction);
+        return;
+      }
+
       // Setup handlers
       if (interaction.customId === 'setup_default_language') {
         await handleDefaultLanguageButton(interaction);

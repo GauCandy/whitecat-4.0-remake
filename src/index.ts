@@ -8,6 +8,7 @@ import { loadCommands } from './handlers/commandHandler';
 import { loadTextCommands } from './handlers/textCommandHandler';
 import { loadEvents } from './handlers/eventHandler';
 import { initI18n } from './utils/i18n';
+import { GiveawayManager } from './managers/giveawayManager';
 import authRoutes from './web/routes/auth';
 import type { ExtendedClient } from './types/client';
 import type { Command } from './types/command';
@@ -84,6 +85,10 @@ const client = new Client({
 client.commands = new Collection<string, Command>();
 client.textCommands = new Collection<string, TextCommand>();
 client.cooldowns = new Collection<string, Collection<string, number>>();
+
+// Initialize giveaway manager
+const giveawayManager = new GiveawayManager(client);
+(client as any).giveawayManager = giveawayManager;
 
 // Startup function
 async function start(): Promise<void> {
