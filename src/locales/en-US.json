@@ -567,10 +567,13 @@
   "events": {
     "guildCreate": {
       "welcome_title": "👋 Thanks for inviting WhiteCat Cloud!",
-      "welcome_description": "I'm WhiteCat Cloud - your premium game server hosting bot!\n\n**Getting Started:**\n• Use `/help` to see all available commands\n• Set up your server with `/setup`\n• Change my prefix with `/prefix`\n\n**Features:**\n🎮 Game server hosting\n💰 Virtual economy system\n🎉 Giveaways and fun commands\n\nNeed help? Join our support server!",
+      "welcome_description": "Let's get started with a quick setup!\n\n**Step 1:** Choose your preferred language\n**Step 2:** Set your command prefix\n\nThis will only take a moment!",
       "locale_detected": "Detected server language: **{locale}**",
-      "setup_prompt": "{inviter} Please setup your server by selecting a language below!",
+      "setup_prompt": "{inviter} Please complete the setup below:",
       "language_select_label": "Step 1: Select Language",
+      "step1_title": "🌍 Step 1: Choose Language",
+      "step2_title": "⚙️ Step 2: Setup Prefix",
+      "step2_description": "**Selected Language:** {locale}\n\nNow choose a prefix for text commands.\nThe prefix is used before commands like `{prefix}help`",
       "language_select_placeholder": "Choose your preferred language...",
       "prefix_setup_label": "Step 2: Setup Prefix",
       "language_option_en_us": "English (US)",
@@ -579,12 +582,13 @@
       "button_custom_prefix": "Custom Prefix",
       "button_default_prefix": "Default Prefix (!)",
       "language_updated": "✅ Language updated to: **{locale}**",
-      "prefix_updated": "✅ Prefix updated to: **{prefix}**",
+      "prefix_updated": "✅ Prefix set to {prefix}",
       "prefix_modal_title": "Set Custom Prefix",
       "prefix_modal_label": "Prefix",
       "prefix_modal_placeholder": "Enter your desired prefix (e.g., !, ?, $)",
       "prefix_invalid": "❌ Invalid prefix! Please use 1-10 characters.",
-      "setup_complete": "🎉 Setup complete! You're all set!"
+      "setup_complete": "Setup Complete!",
+      "setup_complete_description": "All done! Your server is ready to use WhiteCat Cloud.\n\n**Quick Start:**\n• Use `/help` to see all commands\n• Try some fun commands like `/hug` or `/kiss`\n• Check `/balance` to see your coins\n\nEnjoy! 🎉"
     }
   }
 }
