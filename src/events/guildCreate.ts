@@ -55,9 +55,8 @@ async function findWelcomeChannel(guild: Guild): Promise<TextChannel | null> {
 function buildWelcomeMessage(locale: string, inviterMention?: string) {
     const embed = new EmbedBuilder()
         .setColor(0x5865F2) // Discord Blurple
-        .setTitle(t(locale, 'events.guildCreate.welcome_title'))
+        .setTitle(t(locale, 'events.guildCreate.step1_title'))
         .setDescription(t(locale, 'events.guildCreate.welcome_description'))
-        .setFooter({ text: t(locale, 'events.guildCreate.language_select_label') })
         .setTimestamp();
 
     // Language select menu
@@ -99,10 +98,17 @@ function buildWelcomeMessage(locale: string, inviterMention?: string) {
  * Build prefix setup message (Step 2)
  */
 export function buildPrefixSetupMessage(locale: string) {
+    // Get locale display name
+    const localeDisplayName = locale === 'vi' ? 'Tiếng Việt' : 'English (US)';
+
+    const description = t(locale, 'events.guildCreate.step2_description')
+        .replace('{locale}', localeDisplayName)
+        .replace('{prefix}', '!');
+
     const embed = new EmbedBuilder()
         .setColor(0x5865F2) // Discord Blurple
-        .setTitle('⚙️ ' + t(locale, 'events.guildCreate.prefix_setup_label'))
-        .setDescription(t(locale, 'events.guildCreate.welcome_description'))
+        .setTitle(t(locale, 'events.guildCreate.step2_title'))
+        .setDescription(description)
         .setTimestamp();
 
     const customPrefixButton = new ButtonBuilder()
