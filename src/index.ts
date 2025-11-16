@@ -1,14 +1,12 @@
 import { Client, GatewayIntentBits, Collection } from 'discord.js';
 import { config } from 'dotenv';
-import express from 'express';
-import cors from 'cors';
 import { logger, botLogger, webLogger } from './utils/logger';
 import { loadCommands } from './handlers/commandHandler';
 import { loadTextCommands } from './handlers/textCommandHandler';
 import { loadEvents } from './handlers/eventHandler';
 import { initI18n } from './utils/i18n';
 import { GiveawayManager } from './managers/giveawayManager';
-import authRoutes from './web/routes/auth';
+import app from './web/server';
 import type { ExtendedClient } from './types/client';
 import type { Command } from './types/command';
 import type { TextCommand } from './types/textCommand';
@@ -16,54 +14,9 @@ import type { TextCommand } from './types/textCommand';
 // Load environment variables
 config();
 
-// Express app setup for OAuth2 callbacks
-const app = express();
+// Web server configuration
 const PORT = parseInt(process.env.API_PORT || '3000', 10);
-const HOST = '0.0.0.0'; // Listen on all network interfaces
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
-
-// Middleware
-app.use(cors({
-  origin: CORS_ORIGIN.split(','),
-  credentials: true,
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Request logging
-app.use((req, res, next) => {
-  webLogger.info(`${req.method} ${req.path} - ${req.ip}`);
-  next();
-});
-
-// Routes
-app.use('/auth', authRoutes);
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-  });
-});
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({
-    error: 'Not Found',
-    path: req.path,
-  });
-});
-
-// Error handler
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  webLogger.error('Express error:', err);
-  res.status(500).json({
-    error: 'Internal Server Error',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'An error occurred',
-  });
-});
+const HOST = '0.0.0.0';
 
 // Create Discord client with intents
 const client = new Client({
