@@ -1,0 +1,92 @@
+import { Message, EmbedBuilder } from 'discord.js';
+import type { TextCommand } from '../../types/textCommand';
+import { CommandCategory } from '../../types/command';
+import { parseAllMentionedUsers, getRandomMessage } from '../../utils/funCommandHelper';
+import { getNekobest, NekobestAction } from '../../utils/nekobest';
+import { getGuildLocale, t, Locale } from '../../utils/i18n';
+import logger from '../../utils/logger';
+
+const command: TextCommand = {
+  name: 'handhold',
+  description: 'Hold someone\'s hand!',
+  usage: 'handhold @user',
+  category: CommandCategory.Fun,
+  cooldown: 3,
+
+  async execute(message: Message): Promise<void> {
+    try {
+      const mentionedUsers = parseAllMentionedUsers(message);
+
+      if (mentionedUsers.length === 0) {
+        await message.reply({
+          content: '❌ Please mention someone to hold hands with! Example: `,handhold @user`',
+        });
+        return;
+      }
+
+      const targets = mentionedUsers.filter(u => u.id !== message.author.id);
+
+      if (targets.length === 0) {
+        await message.reply({
+          content: `✨ **${message.author.username}** holds their own hand... Forever alone vibes!`,
+        });
+        return;
+      }
+
+      const loadingMsg = await message.reply('🤝 Holding hands...');
+      const gifUrl = await getNekobest(NekobestAction.Handhold);
+
+      if (targets.length > 1) {
+        const targetNames = targets.map(u => `**${u.username}**`).join(', ');
+        const messages = [
+          `🤝 HAND HOLDING CIRCLE! **${message.author.username}** holds hands with ${targetNames}! Unity!`,
+          `✨ **${message.author.username}** creates a hand-holding chain with ${targetNames}! So wholesome!`,
+          `💫 Group hand hold! **${message.author.username}** and ${targetNames}! *warm feelings*`,
+        ];
+
+        const embed = new EmbedBuilder()
+          .setColor('#FFB6C1')
+          .setDescription(getRandomMessage(messages))
+          .setImage(gifUrl)
+          .setFooter({
+            text: `Hand holding session by ${message.author.username}`,
+            iconURL: message.author.displayAvatarURL(),
+          })
+          .setTimestamp();
+
+        await loadingMsg.edit({ content: '', embeds: [embed] });
+        return;
+      }
+
+      const target = targets[0];
+      const guildId = message.guildId;
+      const locale = guildId ? await getGuildLocale(guildId) : Locale.EnglishUS;
+      const isBot = target.id === message.client.user.id;
+
+      const messageKey = isBot ? 'commands.fun.handhold.bot' : 'commands.fun.handhold.message';
+      const messages = t(locale, messageKey);
+      const messageText = getRandomMessage(messages);
+
+      const embed = new EmbedBuilder()
+        .setColor('#FFB6C1')
+        .setDescription(
+          messageText
+            .replace('{user}', `**${message.author.username}**`)
+            .replace('{target}', `**${target.username}**`)
+        )
+        .setImage(gifUrl)
+        .setFooter({
+          text: `${message.author.username} and ${target.username} holding hands`,
+          iconURL: message.author.displayAvatarURL(),
+        })
+        .setTimestamp();
+
+      await loadingMsg.edit({ content: '', embeds: [embed] });
+    } catch (error) {
+      logger.error('Error in handhold text command:', error);
+      await message.reply({ content: '❌ An error occurred.' });
+    }
+  },
+};
+
+export default command;
