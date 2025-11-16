@@ -5,16 +5,11 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestExpression } from '../../utils/nekobest';
-import { getGuildLocale, t, Locale } from '../../utils/i18n';
+import { getGuildLocale, t, Locale, buildLocalizedCommand } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
 const command: Command = {
-    data: new SlashCommandBuilder()
-        .setName('nod')
-        .setDescription(t(Locale.English, 'commands.fun.nod.description'))
-        .setDescriptionLocalizations({
-            vi: t(Locale.Vietnamese, 'commands.fun.nod.description'),
-        })
+    data: buildLocalizedCommand('nod', 'fun')
         .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
         .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel) as SlashCommandBuilder,
 

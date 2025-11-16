@@ -6,6 +6,7 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { pool } from '../database/config';
+import { SlashCommandBuilder } from 'discord.js';
 
 // Supported locales
 export enum Locale {
@@ -159,6 +160,59 @@ export function mapDiscordLocale(discordLocale: string): Locale {
 export async function getGuildTranslator(guildId: string): Promise<(key: string, replacements?: Record<string, string>) => string> {
     const locale = await getGuildLocale(guildId);
     return (key: string, replacements?: Record<string, string>) => t(locale, key, replacements);
+}
+
+/**
+ * Get localized descriptions for all supported locales
+ * Used for Discord slash command description localizations
+ *
+ * @param key - Translation key for description
+ * @returns Object with locale codes as keys and translated descriptions as values
+ *
+ * @example
+ * .setDescriptionLocalizations(getLocalizations('commands.fun.hug.description'))
+ * // Returns: { vi: 'Ôm ai đó' }
+ */
+export function getLocalizations(key: string): Record<string, string> {
+    const localizations: Record<string, string> = {};
+
+    Object.values(Locale).forEach(locale => {
+        // Skip English since it's the default
+        if (locale === Locale.English) {
+            return;
+        }
+
+        const translation = t(locale, key);
+        // Only add if translation exists and is not the key itself (fallback)
+        if (translation && translation !== key) {
+            localizations[locale] = translation;
+        }
+    });
+
+    return localizations;
+}
+
+/**
+ * Build a localized slash command with automatic description localizations
+ * Automatically looks up descriptions from i18n based on command name and category
+ *
+ * @param name - Command name (e.g., 'hug', 'kiss')
+ * @param category - Command category (e.g., 'fun', 'utility')
+ * @returns SlashCommandBuilder with name and localized descriptions set
+ *
+ * @example
+ * const command: Command = {
+ *     data: buildLocalizedCommand('hug', 'fun')
+ *         .addUserOption(option => ...)
+ * };
+ */
+export function buildLocalizedCommand(name: string, category: string): SlashCommandBuilder {
+    const descriptionKey = `commands.${category}.${name}.description`;
+
+    return new SlashCommandBuilder()
+        .setName(name)
+        .setDescription(t(Locale.English, descriptionKey))
+        .setDescriptionLocalizations(getLocalizations(descriptionKey));
 }
 
 /**
