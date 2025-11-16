@@ -97,6 +97,12 @@ const event: Event<'clientReady'> = {
 
     // Sync guilds to database (after bot is ready)
     await syncGuilds(client);
+
+    // Start giveaway manager
+    const giveawayManager = (client as any).giveawayManager;
+    if (giveawayManager) {
+      giveawayManager.start();
+    }
   },
 };
 
