@@ -574,7 +574,7 @@
       "language_select_label": "Bước 1: Chọn Ngôn Ngữ",
       "step1_title": "🌍 Bước 1: Chọn Ngôn Ngữ Nha",
       "step2_title": "⚙️ Bước 2: Chọn Prefix",
-      "step2_description": "Tuyệt! Bạn chọn **{locale}** rồi 🎉\n\nGiờ chọn prefix - dùng trước lệnh text.\nVí dụ: `{prefix}help` để xem hướng dẫn",
+      "step2_description": "Tuyệt! Từ giờ mình sẽ dùng **{locale}** cho server này nha 🎉\n\nGiờ chọn prefix - dùng trước lệnh text.\nVí dụ: `{prefix}help` để xem hướng dẫn",
       "language_select_placeholder": "Chọn ngôn ngữ bạn muốn...",
       "prefix_setup_label": "Bước 2: Thiết Lập Prefix",
       "language_option_en_us": "English (US)",
