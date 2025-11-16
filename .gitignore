@@ -83,6 +83,7 @@ pm2-*.log
 
 # PostgreSQL dumps
 *.sql
+!database/schema.sql
 *.dump
 *.backup
 
