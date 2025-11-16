@@ -4,13 +4,43 @@ import type { ExtendedClient } from '../types/client';
 import { botLogger } from '../utils/logger';
 import { checkAuthorization, registerUser } from '../middlewares/authorization';
 import { handleResetPasswordButton, handleResetPasswordModal } from '../handlers/pterodactylHandler';
+import {
+  handleLanguageSelect,
+  handleDefaultLanguageButton,
+  handleCustomPrefixButton,
+  handleDefaultPrefixButton,
+  handleCustomPrefixModal
+} from '../handlers/setupHandler';
 
 const event: Event<'interactionCreate'> = {
   name: 'interactionCreate',
 
   async execute(interaction) {
+    // Handle string select menu interactions
+    if (interaction.isStringSelectMenu()) {
+      if (interaction.customId === 'setup_language') {
+        await handleLanguageSelect(interaction);
+      }
+      return;
+    }
+
     // Handle button interactions
     if (interaction.isButton()) {
+      // Setup handlers
+      if (interaction.customId === 'setup_default_language') {
+        await handleDefaultLanguageButton(interaction);
+        return;
+      }
+      if (interaction.customId === 'setup_custom_prefix') {
+        await handleCustomPrefixButton(interaction);
+        return;
+      }
+      if (interaction.customId === 'setup_default_prefix') {
+        await handleDefaultPrefixButton(interaction);
+        return;
+      }
+
+      // Existing handlers
       if (interaction.customId.startsWith('reset_password_')) {
         await handleResetPasswordButton(interaction);
       }
@@ -19,6 +49,13 @@ const event: Event<'interactionCreate'> = {
 
     // Handle modal submissions
     if (interaction.isModalSubmit()) {
+      // Setup modal handler
+      if (interaction.customId.startsWith('setup_custom_prefix_modal_')) {
+        await handleCustomPrefixModal(interaction);
+        return;
+      }
+
+      // Existing handlers
       if (interaction.customId.startsWith('reset_password_modal_')) {
         await handleResetPasswordModal(interaction);
       }
