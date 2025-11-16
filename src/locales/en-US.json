@@ -573,7 +573,7 @@
       "language_select_label": "Step 1: Select Language",
       "step1_title": "🌍 Step 1: Pick Your Language",
       "step2_title": "⚙️ Step 2: Choose a Prefix",
-      "step2_description": "Nice! You picked **{locale}** 🎉\n\nNow choose a prefix - this goes before text commands.\nFor example: `{prefix}help` to get help",
+      "step2_description": "Awesome! I'll use **{locale}** from now on 🎉\n\nNow choose a prefix - this goes before text commands.\nFor example: `{prefix}help` to get help",
       "language_select_placeholder": "Choose your preferred language...",
       "prefix_setup_label": "Step 2: Setup Prefix",
       "language_option_en_us": "English (US)",
