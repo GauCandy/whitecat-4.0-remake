@@ -30,9 +30,13 @@ const poolConfig: PoolConfig = {
 // Create connection pool
 export const pool = new Pool(poolConfig);
 
-// Test connection
+// Test connection (log only first connection to avoid spam)
+let firstConnection = true;
 pool.on('connect', () => {
-  console.log('✅ Database connection established');
+  if (firstConnection) {
+    console.log('✅ Database connection established');
+    firstConnection = false;
+  }
 });
 
 pool.on('error', (err) => {

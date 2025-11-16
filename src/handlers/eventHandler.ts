@@ -12,6 +12,8 @@ export async function loadEvents(client: ExtendedClient): Promise<void> {
       (file) => file.endsWith('.ts') || file.endsWith('.js')
     );
 
+    let loadedCount = 0;
+
     for (const file of eventFiles) {
       const filePath = join(eventsPath, file);
 
@@ -27,7 +29,7 @@ export async function loadEvents(client: ExtendedClient): Promise<void> {
             client.on(event.name, (...args) => event.execute(...args));
           }
 
-          botLogger.info(`✅ Loaded event: ${event.name}`);
+          loadedCount++;
         } else {
           botLogger.warn(`⚠️  Event ${file} missing required properties`);
         }
@@ -36,7 +38,7 @@ export async function loadEvents(client: ExtendedClient): Promise<void> {
       }
     }
 
-    botLogger.info(`📦 Loaded ${eventFiles.length} events total`);
+    botLogger.info(`📦 Loaded ${loadedCount} events`);
   } catch (error) {
     botLogger.error('❌ Error loading events:', error);
     throw error;

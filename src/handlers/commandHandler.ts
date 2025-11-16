@@ -9,9 +9,11 @@ export async function loadCommands(client: ExtendedClient): Promise<void> {
 
   try {
     const commandFolders = readdirSync(commandsPath);
+    const commandsByCategory: Map<string, number> = new Map();
 
     for (const folder of commandFolders) {
       const folderPath = join(commandsPath, folder);
+      let categoryCount = 0;
 
       try {
         const commandFiles = readdirSync(folderPath).filter(
@@ -31,7 +33,7 @@ export async function loadCommands(client: ExtendedClient): Promise<void> {
               for (const command of commandModule.actionCommands) {
                 if ('data' in command && 'execute' in command) {
                   client.commands.set(command.data.name, command);
-                  botLogger.info(`✅ Loaded command: ${command.data.name} (${folder})`);
+                  categoryCount++;
                 }
               }
             } else if (commandModule.expressionCommands && Array.isArray(commandModule.expressionCommands)) {
@@ -39,7 +41,7 @@ export async function loadCommands(client: ExtendedClient): Promise<void> {
               for (const command of commandModule.expressionCommands) {
                 if ('data' in command && 'execute' in command) {
                   client.commands.set(command.data.name, command);
-                  botLogger.info(`✅ Loaded command: ${command.data.name} (${folder})`);
+                  categoryCount++;
                 }
               }
             } else {
@@ -48,7 +50,7 @@ export async function loadCommands(client: ExtendedClient): Promise<void> {
 
               if ('data' in command && 'execute' in command) {
                 client.commands.set(command.data.name, command);
-                botLogger.info(`✅ Loaded command: ${command.data.name} (${folder})`);
+                categoryCount++;
               } else {
                 botLogger.warn(`⚠️  Command ${file} missing required properties`);
               }
@@ -61,9 +63,17 @@ export async function loadCommands(client: ExtendedClient): Promise<void> {
         // Folder might not be accessible or empty
         botLogger.warn(`⚠️  Could not read folder ${folder}:`, error);
       }
+
+      if (categoryCount > 0) {
+        commandsByCategory.set(folder, categoryCount);
+      }
     }
 
-    botLogger.info(`📦 Loaded ${client.commands.size} commands total`);
+    // Log summary by category
+    const categoryStrings = Array.from(commandsByCategory.entries())
+      .map(([category, count]) => `${category}:${count}`)
+      .join(', ');
+    botLogger.info(`📦 Loaded ${client.commands.size} commands (${categoryStrings})`);
   } catch (error) {
     botLogger.error('❌ Error loading commands:', error);
     throw error;

@@ -254,22 +254,19 @@ export function buildLocalizedCommand(name: string, category: string): SlashComm
  * Auto-discovers and preloads all translation files from locales folder
  */
 export function initI18n(): void {
-    console.log('🌍 Initializing i18n system...');
-    console.log('📂 Discovering supported locales...');
-
     // Discover all locales from files
     const locales = getSupportedLocales();
-    console.log(`   Found ${locales.length} locale(s): ${locales.join(', ')}`);
 
     // Preload all discovered locales
+    let loaded = 0;
     locales.forEach(locale => {
         try {
             loadTranslation(locale);
-            console.log(`   ✓ Loaded ${locale} translations`);
+            loaded++;
         } catch (error) {
-            console.error(`   ✗ Failed to load ${locale} translations:`, error);
+            console.error(`Failed to load ${locale} translations:`, error);
         }
     });
 
-    console.log(`✅ i18n system initialized with ${locales.length} language(s)`);
+    console.log(`🌍 i18n initialized: ${loaded} language(s) (${locales.join(', ')})`);
 }
