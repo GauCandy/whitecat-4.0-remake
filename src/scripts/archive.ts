@@ -56,6 +56,7 @@ async function archiveProduction(archivesDir: string, timestamp: string) {
     console.log('\n📋 Contents:');
     console.log('   - dist/ (compiled JavaScript)');
     console.log('   - database/ (schema files)');
+    console.log('   - web/ (web server files)');
     console.log('   - package.json');
     console.log('   - .env.example');
     console.log('   - README.md');
@@ -71,6 +72,7 @@ async function archiveProduction(archivesDir: string, timestamp: string) {
   // Add production files
   archive.directory('dist/', 'dist');
   archive.directory('database/', 'database');
+  archive.directory('web/', 'web');
   archive.file('package.json', { name: 'package.json' });
   archive.file('.env.example', { name: '.env.example' });
   archive.file('README.md', { name: 'README.md' });
@@ -106,6 +108,7 @@ async function archiveSource(archivesDir: string, timestamp: string) {
     console.log('\n📋 Contents:');
     console.log('   - src/ (TypeScript source)');
     console.log('   - database/ (schema files)');
+    console.log('   - web/ (web server files)');
     console.log('   - All config files');
     console.log('   - README.md');
     console.log('\n💾 Source code backup complete!');
@@ -120,6 +123,7 @@ async function archiveSource(archivesDir: string, timestamp: string) {
   // Add source files
   archive.directory('src/', 'src');
   archive.directory('database/', 'database');
+  archive.directory('web/', 'web');
 
   // Config files
   archive.file('package.json', { name: 'package.json' });
