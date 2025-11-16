@@ -81,14 +81,18 @@ pm2-*.log
 *.sqlite3
 *.db
 
-# PostgreSQL dumps
-*.sql
+# PostgreSQL dumps (exclude schema and migrations)
 *.dump
 *.backup
 
 # Database backups
 backups/
 *.bak
+
+# IMPORTANT: Allow schema and migration files
+!database/schema.sql
+!database/migrations/*.sql
+!**/migrations/*.sql
 
 # ==========================================
 # Redis
