@@ -562,6 +562,93 @@
         ]
       },
       "error": "❌ Failed to load GIF!"
+    },
+    "giveaway": {
+      "gstart": {
+        "description": "Start a new giveaway",
+        "options": {
+          "prize": "The prize for the giveaway",
+          "duration": "Duration in minutes (default: 60)",
+          "winners": "Number of winners (default: 1)",
+          "required_role": "Required role to participate",
+          "min_account_age": "Minimum account age in days (default: none)",
+          "prevent_alts": "Prevent clone/alt accounts from entering (checks IP duplicates)"
+        },
+        "embed": {
+          "title": "🎉 GIVEAWAY 🎉",
+          "prize": "Prize",
+          "winners": "Winners",
+          "ends": "Ends",
+          "hosted_by": "Hosted by",
+          "required_role": "Required Role",
+          "min_account_age": "Min Account Age",
+          "clone_protection": "🛡️ Clone Protection",
+          "enabled": "Enabled",
+          "click_to_enter": "Click the button below to enter!",
+          "days": "{days} days",
+          "footer": "{count} winner(s) | Ends"
+        },
+        "button": "🎉 Enter Giveaway",
+        "success": "✅ Giveaway started! It will end {time}",
+        "error_guild_only": "❌ This command can only be used in a server.",
+        "error_create_message": "❌ Failed to create giveaway message.",
+        "error_general": "❌ An error occurred while starting the giveaway."
+      },
+      "gend": {
+        "description": "End a giveaway early",
+        "options": {
+          "message_id": "The message ID of the giveaway to end"
+        },
+        "processing": "⏳ Ending giveaway and selecting winners...",
+        "success": "✅ Giveaway ended successfully!",
+        "error_not_found": "❌ Giveaway not found in this server.",
+        "error_already_ended": "❌ This giveaway has already ended.",
+        "error_manager": "❌ Giveaway manager is not initialized.",
+        "error_general": "❌ An error occurred while ending the giveaway.",
+        "error_guild_only": "❌ This command can only be used in a server."
+      },
+      "greroll": {
+        "description": "Reroll winners for an ended giveaway",
+        "options": {
+          "message_id": "The message ID of the giveaway to reroll"
+        },
+        "processing": "🔄 Rerolling winners...",
+        "success": "✅ Rerolled {count} new winner(s)!",
+        "error_not_found": "❌ Giveaway not found in this server.",
+        "error_not_ended": "❌ This giveaway has not ended yet. Use `/gend` to end it first.",
+        "error_no_entries": "❌ No entries found for this giveaway.",
+        "error_manager": "❌ Giveaway manager is not initialized.",
+        "error_general": "❌ An error occurred while rerolling the giveaway.",
+        "error_guild_only": "❌ This command can only be used in a server."
+      },
+      "glist": {
+        "description": "List all active giveaways in this server",
+        "title": "🎉 Active Giveaways",
+        "field_name": "🎁 {prize}",
+        "field_value": "**Message ID:** {messageId}\n**Channel:** <#{channelId}>\n**Winners:** {winners}\n**Entries:** {entries}\n**Ends:** {endsAt}",
+        "footer": "{count} active giveaway(s)",
+        "no_giveaways": "📭 There are no active giveaways in this server.",
+        "error_general": "❌ An error occurred while listing giveaways.",
+        "error_guild_only": "❌ This command can only be used in a server."
+      },
+      "entry": {
+        "success": "✅ You have successfully entered the giveaway! (Total entries: {total})",
+        "error_not_found": "❌ This giveaway could not be found.",
+        "error_ended": "❌ This giveaway has already ended.",
+        "error_already_entered": "❌ You have already entered this giveaway!",
+        "error_role_required": "❌ You need the <@&{roleId}> role to enter this giveaway.",
+        "error_account_age": "❌ Your account must be at least {days} days old to enter this giveaway.",
+        "error_clone_detected": "❌ Clone protection detected a potential duplicate entry from your network. Only one entry per person is allowed.",
+        "error_verify_required": "❌ Clone protection is enabled for this giveaway. Please verify your account first by authorizing the bot.",
+        "error_general": "❌ An error occurred while entering the giveaway. Please try again later."
+      },
+      "manager": {
+        "ended_title": "🎉 Giveaway Ended!",
+        "ended_no_winners": "No valid entries. No winners selected.",
+        "ended_prize": "Prize",
+        "ended_winners": "Winner(s)",
+        "congratulations": "Congratulations {winners}! You won **{prize}**! 🎉"
+      }
     }
   },
   "events": {

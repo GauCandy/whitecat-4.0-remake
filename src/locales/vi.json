@@ -563,6 +563,93 @@
         ]
       },
       "error": "❌ Không thể tải GIF!"
+    },
+    "giveaway": {
+      "gstart": {
+        "description": "Tạo giveaway mới",
+        "options": {
+          "prize": "Phần thưởng của giveaway",
+          "duration": "Thời gian (phút) (mặc định: 60)",
+          "winners": "Số người thắng (mặc định: 1)",
+          "required_role": "Role bắt buộc để tham gia",
+          "min_account_age": "Tuổi tài khoản tối thiểu (ngày) (mặc định: không)",
+          "prevent_alts": "Chống clone/alt account (kiểm tra IP trùng)"
+        },
+        "embed": {
+          "title": "🎉 GIVEAWAY 🎉",
+          "prize": "Phần thưởng",
+          "winners": "Số người thắng",
+          "ends": "Kết thúc",
+          "hosted_by": "Tổ chức bởi",
+          "required_role": "Role bắt buộc",
+          "min_account_age": "Tuổi tài khoản tối thiểu",
+          "clone_protection": "🛡️ Chống Clone",
+          "enabled": "Đã bật",
+          "click_to_enter": "Nhấn nút bên dưới để tham gia!",
+          "days": "{days} ngày",
+          "footer": "{count} người thắng | Kết thúc"
+        },
+        "button": "🎉 Tham Gia Giveaway",
+        "success": "✅ Đã tạo giveaway! Sẽ kết thúc {time}",
+        "error_guild_only": "❌ Lệnh này chỉ dùng được trong server.",
+        "error_create_message": "❌ Không thể tạo tin nhắn giveaway.",
+        "error_general": "❌ Đã xảy ra lỗi khi tạo giveaway."
+      },
+      "gend": {
+        "description": "Kết thúc giveaway sớm",
+        "options": {
+          "message_id": "ID tin nhắn của giveaway cần kết thúc"
+        },
+        "processing": "⏳ Đang kết thúc giveaway và chọn người thắng...",
+        "success": "✅ Đã kết thúc giveaway thành công!",
+        "error_not_found": "❌ Không tìm thấy giveaway trong server này.",
+        "error_already_ended": "❌ Giveaway này đã kết thúc rồi.",
+        "error_manager": "❌ Hệ thống giveaway chưa được khởi tạo.",
+        "error_general": "❌ Đã xảy ra lỗi khi kết thúc giveaway.",
+        "error_guild_only": "❌ Lệnh này chỉ dùng được trong server."
+      },
+      "greroll": {
+        "description": "Quay lại người thắng cho giveaway đã kết thúc",
+        "options": {
+          "message_id": "ID tin nhắn của giveaway cần quay lại"
+        },
+        "processing": "🔄 Đang quay lại người thắng...",
+        "success": "✅ Đã quay lại {count} người thắng mới!",
+        "error_not_found": "❌ Không tìm thấy giveaway trong server này.",
+        "error_not_ended": "❌ Giveaway này chưa kết thúc. Dùng `/gend` để kết thúc trước.",
+        "error_no_entries": "❌ Không có người tham gia giveaway này.",
+        "error_manager": "❌ Hệ thống giveaway chưa được khởi tạo.",
+        "error_general": "❌ Đã xảy ra lỗi khi quay lại giveaway.",
+        "error_guild_only": "❌ Lệnh này chỉ dùng được trong server."
+      },
+      "glist": {
+        "description": "Xem danh sách giveaway đang hoạt động trong server",
+        "title": "🎉 Giveaway Đang Hoạt Động",
+        "field_name": "🎁 {prize}",
+        "field_value": "**ID Tin Nhắn:** {messageId}\n**Kênh:** <#{channelId}>\n**Số Người Thắng:** {winners}\n**Lượt Tham Gia:** {entries}\n**Kết Thúc:** {endsAt}",
+        "footer": "{count} giveaway đang hoạt động",
+        "no_giveaways": "📭 Không có giveaway nào đang hoạt động trong server này.",
+        "error_general": "❌ Đã xảy ra lỗi khi xem danh sách giveaway.",
+        "error_guild_only": "❌ Lệnh này chỉ dùng được trong server."
+      },
+      "entry": {
+        "success": "✅ Bạn đã tham gia giveaway thành công! (Tổng số lượt: {total})",
+        "error_not_found": "❌ Không tìm thấy giveaway này.",
+        "error_ended": "❌ Giveaway này đã kết thúc rồi.",
+        "error_already_entered": "❌ Bạn đã tham gia giveaway này rồi!",
+        "error_role_required": "❌ Bạn cần có role <@&{roleId}> để tham gia giveaway này.",
+        "error_account_age": "❌ Tài khoản của bạn phải ít nhất {days} ngày tuổi để tham gia giveaway này.",
+        "error_clone_detected": "❌ Hệ thống chống clone phát hiện tài khoản trùng từ mạng của bạn. Chỉ được phép 1 lượt tham gia mỗi người.",
+        "error_verify_required": "❌ Giveaway này đã bật chế độ chống clone. Vui lòng xác thực tài khoản bằng cách ủy quyền bot trước.",
+        "error_general": "❌ Đã xảy ra lỗi khi tham gia giveaway. Vui lòng thử lại sau."
+      },
+      "manager": {
+        "ended_title": "🎉 Giveaway Đã Kết Thúc!",
+        "ended_no_winners": "Không có người tham gia hợp lệ. Không có người thắng.",
+        "ended_prize": "Phần thưởng",
+        "ended_winners": "Người thắng",
+        "congratulations": "Chúc mừng {winners}! Bạn đã thắng **{prize}**! 🎉"
+      }
     }
   },
   "events": {
