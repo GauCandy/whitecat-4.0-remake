@@ -2,7 +2,7 @@
  * /greroll command - Reroll giveaway winners
  */
 
-import { SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } from 'discord.js';
 import { pool } from '../../database/config';
 import { getGuildLocale } from '../../utils/i18n';
 import { logGiveawayError } from '../../utils/errorHandler';
@@ -29,7 +29,7 @@ const command: Command = {
     if (!interaction.guildId) {
       await interaction.reply({
         content: '❌ This command can only be used in a server.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       return;
     }
@@ -48,7 +48,7 @@ const command: Command = {
       if (result.rows.length === 0) {
         await interaction.reply({
           content: '❌ Giveaway not found in this server.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -58,7 +58,7 @@ const command: Command = {
       if (!giveaway.ended) {
         await interaction.reply({
           content: '❌ This giveaway has not ended yet. Use `/gend` to end it first.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -70,14 +70,14 @@ const command: Command = {
       if (!giveawayManager) {
         await interaction.reply({
           content: '❌ Giveaway manager is not initialized.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
 
       await interaction.reply({
         content: '🔄 Rerolling winners...',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
       const winners = await giveawayManager.rerollWinners(giveaway.id);
@@ -105,7 +105,7 @@ const command: Command = {
       if (interaction.replied || interaction.deferred) {
         await interaction.editReply({ content: errorMessage });
       } else {
-        await interaction.reply({ content: errorMessage, ephemeral: true });
+        await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
       }
     }
   },

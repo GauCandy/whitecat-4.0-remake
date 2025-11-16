@@ -12,7 +12,8 @@ import {
     ActionRowBuilder,
     TextInputStyle,
     PermissionFlagsBits,
-    EmbedBuilder
+    EmbedBuilder,
+    MessageFlags
 } from 'discord.js';
 import { pool } from '../database/config';
 import { t } from '../utils/i18n';
@@ -65,7 +66,7 @@ export async function handleLanguageSelect(interaction: StringSelectMenuInteract
     if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
         await interaction.reply({
             content: '❌ You need Manage Server permission to change the language.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
         return;
     }
@@ -90,7 +91,7 @@ export async function handleLanguageSelect(interaction: StringSelectMenuInteract
         logger.error('Error handling language select:', error);
         await interaction.reply({
             content: '❌ Failed to update language. Please try again.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     }
 }
@@ -105,14 +106,15 @@ export async function handleDefaultLanguageButton(interaction: ButtonInteraction
     if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
         await interaction.reply({
             content: '❌ You need Manage Server permission to change the language.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
         return;
     }
 
     try {
         // Use guild's preferred locale from Discord
-        const discordLocale = interaction.guild.preferredLocale;
+        const fetchedGuild = await interaction.guild.fetch();
+        const discordLocale = fetchedGuild.preferredLocale;
         const defaultLocale = discordLocale === 'vi' ? 'vi' : 'en-US';
 
         // Update guild locale in database
@@ -132,7 +134,7 @@ export async function handleDefaultLanguageButton(interaction: ButtonInteraction
         logger.error('Error handling default language button:', error);
         await interaction.reply({
             content: '❌ Failed to set default language. Please try again.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     }
 }
@@ -147,7 +149,7 @@ export async function handleCustomPrefixButton(interaction: ButtonInteraction) {
     if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
         await interaction.reply({
             content: '❌ You need Manage Server permission to change the prefix.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
         return;
     }
@@ -177,7 +179,7 @@ export async function handleCustomPrefixButton(interaction: ButtonInteraction) {
         logger.error('Error showing custom prefix modal:', error);
         await interaction.reply({
             content: '❌ Failed to open prefix setup. Please try again.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     }
 }
@@ -192,7 +194,7 @@ export async function handleDefaultPrefixButton(interaction: ButtonInteraction) 
     if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
         await interaction.reply({
             content: '❌ You need Manage Server permission to change the prefix.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
         return;
     }
@@ -229,7 +231,7 @@ export async function handleDefaultPrefixButton(interaction: ButtonInteraction) 
         logger.error('Error handling default prefix button:', error);
         await interaction.reply({
             content: '❌ Failed to set default prefix. Please try again.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     }
 }
@@ -248,7 +250,7 @@ export async function handleCustomPrefixModal(interaction: ModalSubmitInteractio
         if (customPrefix.length < 1 || customPrefix.length > 10) {
             await interaction.reply({
                 content: t(locale, 'events.guildCreate.prefix_invalid'),
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
             return;
         }
@@ -279,7 +281,7 @@ export async function handleCustomPrefixModal(interaction: ModalSubmitInteractio
         // Acknowledge modal submission
         await interaction.reply({
             content: '✅',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         }).catch(() => {}); // Ignore if already acknowledged
 
         logger.info(`Guild ${interaction.guild.name} custom prefix set to: ${customPrefix}`);
@@ -287,7 +289,7 @@ export async function handleCustomPrefixModal(interaction: ModalSubmitInteractio
         logger.error('Error handling custom prefix modal:', error);
         await interaction.reply({
             content: '❌ Failed to set custom prefix. Please try again.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     }
 }

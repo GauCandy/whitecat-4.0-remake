@@ -572,9 +572,7 @@
           "prize": "Phần thưởng của giveaway",
           "duration": "Thời gian (phút) (mặc định: 60)",
           "winners": "Số người thắng (mặc định: 1)",
-          "required_role": "Role bắt buộc để tham gia",
-          "min_account_age": "Tuổi tài khoản tối thiểu (ngày) (mặc định: không)",
-          "prevent_alts": "Chống clone/alt account (kiểm tra IP trùng)"
+          "required_role": "Role bắt buộc để tham gia"
         },
         "embed": {
           "title": "🎉 GIVEAWAY 🎉",
@@ -583,8 +581,6 @@
           "ends": "Kết thúc",
           "hosted_by": "Tổ chức bởi",
           "required_role": "Role bắt buộc",
-          "min_account_age": "Tuổi tài khoản tối thiểu",
-          "clone_protection": "🛡️ Chống Clone",
           "enabled": "Đã bật",
           "click_to_enter": "Nhấn nút bên dưới để tham gia!",
           "days": "{days} ngày",
@@ -639,9 +635,6 @@
         "error_ended": "❌ Giveaway này đã kết thúc rồi.",
         "error_already_entered": "❌ Bạn đã tham gia giveaway này rồi!",
         "error_role_required": "❌ Bạn cần có role <@&{roleId}> để tham gia giveaway này.",
-        "error_account_age": "❌ Tài khoản của bạn phải ít nhất {days} ngày tuổi để tham gia giveaway này.",
-        "error_clone_detected": "❌ Hệ thống chống clone phát hiện tài khoản trùng từ mạng của bạn. Chỉ được phép 1 lượt tham gia mỗi người.",
-        "error_verify_required": "❌ Giveaway này đã bật chế độ chống clone. Vui lòng xác thực tài khoản bằng cách ủy quyền bot trước.",
         "error_general": "❌ Đã xảy ra lỗi khi tham gia giveaway. Vui lòng thử lại sau."
       },
       "manager": {
