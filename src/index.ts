@@ -92,10 +92,7 @@ async function start(): Promise<void> {
 
     // Start web server
     app.listen(PORT, HOST, () => {
-      webLogger.info(`🌐 Web server listening on ${HOST}:${PORT}`);
-      webLogger.info(`📍 OAuth callback URL: http://localhost:${PORT}/auth/callback`);
-      webLogger.info(`🏥 Health check: http://localhost:${PORT}/health`);
-      webLogger.info(`🏠 Homepage: http://localhost:${PORT}/`);
+      webLogger.info(`🌐 Web server listening on ${HOST}:${PORT} (http://localhost:${PORT})`);
     });
 
     // Initialize i18n system

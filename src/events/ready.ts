@@ -8,8 +8,6 @@ import { mapDiscordLocale } from '../utils/i18n';
  * This ensures all guilds the bot is in are properly registered
  */
 async function syncGuilds(client: any) {
-  botLogger.info('🔄 Syncing guilds to database...');
-
   const startTime = Date.now();
   let added = 0;
   let skipped = 0;
@@ -19,7 +17,6 @@ async function syncGuilds(client: any) {
     const discordGuildIds = Array.from(client.guilds.cache.keys());
 
     if (discordGuildIds.length === 0) {
-      botLogger.info('✅ No guilds to sync');
       return;
     }
 
@@ -70,14 +67,13 @@ async function syncGuilds(client: any) {
         `INSERT INTO guilds (guild_id, locale, prefix) VALUES ${values}`,
         params
       );
-
-      botLogger.info(`➕ Inserted ${guildsToInsert.length} new guilds`);
     }
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-    botLogger.info(
-      `✅ Guild sync complete in ${duration}s: ${added} added, ${skipped} skipped`
-    );
+
+    if (added > 0 || skipped > 0) {
+      botLogger.info(`🔄 Guild sync: ${added} added, ${skipped} existing (${duration}s)`);
+    }
 
   } catch (error) {
     botLogger.error('❌ Failed to sync guilds:', error);

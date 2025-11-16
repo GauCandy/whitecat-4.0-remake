@@ -10,6 +10,7 @@ import type { TextCommand } from '../types/textCommand';
 export async function loadTextCommands(client: ExtendedClient): Promise<void> {
   const commandsPath = join(__dirname, '../textCommands');
   let totalCommands = 0;
+  let totalAliases = 0;
 
   try {
     const commandFolders = readdirSync(commandsPath);
@@ -39,13 +40,8 @@ export async function loadTextCommands(client: ExtendedClient): Promise<void> {
                 for (const alias of command.aliases) {
                   client.textCommands.set(alias, command);
                 }
+                totalAliases += command.aliases.length;
               }
-
-              botLogger.info(
-                `✅ Loaded text command: ${command.name}${
-                  command.aliases ? ` (aliases: ${command.aliases.join(', ')})` : ''
-                } (${folder})`
-              );
             } else {
               botLogger.warn(`⚠️  Text command ${file} missing required properties`);
             }
@@ -58,7 +54,10 @@ export async function loadTextCommands(client: ExtendedClient): Promise<void> {
       }
     }
 
-    botLogger.info(`📦 Loaded ${totalCommands} text commands total`);
+    if (totalCommands > 0) {
+      const aliasInfo = totalAliases > 0 ? ` + ${totalAliases} aliases` : '';
+      botLogger.info(`📦 Loaded ${totalCommands} text commands${aliasInfo}`);
+    }
   } catch (error) {
     botLogger.error('❌ Error loading text commands:', error);
     // Don't throw - text commands are optional
