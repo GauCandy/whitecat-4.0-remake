@@ -2,7 +2,7 @@
  * Slap Action Command
  */
 
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, ApplicationIntegrationType, InteractionContextType } from 'discord.js';
 import { Command, CommandCategory } from '../../types';
 import { getNekobest, NekobestAction } from '../../utils/nekobest';
 import { getGuildLocale, t, Locale } from '../../utils/i18n';
@@ -15,6 +15,8 @@ const command: Command = {
         .setDescriptionLocalizations({
             vi: t(Locale.Vietnamese, 'commands.fun.slap.description'),
         })
+        .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+        .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
         .addUserOption(option =>
             option
                 .setName('user')
@@ -48,7 +50,7 @@ const command: Command = {
 
                 await interaction.reply({
                     content: message.replace('{user}', `**${interaction.user.username}**`),
-                    flags: MessageFlags.Ephemeral
+                    ephemeral: true
                 });
                 return;
             }
@@ -91,7 +93,7 @@ const command: Command = {
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: errorMessage, embeds: [] });
             } else {
-                await interaction.reply({ content: errorMessage, flags: MessageFlags.Ephemeral });
+                await interaction.reply({ content: errorMessage, ephemeral: true });
             }
         }
     }
