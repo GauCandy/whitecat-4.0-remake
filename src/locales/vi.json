@@ -587,7 +587,7 @@
       "prefix_modal_title": "Prefix Tùy Chỉnh",
       "prefix_modal_label": "Prefix",
       "prefix_modal_placeholder": "Gõ prefix bạn muốn (như !, ?, $, v.v.)",
-      "prefix_invalid": "❌ Có gì đó sai sai. Thử lại nhé!",
+      "prefix_invalid": "❌ Úi! Prefix phải từ 1-10 ký tự nha.",
       "setup_complete": "Xong Rồi!",
       "setup_complete_description": "Hoàn tất! 🎉 Server bạn sẵn sàng rồi đó.\n\n**Thử mấy cái này:**\n• `/help` - Xem mình làm được gì\n• `/hug`, `/kiss` - Lệnh tương tác vui\n• `/balance` - Xem số xu của bạn\n\nChúc vui!"
     }
