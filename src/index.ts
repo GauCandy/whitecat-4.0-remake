@@ -8,7 +8,6 @@ import { loadCommands } from './handlers/commandHandler';
 import { loadTextCommands } from './handlers/textCommandHandler';
 import { loadEvents } from './handlers/eventHandler';
 import { initI18n } from './utils/i18n';
-import { initScheduledJobs } from './utils/scheduler';
 import authRoutes from './web/routes/auth';
 import type { ExtendedClient } from './types/client';
 import type { Command } from './types/command';
@@ -118,9 +117,6 @@ async function start(): Promise<void> {
     }
 
     await client.login(token);
-
-    // Initialize scheduled jobs (auto cleanup, etc.)
-    initScheduledJobs();
 
     botLogger.info('✅ Bot started successfully!');
   } catch (error) {
