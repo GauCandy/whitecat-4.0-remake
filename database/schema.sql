@@ -128,7 +128,6 @@ CREATE TABLE IF NOT EXISTS guilds (
   id BIGSERIAL PRIMARY KEY,
 
   guild_id VARCHAR(20) UNIQUE NOT NULL,        -- Discord guild ID (snowflake)
-  guild_name VARCHAR(255) NOT NULL,            -- Tên guild
   owner_id VARCHAR(20),                        -- Discord ID của chủ server
   prefix VARCHAR(10) DEFAULT '!',              -- Prefix cho lệnh text
   locale VARCHAR(10) DEFAULT 'en-US',          -- Ngôn ngữ: 'en-US', 'vi', etc.
