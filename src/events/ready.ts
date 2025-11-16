@@ -12,7 +12,6 @@ async function syncGuilds(client: any) {
 
   const startTime = Date.now();
   let added = 0;
-  let updated = 0;
   let skipped = 0;
 
   try {
@@ -26,44 +25,33 @@ async function syncGuilds(client: any) {
 
     // Fetch all guilds from database in one query
     const dbGuilds = await pool.query(
-      'SELECT guild_id, left_at FROM guilds WHERE guild_id = ANY($1)',
+      'SELECT guild_id FROM guilds WHERE guild_id = ANY($1)',
       [discordGuildIds]
     );
 
-    // Create a map for quick lookup
-    const dbGuildMap = new Map(
-      dbGuilds.rows.map(row => [row.guild_id, row])
+    // Create a Set for quick lookup
+    const existingGuildIds = new Set(
+      dbGuilds.rows.map(row => row.guild_id)
     );
 
-    // Prepare bulk operations
+    // Prepare bulk insert for new guilds only
     const guildsToInsert: any[] = [];
-    const guildsToUpdate: any[] = [];
 
     for (const [guildId, guild] of client.guilds.cache) {
-      const discordLocale = guild.preferredLocale;
-      const mappedLocale = mapDiscordLocale(discordLocale);
-
-      const dbGuild = dbGuildMap.get(guildId);
-
-      if (!dbGuild) {
+      if (existingGuildIds.has(guildId)) {
+        // Guild already in database - skip (preserve original joined_at)
+        skipped++;
+      } else {
         // Guild not in database - prepare to add
+        const discordLocale = guild.preferredLocale;
+        const mappedLocale = mapDiscordLocale(discordLocale);
+
         guildsToInsert.push({
           guildId,
           locale: mappedLocale,
           name: guild.name
         });
         added++;
-      } else if (dbGuild.left_at) {
-        // Guild was marked as left - prepare to update
-        guildsToUpdate.push({
-          guildId,
-          locale: mappedLocale,
-          name: guild.name
-        });
-        updated++;
-      } else {
-        // Guild already active
-        skipped++;
       }
     }
 
@@ -83,30 +71,9 @@ async function syncGuilds(client: any) {
       botLogger.info(`➕ Inserted ${guildsToInsert.length} new guilds`);
     }
 
-    // Bulk update rejoined guilds
-    if (guildsToUpdate.length > 0) {
-      // Use UPDATE with CASE for bulk update
-      const guildIds = guildsToUpdate.map(g => g.guildId);
-      const locales = guildsToUpdate.map(g => g.locale);
-
-      await pool.query(
-        `UPDATE guilds
-         SET locale = data.locale,
-             left_at = NULL
-         FROM (
-           SELECT unnest($1::text[]) AS guild_id,
-                  unnest($2::text[]) AS locale
-         ) AS data
-         WHERE guilds.guild_id = data.guild_id`,
-        [guildIds, locales]
-      );
-
-      botLogger.info(`🔄 Updated ${guildsToUpdate.length} rejoined guilds`);
-    }
-
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     botLogger.info(
-      `✅ Guild sync complete in ${duration}s: ${added} added, ${updated} updated, ${skipped} skipped`
+      `✅ Guild sync complete in ${duration}s: ${added} added, ${skipped} skipped`
     );
 
   } catch (error) {
