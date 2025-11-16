@@ -266,6 +266,8 @@ export async function registerUser(
  * @param expiresIn - Token expiry time in seconds
  * @param scopes - Granted scopes
  * @param email - User email (if email scope granted)
+ * @param clientIP - Client IP address (for anti-clone detection)
+ * @param userAgent - Client user agent (for anti-clone detection)
  */
 export async function storeOAuthTokens(
   discordId: string,
@@ -273,7 +275,9 @@ export async function storeOAuthTokens(
   refreshToken: string,
   expiresIn: number,
   scopes: string,
-  email?: string
+  email?: string,
+  clientIP?: string | null,
+  userAgent?: string | null
 ): Promise<void> {
   const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
@@ -286,9 +290,12 @@ export async function storeOAuthTokens(
        oauth_token_expires_at = $4,
        oauth_scopes = $5,
        email = $6,
+       last_verify_ip = $7,
+       last_verify_user_agent = $8,
+       last_verify_at = CURRENT_TIMESTAMP,
        terms_accepted_at = CURRENT_TIMESTAMP,
        updated_at = CURRENT_TIMESTAMP
      WHERE discord_id = $1`,
-    [discordId, accessToken, refreshToken, expiresAt, scopes, email || null]
+    [discordId, accessToken, refreshToken, expiresAt, scopes, email || null, clientIP || null, userAgent || null]
   );
 }

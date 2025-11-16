@@ -107,6 +107,48 @@ export async function handleGiveawayEntry(interaction: ButtonInteraction): Promi
       return;
     }
 
+    // Check for clone/alt accounts if prevent_alts is enabled
+    if (giveaway.prevent_alts) {
+      // Get user's verify IP
+      const userIPResult = await pool.query(
+        'SELECT last_verify_ip FROM users WHERE id = $1',
+        [userDbId]
+      );
+
+      if (userIPResult.rows.length > 0 && userIPResult.rows[0].last_verify_ip) {
+        const userIP = userIPResult.rows[0].last_verify_ip;
+
+        // Check if any other entries have the same IP
+        const duplicateIPCheck = await pool.query(
+          `SELECT COUNT(*) as count
+           FROM giveaway_entries ge
+           JOIN users u ON ge.user_id = u.id
+           WHERE ge.giveaway_id = $1
+           AND u.last_verify_ip = $2
+           AND u.id != $3`,
+          [giveaway.id, userIP, userDbId]
+        );
+
+        const duplicateCount = parseInt(duplicateIPCheck.rows[0].count);
+
+        if (duplicateCount > 0) {
+          await interaction.reply({
+            content: '❌ Clone protection detected a potential duplicate entry from your network. Only one entry per person is allowed.',
+            ephemeral: true,
+          });
+          botLogger.warn(`Prevented duplicate IP entry for giveaway ${giveaway.id}: IP ${userIP}`);
+          return;
+        }
+      } else {
+        // User hasn't verified yet, so we can't check IP
+        await interaction.reply({
+          content: '❌ Clone protection is enabled for this giveaway. Please verify your account first by authorizing the bot.',
+          ephemeral: true,
+        });
+        return;
+      }
+    }
+
     // Add entry
     await pool.query(
       'INSERT INTO giveaway_entries (giveaway_id, user_id) VALUES ($1, $2)',

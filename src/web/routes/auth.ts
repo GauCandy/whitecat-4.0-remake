@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { exchangeCode, getOAuthUser } from '../../utils/oauth';
 import { storeOAuthTokens } from '../../middlewares/authorization';
 import { logger } from '../../utils/logger';
+import { getClientIP, getUserAgent } from '../../utils/ipUtils';
 
 const router = Router();
 
@@ -55,6 +56,10 @@ router.get('/callback', async (req: Request, res: Response) => {
       logger.info(`Email scope granted for user ${userData.id}: ${userEmail}`);
     }
 
+    // Extract IP and user agent for anti-clone tracking
+    const clientIP = getClientIP(req);
+    const userAgent = getUserAgent(req);
+
     // Store tokens in database
     await storeOAuthTokens(
       userData.id,
@@ -62,7 +67,9 @@ router.get('/callback', async (req: Request, res: Response) => {
       tokenData.refresh_token,
       tokenData.expires_in,
       tokenData.scope,
-      userEmail
+      userEmail,
+      clientIP,
+      userAgent
     );
 
     logger.info(`Tokens stored for user ${userData.id}`);
