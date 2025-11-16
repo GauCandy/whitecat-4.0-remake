@@ -2,7 +2,7 @@ import { Message, EmbedBuilder } from 'discord.js';
 import type { TextCommand } from '../../types/textCommand';
 import { CommandCategory } from '../../types/command';
 import { parseAllMentionedUsers } from '../../utils/funCommandHelper';
-import { getNekobest, NekobestAction } from '../../utils/nekobest';
+import { getNekobest, NekobestExpression } from '../../utils/nekobest';
 import { getGuildLocale, t, Locale } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
@@ -20,7 +20,7 @@ const command: TextCommand = {
       const locale = guildId ? await getGuildLocale(guildId) : Locale.EnglishUS;
 
       const loadingMsg = await message.reply('😉 Winking...');
-      const gifUrl = await getNekobest(NekobestAction.Wink);
+      const gifUrl = await getNekobest(NekobestExpression.Wink);
 
       let description = '';
 

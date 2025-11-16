@@ -12,7 +12,7 @@ const command: TextCommand = {
   cooldown: 3,
 
   async execute(message: Message): Promise<void> {
-    await executeEmotionalAction(message, NekobestAction.Nod, 'nod', '#90EE90');
+    await executeEmotionalAction(message, NekobestExpression.Nod, 'nod', '#90EE90');
   },
 };
 

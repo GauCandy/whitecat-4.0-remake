@@ -7,6 +7,7 @@ import { pool } from '../../database/config';
 import { getGuildLocale } from '../../utils/i18n';
 import { logGiveawayError } from '../../utils/errorHandler';
 import type { Command } from '../../types/command';
+import { CommandCategory } from '../../types/command';
 import type { Giveaway } from '../../types/giveaway';
 
 const command: Command = {
@@ -14,6 +15,7 @@ const command: Command = {
     .setName('glist')
     .setDescription('List all active giveaways in this server')
     .setDMPermission(false),
+  category: CommandCategory.Giveaway,
 
   async execute(interaction) {
     if (!interaction.guildId) {

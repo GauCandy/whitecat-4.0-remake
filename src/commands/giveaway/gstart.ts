@@ -7,6 +7,7 @@ import { pool } from '../../database/config';
 import { getGuildLocale } from '../../utils/i18n';
 import { logGiveawayError } from '../../utils/errorHandler';
 import type { Command } from '../../types/command';
+import { CommandCategory } from '../../types/command';
 
 const command: Command = {
   data: new SlashCommandBuilder()
@@ -56,6 +57,7 @@ const command: Command = {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .setDMPermission(false),
+  category: CommandCategory.Giveaway,
 
   async execute(interaction) {
     if (!interaction.guildId) {

@@ -2,7 +2,7 @@ import { Message, EmbedBuilder } from 'discord.js';
 import type { TextCommand } from '../../types/textCommand';
 import { CommandCategory } from '../../types/command';
 import { parseAllMentionedUsers, getRandomMessage } from '../../utils/funCommandHelper';
-import { getNekobest, NekobestAction } from '../../utils/nekobest';
+import { getNekobest, NekobestExpression } from '../../utils/nekobest';
 import { getGuildLocale, t, Locale } from '../../utils/i18n';
 import logger from '../../utils/logger';
 
@@ -34,7 +34,7 @@ const command: TextCommand = {
       }
 
       const loadingMsg = await message.reply('🔫 Aiming...');
-      const gifUrl = await getNekobest(NekobestAction.Shoot);
+      const gifUrl = await getNekobest(NekobestExpression.Shoot);
 
       if (targets.length > 1) {
         const targetNames = targets.map(u => `**${u.username}**`).join(', ');
