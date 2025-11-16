@@ -1,14 +1,30 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, MessageFlags } from 'discord.js';
+import {
+  SlashCommandBuilder,
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  MessageFlags,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  ButtonInteraction,
+  ModalSubmitInteraction,
+} from 'discord.js';
 import type { Command } from '../../types/command';
 import { CommandCategory } from '../../types/command';
 import { pterodactyl } from '../../utils/pterodactyl';
 import { pool } from '../../database/config';
 import { generatePassword } from '../../utils/password';
+import { createEconomyAccount, DEFAULT_CURRENCY_ID } from '../../utils/economy';
+
+const STARTING_BALANCE = 100000; // 100,000 coins starting balance
 
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('pterodactyl')
-    .setDescription('Create or link your Pterodactyl hosting account'),
+    .setDescription('Manage your Pterodactyl hosting account'),
 
   category: CommandCategory.Hosting,
   cooldown: 10,
@@ -32,6 +48,7 @@ const command: Command = {
       }
 
       const dbUser = userResult.rows[0];
+      const userId = dbUser.id;
 
       // Check if user has email (from OAuth2 verification)
       if (!dbUser.email) {
@@ -46,19 +63,28 @@ const command: Command = {
         const pteroUser = await pterodactyl.getUserById(dbUser.pterodactyl_user_id);
 
         if (pteroUser) {
+          // Show profile with Reset Password button
           const embed = new EmbedBuilder()
-            .setColor(0x57f287)
-            .setTitle('✅ Pterodactyl Account Already Linked')
-            .setDescription('Your Discord account is already linked to a Pterodactyl account!')
+            .setColor(0x5865f2)
+            .setTitle('🎮 Pterodactyl Account')
+            .setDescription('Your hosting account details:')
             .addFields(
-              { name: 'Username', value: pteroUser.username, inline: true },
-              { name: 'Email', value: pteroUser.email, inline: true },
-              { name: 'User ID', value: `#${pteroUser.id}`, inline: true }
+              { name: '👤 Username', value: pteroUser.username, inline: true },
+              { name: '📧 Email', value: pteroUser.email, inline: true },
+              { name: '🆔 User ID', value: `#${pteroUser.id}`, inline: true },
+              { name: '🔗 Panel URL', value: process.env.PTERODACTYL_URL || 'N/A', inline: false }
             )
             .setTimestamp()
             .setFooter({ text: 'WhiteCat Hosting Bot' });
 
-          await interaction.editReply({ embeds: [embed] });
+          const resetButton = new ButtonBuilder()
+            .setCustomId(`reset_password_${interaction.user.id}`)
+            .setLabel('🔐 Reset Password')
+            .setStyle(ButtonStyle.Danger);
+
+          const row = new ActionRowBuilder<ButtonBuilder>().addComponents(resetButton);
+
+          await interaction.editReply({ embeds: [embed], components: [row] });
           return;
         }
       }
@@ -78,19 +104,30 @@ const command: Command = {
           [pteroUser.id, interaction.user.id]
         );
 
+        // Create user economy if not exists
+        await createEconomyAccount(userId, STARTING_BALANCE, DEFAULT_CURRENCY_ID);
+
         const embed = new EmbedBuilder()
           .setColor(0x57f287)
-          .setTitle('✅ Pterodactyl Account Linked')
-          .setDescription('Your existing Pterodactyl account has been linked to your Discord account!')
+          .setTitle('✅ Account Linked Successfully')
+          .setDescription('Your existing Pterodactyl account has been linked!')
           .addFields(
-            { name: 'Username', value: pteroUser.username, inline: true },
-            { name: 'Email', value: pteroUser.email, inline: true },
-            { name: 'User ID', value: `#${pteroUser.id}`, inline: true }
+            { name: '👤 Username', value: pteroUser.username, inline: true },
+            { name: '📧 Email', value: pteroUser.email, inline: true },
+            { name: '🆔 User ID', value: `#${pteroUser.id}`, inline: true },
+            { name: '🔗 Panel URL', value: process.env.PTERODACTYL_URL || 'N/A', inline: false }
           )
           .setTimestamp()
           .setFooter({ text: 'WhiteCat Hosting Bot' });
 
-        await interaction.editReply({ embeds: [embed] });
+        const resetButton = new ButtonBuilder()
+          .setCustomId(`reset_password_${interaction.user.id}`)
+          .setLabel('🔐 Reset Password')
+          .setStyle(ButtonStyle.Danger);
+
+        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(resetButton);
+
+        await interaction.editReply({ embeds: [embed], components: [row] });
         return;
       }
 
@@ -98,17 +135,13 @@ const command: Command = {
       const username = interaction.user.id; // Use Discord ID as username
 
       // Parse Discord username and discriminator
-      // For new username system (no discriminator), it will be #0
-      // For old system like "gaucandy#7322", split by #
       let firstName: string;
       let lastName: string;
 
       if (dbUser.discriminator && dbUser.discriminator !== '0') {
-        // Old system: username#discriminator
         firstName = dbUser.username;
         lastName = `#${dbUser.discriminator}`;
       } else {
-        // New system: just username
         firstName = dbUser.username;
         lastName = '#0';
       }
@@ -132,12 +165,15 @@ const command: Command = {
         [newPteroUser.id, interaction.user.id]
       );
 
+      // Create user economy with starting balance
+      await createEconomyAccount(userId, STARTING_BALANCE, DEFAULT_CURRENCY_ID);
+
       // Send login credentials via DM
       try {
         const dmEmbed = new EmbedBuilder()
           .setColor(0x57f287)
-          .setTitle('🔐 Pterodactyl Account Credentials')
-          .setDescription('Your Pterodactyl hosting account has been created! Here are your login credentials:')
+          .setTitle('🎉 Welcome to WhiteCat Hosting!')
+          .setDescription('Your hosting account has been created successfully!')
           .addFields(
             { name: '🌐 Panel URL', value: process.env.PTERODACTYL_URL || 'N/A', inline: false },
             { name: '👤 Username', value: `\`${newPteroUser.username}\``, inline: true },
@@ -145,39 +181,41 @@ const command: Command = {
             { name: '🔑 Password', value: `\`${password}\``, inline: false },
             {
               name: '⚠️ Important',
-              value: '• Please change your password after first login\n• Keep these credentials safe\n• Do not share your password with anyone',
+              value: '• Change your password after first login\n• Keep these credentials safe\n• Do not share your password',
               inline: false
             }
           )
           .setTimestamp()
           .setFooter({ text: 'WhiteCat Hosting Bot' });
 
-        await interaction.user.send({ embeds: [dmEmbed] });
+        await interaction.user.send({ content: `${interaction.user}`, embeds: [dmEmbed] });
 
         // Reply in channel (without password)
         const channelEmbed = new EmbedBuilder()
           .setColor(0x57f287)
-          .setTitle('✅ Pterodactyl Account Created')
-          .setDescription('Your Pterodactyl hosting account has been created successfully!\n\n📬 **Login credentials have been sent to your DM!**')
+          .setTitle('✅ Account Created Successfully')
+          .setDescription('Your Pterodactyl hosting account has been created!\n\n📬 **Login credentials have been sent to your DM!**')
           .addFields(
-            { name: 'User ID', value: `#${newPteroUser.id}`, inline: true },
-            { name: 'Username', value: newPteroUser.username, inline: true },
-            {
-              name: '📝 Next Steps',
-              value: '1. Check your DMs for login credentials\n2. Login to the panel\n3. Purchase hosting with `/packages` command!',
-              inline: false
-            }
+            { name: '🆔 User ID', value: `#${newPteroUser.id}`, inline: true },
+            { name: '👤 Username', value: newPteroUser.username, inline: true }
           )
           .setTimestamp()
           .setFooter({ text: 'WhiteCat Hosting Bot' });
 
-        await interaction.editReply({ embeds: [channelEmbed] });
+        const resetButton = new ButtonBuilder()
+          .setCustomId(`reset_password_${interaction.user.id}`)
+          .setLabel('🔐 Reset Password')
+          .setStyle(ButtonStyle.Danger);
+
+        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(resetButton);
+
+        await interaction.editReply({ embeds: [channelEmbed], components: [row] });
       } catch (dmError) {
-        // If DM fails, show password in ephemeral message (fallback)
+        // If DM fails, show password in ephemeral message
         const fallbackEmbed = new EmbedBuilder()
           .setColor(0xffa500)
-          .setTitle('⚠️ Pterodactyl Account Created (DM Failed)')
-          .setDescription('Your account was created, but I couldn\'t send you a DM. Here are your credentials:')
+          .setTitle('⚠️ Account Created (DM Failed)')
+          .setDescription('Your account was created, but I couldn\'t send you a DM.')
           .addFields(
             { name: '🌐 Panel URL', value: process.env.PTERODACTYL_URL || 'N/A', inline: false },
             { name: '👤 Username', value: `\`${newPteroUser.username}\``, inline: true },
@@ -185,7 +223,7 @@ const command: Command = {
             { name: '🔑 Password', value: `\`${password}\``, inline: false },
             {
               name: '⚠️ Important',
-              value: '• Enable DMs from server members to receive credentials safely next time\n• Change your password after first login\n• **Delete this message after copying your credentials!**',
+              value: '• Enable DMs to receive credentials safely\n• **Delete this message after copying!**',
               inline: false
             }
           )
@@ -197,7 +235,7 @@ const command: Command = {
     } catch (error) {
       console.error('Error in /pterodactyl command:', error);
 
-      let errorMessage = '❌ Failed to create Pterodactyl account. Please try again later.';
+      let errorMessage = '❌ Failed to manage Pterodactyl account. Please try again later.';
 
       if (error instanceof Error) {
         errorMessage += `\n\n**Error:** ${error.message}`;
