@@ -290,12 +290,9 @@ export async function storeOAuthTokens(
        oauth_token_expires_at = $4,
        oauth_scopes = $5,
        email = $6,
-       last_verify_ip = $7,
-       last_verify_user_agent = $8,
-       last_verify_at = CURRENT_TIMESTAMP,
        terms_accepted_at = CURRENT_TIMESTAMP,
        updated_at = CURRENT_TIMESTAMP
      WHERE discord_id = $1`,
-    [discordId, accessToken, refreshToken, expiresAt, scopes, email || null, clientIP || null, userAgent || null]
+    [discordId, accessToken, refreshToken, expiresAt, scopes, email || null]
   );
 }
