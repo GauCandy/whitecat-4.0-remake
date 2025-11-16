@@ -6,11 +6,121 @@
  * - Logs who invited the bot
  */
 
-import { Guild, AuditLogEvent } from 'discord.js';
+import {
+    Guild,
+    AuditLogEvent,
+    EmbedBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    PermissionFlagsBits,
+    TextChannel
+} from 'discord.js';
 import { Event } from '../types';
 import { pool } from '../database/config';
-import { mapDiscordLocale } from '../utils/i18n';
+import { mapDiscordLocale, t } from '../utils/i18n';
 import logger from '../utils/logger';
+
+/**
+ * Find the best channel to send welcome message
+ * Priority: system channel > rules channel > first text channel with send permission
+ */
+async function findWelcomeChannel(guild: Guild): Promise<TextChannel | null> {
+    // Try system channel first (where @everyone messages go)
+    if (guild.systemChannel?.permissionsFor(guild.members.me!)?.has(PermissionFlagsBits.SendMessages)) {
+        return guild.systemChannel;
+    }
+
+    // Try rules channel
+    if (guild.rulesChannel?.permissionsFor(guild.members.me!)?.has(PermissionFlagsBits.SendMessages)) {
+        return guild.rulesChannel as TextChannel;
+    }
+
+    // Find first text channel where bot can send messages
+    const channels = guild.channels.cache.filter(
+        (channel): channel is TextChannel =>
+            channel.isTextBased() &&
+            !channel.isThread() &&
+            !channel.isVoiceBased() &&
+            channel.permissionsFor(guild.members.me!)?.has(PermissionFlagsBits.SendMessages) === true
+    );
+
+    return channels.first() || null;
+}
+
+/**
+ * Build welcome embed with language selection (Step 1)
+ */
+function buildWelcomeMessage(locale: string, inviterMention?: string) {
+    const embed = new EmbedBuilder()
+        .setColor(0x5865F2) // Discord Blurple
+        .setTitle(t(locale, 'events.guildCreate.welcome_title'))
+        .setDescription(t(locale, 'events.guildCreate.welcome_description'))
+        .setFooter({ text: t(locale, 'events.guildCreate.language_select_label') })
+        .setTimestamp();
+
+    // Language select menu
+    const languageSelect = new StringSelectMenuBuilder()
+        .setCustomId('setup_language')
+        .setPlaceholder(t(locale, 'events.guildCreate.language_select_placeholder'))
+        .addOptions([
+            {
+                label: t(locale, 'events.guildCreate.language_option_en_us'),
+                value: 'en-US',
+                emoji: '🇺🇸',
+            },
+            {
+                label: t(locale, 'events.guildCreate.language_option_vi'),
+                value: 'vi',
+                emoji: '🇻🇳',
+            },
+        ]);
+
+    // Default language button
+    const defaultLanguageButton = new ButtonBuilder()
+        .setCustomId('setup_default_language')
+        .setLabel(t(locale, 'events.guildCreate.button_default_language'))
+        .setStyle(ButtonStyle.Secondary)
+        .setEmoji('🌐');
+
+    const row1 = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(languageSelect);
+    const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(defaultLanguageButton);
+
+    // Setup prompt with inviter mention
+    const setupPrompt = inviterMention
+        ? t(locale, 'events.guildCreate.setup_prompt').replace('{inviter}', inviterMention)
+        : '';
+
+    return { content: setupPrompt, embeds: [embed], components: [row1, row2] };
+}
+
+/**
+ * Build prefix setup message (Step 2)
+ */
+export function buildPrefixSetupMessage(locale: string) {
+    const embed = new EmbedBuilder()
+        .setColor(0x5865F2) // Discord Blurple
+        .setTitle('⚙️ ' + t(locale, 'events.guildCreate.prefix_setup_label'))
+        .setDescription(t(locale, 'events.guildCreate.welcome_description'))
+        .setTimestamp();
+
+    const customPrefixButton = new ButtonBuilder()
+        .setCustomId('setup_custom_prefix')
+        .setLabel(t(locale, 'events.guildCreate.button_custom_prefix'))
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji('⚙️');
+
+    const defaultPrefixButton = new ButtonBuilder()
+        .setCustomId('setup_default_prefix')
+        .setLabel(t(locale, 'events.guildCreate.button_default_prefix'))
+        .setStyle(ButtonStyle.Secondary)
+        .setEmoji('❗');
+
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(customPrefixButton, defaultPrefixButton);
+
+    return { embeds: [embed], components: [row] };
+}
 
 const event: Event<'guildCreate'> = {
     name: 'guildCreate',
@@ -73,6 +183,24 @@ const event: Event<'guildCreate'> = {
                 );
 
                 logger.info(`Guild ${guild.name} added to database with locale: ${mappedLocale}`);
+            }
+
+            // Find appropriate channel to send welcome message
+            const welcomeChannel = await findWelcomeChannel(guild);
+
+            if (welcomeChannel) {
+                try {
+                    // Build and send welcome message with language selection
+                    const inviterMention = invitedBy ? `<@${invitedBy}>` : undefined;
+                    const welcomeMessage = buildWelcomeMessage(mappedLocale, inviterMention);
+
+                    await welcomeChannel.send(welcomeMessage);
+                    logger.info(`Sent welcome message to ${guild.name} in channel: ${welcomeChannel.name}`);
+                } catch (error) {
+                    logger.error(`Failed to send welcome message to ${guild.name}:`, error);
+                }
+            } else {
+                logger.warn(`Could not find suitable channel to send welcome message in ${guild.name}`);
             }
 
         } catch (error) {
