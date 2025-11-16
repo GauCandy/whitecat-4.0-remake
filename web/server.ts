@@ -5,7 +5,7 @@
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { webLogger } from '../utils/logger';
+import { webLogger } from '../src/utils/logger';
 import authRoutes from './routes/auth';
 
 const app = express();

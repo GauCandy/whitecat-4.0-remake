@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { exchangeCode, getOAuthUser } from '../../utils/oauth';
-import { pool } from '../../database/config';
-import { webLogger } from '../../utils/logger';
+import { exchangeCode, getOAuthUser } from '../../src/utils/oauth';
+import { pool } from '../../src/database/config';
+import { webLogger } from '../../src/utils/logger';
 
 // Load HTML templates
 const successHtml = readFileSync(join(__dirname, '../views/auth-success.html'), 'utf-8');

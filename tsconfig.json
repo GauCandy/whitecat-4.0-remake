@@ -5,7 +5,7 @@
     "lib": ["ES2022"],
     "types": ["node"],
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
 
     // Core settings
     "esModuleInterop": true,
@@ -37,6 +37,6 @@
     "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+  "include": ["src/**/*", "web/**/*"],
+  "exclude": ["node_modules", "dist", "web/public", "web/views", "**/*.test.ts"]
 }
