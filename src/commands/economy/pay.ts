@@ -7,7 +7,8 @@ import {
 } from 'discord.js';
 import type { Command } from '../../types/command';
 import { CommandCategory } from '../../types/command';
-import { getUserIdFromDiscordId, getBalance, transferCoins } from '../../utils/economy';
+import { getUserIdFromDiscordId, getBalance, transferCoins, DEFAULT_CURRENCY_ID } from '../../utils/economy';
+import { pool } from '../../database/config';
 
 const MIN_TRANSFER_AMOUNT = 100; // Minimum transfer: 100 coins
 const MAX_TRANSFER_AMOUNT = 1000000; // Maximum transfer: 1,000,000 coins
@@ -63,6 +64,19 @@ const command: Command = {
       if (recipient.bot) {
         await interaction.editReply({
           content: '❌ You cannot send coins to bots!',
+        });
+        return;
+      }
+
+      // Check if currency is transferable
+      const currencyCheck = await pool.query(
+        'SELECT is_transferable, name FROM currencies WHERE id = $1 AND is_active = true',
+        [DEFAULT_CURRENCY_ID]
+      );
+
+      if (currencyCheck.rows.length === 0 || !currencyCheck.rows[0].is_transferable) {
+        await interaction.editReply({
+          content: `❌ ${currencyCheck.rows[0]?.name || 'This currency'} cannot be transferred to other users!`,
         });
         return;
       }

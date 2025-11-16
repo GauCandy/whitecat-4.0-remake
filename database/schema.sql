@@ -57,19 +57,24 @@ CREATE INDEX idx_users_pterodactyl_user_id ON users(pterodactyl_user_id);
 -- ==========================================
 CREATE TABLE IF NOT EXISTS currencies (
   id SERIAL PRIMARY KEY,
-  code VARCHAR(10) UNIQUE NOT NULL, -- 'VND', 'USD', 'COIN', etc.
+  code VARCHAR(10) UNIQUE NOT NULL, -- 'COIN', 'VND', 'USD', etc.
   name VARCHAR(50) NOT NULL,
-  symbol VARCHAR(10) NOT NULL, -- '₫', '$', '🪙'
+  symbol VARCHAR(10) NOT NULL, -- '🪙', '₫', '$'
+
+  -- Currency properties
   is_default BOOLEAN DEFAULT false,
-  exchange_rate DECIMAL(10,4) DEFAULT 1.0, -- Rate to default currency
+  is_purchasable BOOLEAN DEFAULT false, -- Can buy with real money
+  is_transferable BOOLEAN DEFAULT true, -- Can send to other users
   is_active BOOLEAN DEFAULT true,
+
+  exchange_rate DECIMAL(10,4) DEFAULT 1.0, -- Rate to default currency
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Default currencies
-INSERT INTO currencies (code, name, symbol, is_default, exchange_rate, is_active) VALUES
-('COIN', 'WhiteCat Coins', '🪙', true, 1.0, true),
-('VND', 'Vietnamese Dong', '₫', false, 1.0, false)
+INSERT INTO currencies (code, name, symbol, is_default, is_purchasable, is_transferable, is_active) VALUES
+('COIN', 'WhiteCat Coins', '🪙', true, false, true, true),
+('VND', 'Vietnamese Dong', '₫', false, true, false, false)
 ON CONFLICT (code) DO NOTHING;
 
 -- ==========================================
