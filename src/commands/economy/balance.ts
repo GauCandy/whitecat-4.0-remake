@@ -30,9 +30,9 @@ const command: Command = {
       const result = await pool.query(
         `SELECT
           u.id, u.discord_id, u.username, u.created_at,
-          ue.coins, ue.updated_at as balance_updated_at
+          ue.balance, ue.updated_at as balance_updated_at
          FROM users u
-         LEFT JOIN user_economy ue ON u.id = ue.user_id
+         LEFT JOIN user_economy ue ON u.id = ue.user_id AND ue.currency_id = 1
          WHERE u.discord_id = $1`,
         [targetUser.id]
       );
@@ -50,12 +50,12 @@ const command: Command = {
       const userId = dbUser.id;
 
       // Check if user has economy account
-      if (dbUser.coins === null) {
+      if (dbUser.balance === null) {
         // Create economy account with 0 balance (they didn't go through /register)
         await pool.query(
-          `INSERT INTO user_economy (user_id, coins)
-           VALUES ($1, 0)
-           ON CONFLICT (user_id) DO NOTHING`,
+          `INSERT INTO user_economy (user_id, currency_id, balance)
+           VALUES ($1, 1, 0)
+           ON CONFLICT (user_id, currency_id) DO NOTHING`,
           [userId]
         );
 
@@ -67,7 +67,7 @@ const command: Command = {
         return;
       }
 
-      const coins = parseInt(dbUser.coins);
+      const balance = parseInt(dbUser.balance);
 
       // Get recent transactions (last 5)
       const transactionResult = await pool.query(
@@ -99,13 +99,13 @@ const command: Command = {
 
       // Build embed
       const embed = new EmbedBuilder()
-        .setColor(coins >= 10000 ? 0x57f287 : coins >= 1000 ? 0xffa500 : 0xed4245)
+        .setColor(balance >= 10000 ? 0x57f287 : balance >= 1000 ? 0xffa500 : 0xed4245)
         .setTitle(`${isSelf ? '💰 Your Balance' : `💰 ${targetUser.username}'s Balance`}`)
         .setThumbnail(targetUser.displayAvatarURL({ size: 128 }))
         .addFields(
           {
             name: '💵 Current Balance',
-            value: `**${coins.toLocaleString()}** coins`,
+            value: `**${balance.toLocaleString()}** coins`,
             inline: true,
           },
           {
@@ -141,13 +141,13 @@ const command: Command = {
 
       // Add balance status indicator
       let statusMessage = '';
-      if (coins >= 100000) {
+      if (balance >= 100000) {
         statusMessage = '🌟 You\'re rich! Keep up the good work!';
-      } else if (coins >= 50000) {
+      } else if (balance >= 50000) {
         statusMessage = '💎 You have a healthy balance!';
-      } else if (coins >= 10000) {
+      } else if (balance >= 10000) {
         statusMessage = '✅ You have enough for basic hosting.';
-      } else if (coins >= 1000) {
+      } else if (balance >= 1000) {
         statusMessage = '⚠️ Running low on coins. Consider earning more!';
       } else {
         statusMessage = '❌ Very low balance. You need more coins!';

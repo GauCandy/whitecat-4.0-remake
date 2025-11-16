@@ -4,6 +4,7 @@ import { CommandCategory } from '../../types/command';
 import { pterodactyl } from '../../utils/pterodactyl';
 import { pool } from '../../database/config';
 import { generatePassword } from '../../utils/password';
+import { createEconomyAccount, getBalance, getUserIdFromDiscordId } from '../../utils/economy';
 
 const STARTING_BALANCE = 100000; // 100,000 coins starting balance
 
@@ -50,12 +51,7 @@ const command: Command = {
 
         if (pteroUser) {
           // Check user economy
-          const economyResult = await pool.query(
-            'SELECT coins FROM user_economy WHERE user_id = $1',
-            [userId]
-          );
-
-          const coins = economyResult.rows.length > 0 ? economyResult.rows[0].coins : 0;
+          const balance = await getBalance(userId) || 0;
 
           const embed = new EmbedBuilder()
             .setColor(0xffa500)
@@ -64,7 +60,7 @@ const command: Command = {
             .addFields(
               { name: '👤 Username', value: pteroUser.username, inline: true },
               { name: '📧 Email', value: pteroUser.email, inline: true },
-              { name: '💰 Balance', value: `${coins.toLocaleString()} coins`, inline: true },
+              { name: '💰 Balance', value: `${balance.toLocaleString()} coins`, inline: true },
               { name: '🆔 Pterodactyl ID', value: `#${pteroUser.id}`, inline: true }
             )
             .setTimestamp()
@@ -91,19 +87,9 @@ const command: Command = {
         );
 
         // Create user economy if not exists
-        await pool.query(
-          `INSERT INTO user_economy (user_id, coins)
-           VALUES ($1, $2)
-           ON CONFLICT (user_id) DO NOTHING`,
-          [userId, STARTING_BALANCE]
-        );
+        await createEconomyAccount(userId, STARTING_BALANCE);
 
-        const economyResult = await pool.query(
-          'SELECT coins FROM user_economy WHERE user_id = $1',
-          [userId]
-        );
-
-        const coins = economyResult.rows[0].coins;
+        const balance = await getBalance(userId) || STARTING_BALANCE;
 
         const embed = new EmbedBuilder()
           .setColor(0x57f287)
@@ -113,7 +99,7 @@ const command: Command = {
             { name: '👤 Username', value: pteroUser.username, inline: true },
             { name: '📧 Email', value: pteroUser.email, inline: true },
             { name: '🆔 Pterodactyl ID', value: `#${pteroUser.id}`, inline: true },
-            { name: '💰 Starting Balance', value: `${coins.toLocaleString()} coins`, inline: true },
+            { name: '💰 Starting Balance', value: `${balance.toLocaleString()} coins`, inline: true },
             {
               name: '📝 Next Steps',
               value: '• Use `/profile` to view your account details\n• Use `/balance` to check your coins\n• Purchase hosting with `/packages` command!',
@@ -166,12 +152,7 @@ const command: Command = {
       );
 
       // Create user economy with starting balance
-      await pool.query(
-        `INSERT INTO user_economy (user_id, coins)
-         VALUES ($1, $2)
-         ON CONFLICT (user_id) DO NOTHING`,
-        [userId, STARTING_BALANCE]
-      );
+      await createEconomyAccount(userId, STARTING_BALANCE);
 
       // Send login credentials via DM
       try {

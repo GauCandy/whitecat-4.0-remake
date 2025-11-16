@@ -32,9 +32,9 @@ const command: Command = {
         `SELECT
           u.id, u.discord_id, u.username, u.discriminator, u.email,
           u.pterodactyl_user_id, u.is_authorized, u.created_at, u.last_seen,
-          ue.coins
+          ue.balance
          FROM users u
-         LEFT JOIN user_economy ue ON u.id = ue.user_id
+         LEFT JOIN user_economy ue ON u.id = ue.user_id AND ue.currency_id = 1
          WHERE u.discord_id = $1`,
         [targetUser.id]
       );
@@ -127,13 +127,13 @@ const command: Command = {
         );
 
       // Add economy info (only show to self or if viewing others)
-      if (isSelf || dbUser.coins !== null) {
-        const coins = dbUser.coins !== null ? parseInt(dbUser.coins) : 0;
+      if (isSelf || dbUser.balance !== null) {
+        const balance = dbUser.balance !== null ? parseInt(dbUser.balance) : 0;
 
         embed.addFields({
           name: '💰 Economy',
           value: [
-            `**Balance:** ${coins.toLocaleString()} coins`,
+            `**Balance:** ${balance.toLocaleString()} coins`,
             `**Total Spent:** ${totalSpent.toLocaleString()} coins`,
             totalReceived > 0 ? `**Total Received:** ${totalReceived.toLocaleString()} coins` : null,
             totalSent > 0 ? `**Total Sent:** ${totalSent.toLocaleString()} coins` : null,
