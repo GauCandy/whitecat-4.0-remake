@@ -21,9 +21,18 @@
         "name": "baka",
         "description": "Call someone baka",
         "message": [
-          "{user} says: Baka! 😤",
-          "{user}: Baka baka baka! バカ！",
-          "{user} calls you a baka! 😤"
+          "{user} calls {target} a baka! 😤",
+          "{user}: {target}, you're such a baka! バカ！",
+          "{user} thinks {target} is a baka! 💢",
+          "{user} points at {target}: Baka baka baka! 😤"
+        ],
+        "self": [
+          "{user} calls themselves a baka... Self-deprecating humor? 😅",
+          "{user}: I'm such a baka! 🤦"
+        ],
+        "bot": [
+          "{user} calls me a baka! How rude! 😤",
+          "{user} thinks I'm a baka... I'm doing my best! 😢"
         ]
       },
       "blush": {
