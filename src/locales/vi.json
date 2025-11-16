@@ -278,17 +278,20 @@
         "name": "cuddle",
         "description": "Ôm ấp ai đó",
         "message": [
-          "{user} ôm ấp {target}! 🤗",
+          "*ôm ấp {target}* 🤗",
           "{user} ôm chầm {target}! 💕",
-          "{user} ôm ấp {target} thật ấm áp! 🥰"
+          "Ôm ấp {target} thôi~ 🥰",
+          "{user} *ôm ấp {target} ấm áp* ⊂(´・ω・`⊂)"
         ],
         "self": [
-          "{user} tự ôm mình... Cô đơn à? 🤗",
-          "{user} ôm lấy bản thân... Buồn quá! 😢"
+          "{user} tự ôm bản thân... Cô đơn à? 🤗💦",
+          "{user} ôm lấy mình... Bạn ổn chứ? Đừng buồn! 😢",
+          "Sao {user} lại tự ôm ấp? Có chuyện gì à? 🥺"
         ],
         "bot": [
-          "{user} ôm ấp tôi! Ấm áp quá! 🤗",
-          "{user} ôm tôi! Cảm ơn nhé! 💕"
+          "{user} ôm ấp tớ! *purrs* Ấm áp quá! 😻",
+          "{user} ôm tớ! Thích ghê~ 💕",
+          "Nyaa~ {user} ôm tớ! *nằm trong lòng* (=^･ω･^=) 🥰"
         ]
       },
       "feed": {
@@ -363,156 +366,183 @@
         "name": "hug",
         "description": "Ôm ai đó",
         "message": [
-          "{user} ôm {target}! 🤗",
+          "*ôm {target}* 🤗",
           "{user} ôm chặt {target}! 💕",
-          "{user} ôm {target} thật ấm áp! 🥰",
-          "{user} cho {target} một cái ôm! 🫂"
+          "Ôm {target} thôi~ 🥰",
+          "*ôm {target} ấm áp* 🫂",
+          "{user} cho {target} một cái ôm! 🤗💕",
+          "{target}~ *ôm ôm* ⊂(・﹏・⊂)"
         ],
         "self": [
-          "{user} tự ôm mình... Bạn ổn chứ? 🤗",
-          "{user} tự ôm lấy bản thân... Cô đơn quá! 😢"
+          "{user} tự ôm lấy mình... Bạn cô đơn à? 🤗💦",
+          "Sao {user} lại tự ôm mình? Bạn ổn chứ? 😢",
+          "{user} không có ai ôm nên tự ôm... Đừng buồn! 🥺"
         ],
         "bot": [
-          "{user} ôm tôi! Cảm ơn bạn! 🤗",
-          "{user} ôm tôi! Ấm áp ghê! 💕"
+          "{user} ôm tớ á! Cảm ơn~ 🤗",
+          "*ôm lại {user}* Ấm áp ghê! 💕",
+          "Kyaa~ {user} đừng ôm tớ đột ngột thế! >//< 🤗"
         ]
       },
       "kick": {
         "name": "kick",
         "description": "Đá ai đó",
         "message": [
-          "{user} đá {target}! 👟",
-          "{user} đá mạnh {target}! 💥",
-          "{user} đá bay {target}! 🦵"
+          "*đá {target}* 👟",
+          "{user} đá {target} bay đi! 💥",
+          "Đá {target} thôi! 🦵",
+          "{user} đá mạnh vào {target}! ⚡👟",
+          "*đá đít {target}* Cút đi! 💢"
         ],
         "self": [
-          "{user} tự đá mình... Tại sao?! 👟",
-          "{user} đá chính mình... Đau chết! 😭"
+          "{user} tự đá mình... Sao lại làm vậy? 👟💦",
+          "Ê {user}! Đừng tự đá bản thân! Đau lắm! 😭",
+          "{user} đá chính mình... Bạn điên rồi à?! 🤕"
         ],
         "bot": [
-          "{user} cố đá tôi! Thô lỗ! 👟",
-          "{user} đá tôi! Này này! 😤"
+          "{user} đá tớ á!? Thô lỗ! 👟😤",
+          "Ê {user}! Đừng đá tớ! 💢",
+          "*né* {user} đá không trúng đâu~ 😏"
         ]
       },
       "kiss": {
         "name": "kiss",
         "description": "Hôn ai đó",
         "message": [
-          "{user} hôn {target}! 💋",
-          "{user} hôn nhẹ {target}! 😘",
-          "{user} hôn {target} thật ngọt ngào! 💕",
-          "{user} chu {target} một cái! 😚"
+          "*hôn {target}* 💋",
+          "{user} hôn {target}! 😘",
+          "Hôn {target} nhẹ nhàng~ 💕",
+          "{user} *chu má {target}* Mwah! 😚",
+          "{target}~ *hôn* >//< 💋✨"
         ],
         "self": [
-          "{user} tự hôn mình... Tự ái? 💋",
-          "{user} hôn gương... Lạ thật! 🪞"
+          "{user} tự hôn mình... Narcissist à? 💋😅",
+          "Sao {user} lại tự hôn bản thân? 🪞✨",
+          "{user} hôn gương... Tự yêu mình quá mức rồi! 😂"
         ],
         "bot": [
-          "{user} hôn tôi! >//< 💋",
-          "{user} hôn tôi! Xấu hổ quá! 😳"
+          "{user} hôn tớ rồi nè! Thích ghê! 😻💕",
+          "*purrs* {user} hôn tớ! Hạnh phúc quá~ (=^･ω･^=) 💋",
+          "Nyaa~ {user} hôn tớ! Tớ thích! >//< 💕✨"
         ]
       },
       "pat": {
         "name": "pat",
         "description": "Vỗ/xoa đầu ai đó",
         "message": [
-          "{user} vỗ đầu {target}! 👋",
+          "*vỗ đầu {target}* 👋",
           "{user} vỗ vỗ đầu {target}! 🥰",
-          "{user} xoa đầu {target}! ✨",
-          "{user} vuốt đầu {target} nhẹ nhàng! 💕"
+          "Xoa đầu {target} thôi~ ✨",
+          "{user} *vuốt đầu {target}* Ngoan lắm! 💕",
+          "Pat pat {target}~ ( ´ ▽ ` ).。ｏ♡"
         ],
         "self": [
-          "{user} tự vỗ đầu! 👋",
-          "{user} vỗ đầu chính mình... Good job! 😊"
+          "{user} tự vỗ đầu... Good job mình! 👋😊",
+          "{user} vỗ đầu bản thân... Tự khen à? ✨",
+          "Ôi {user}! Tự vỗ đầu mình sao? Làm tốt lắm! 🥰"
         ],
         "bot": [
-          "{user} vỗ đầu tôi! *purrs* 👋",
-          "{user} vỗ vỗ đầu tôi! Dễ thương! 🥰"
+          "{user} vỗ đầu tớ nè~ *purrs* 👋",
+          "Pat pat tớ á {user}! Dễ thương! 🥰",
+          "*đưa đầu lại cho {user} vỗ* Vỗ nữa đi! (=^･ω･^=)"
         ]
       },
       "peck": {
         "name": "peck",
         "description": "Hôn nhẹ ai đó",
         "message": [
-          "{user} hôn nhẹ {target}! 😘",
+          "*hôn nhẹ {target}* 😘",
           "{user} chu nhẹ {target}! 😚",
-          "{user} hôn gió {target}! 💋✨"
+          "Hôn gió {target}~ 💋✨",
+          "{user} *hôn má {target}* Mwah~ (づ ̄ ³ ̄)づ"
         ],
         "self": [
-          "{user} tự hôn nhẹ! 😘",
-          "{user} hôn gió chính mình! 💋"
+          "{user} tự hôn nhẹ mình... 😘💦",
+          "{user} hôn gió cho bản thân! Đáng yêu quá! 💋✨"
         ],
         "bot": [
-          "{user} hôn nhẹ tôi! 😘",
-          "{user} chu tôi! Kyaaa! 😳"
+          "{user} hôn nhẹ tớ! Dễ thương ghê~ 😻",
+          "{user} chu tớ! *purrs* Thích lắm! (=^･ω･^=) 💕"
         ]
       },
       "poke": {
         "name": "poke",
         "description": "Chọc ai đó",
         "message": [
-          "{user} chọc {target}! 👉",
+          "*chọc {target}* 👉",
           "{user} chọc chọc {target}! 👈",
-          "{user} chọc nhẹ {target}! 👉👈"
+          "Chọc {target} thôi~ 👉👈",
+          "{user} *chọc nhẹ {target}* (づ｡◕‿‿◕｡)づ"
         ],
         "self": [
-          "{user} tự chọc mình! 👉",
-          "{user} chọc chính mình... 😅"
+          "{user} tự chọc mình... Sao lại làm vậy? 👉😅",
+          "Ê {user}! Chọc bản thân làm gì? 🤔"
         ],
         "bot": [
-          "{user} chọc tôi! 👉",
-          "{user} chọc tôi! Gây gổ à! 😤"
+          "{user} chọc tớ! 👉",
+          "Ê {user}! Đừng chọc tớ! Gây gổ à! 😤",
+          "*chọc lại {user}* Chọc lại nè! 👉😏"
         ]
       },
       "punch": {
         "name": "punch",
         "description": "Đấm ai đó",
         "message": [
-          "{user} đấm {target}! 👊",
+          "*đấm {target}* 👊",
           "{user} đấm mạnh {target}! 💥",
-          "{user} cho {target} một đấm! 🥊"
+          "Nếm đấm đi, {target}! 🥊",
+          "{user} *đấm bay {target}* POW! 👊💢",
+          "Ora ora ora! *đấm {target}* ୧(๑•̀ㅁ•́๑)૭✧"
         ],
         "self": [
-          "{user} tự đấm mình... Bạo lực? 👊",
-          "{user} đấm chính mình... Tại sao?! 😭"
+          "{user} tự đấm mình... Sao lại làm vậy? 👊💦",
+          "Ê {user}! Đừng tự hại bản thân! 😭",
+          "{user} đấm chính mình... Đau lắm đó! 🤕"
         ],
         "bot": [
-          "{user} cố đấm tôi! 👊",
-          "{user} đấm tôi! Đau quá! 😤"
+          "Ê {user}! Đừng đấm tớ! 👊😤",
+          "{user} đấm bot á!? Violence! 💢",
+          "*block* {user} đấm không vào được đâu! 😏"
         ]
       },
       "slap": {
         "name": "slap",
         "description": "Tát ai đó",
         "message": [
-          "{user} tát {target}! ✋",
+          "*tát {target}* ✋",
           "{user} tát mạnh {target}! 💥",
-          "{user} cho {target} một cái tát! 😤"
+          "Nếm cái tát đi, {target}! 😤",
+          "{user} *tát {target}* PAK! ✋💢",
+          "Tát {target} thôi! (╯°□°)╯"
         ],
         "self": [
-          "{user} tự tát mình! ✋",
-          "{user} tát chính mình... Wake up! 😵"
+          "{user} tự tát... Wake up! ✋",
+          "Ê {user}! Sao lại tự tát mình? 😵💫",
+          "{user} tát bản thân tỉnh ngủ... Đau lắm đó! 🤕"
         ],
         "bot": [
-          "{user} tát tôi! ✋",
-          "{user} tát tôi! Đau quá! 😭"
+          "Ê {user}! Đừng tát tớ! ✋😭",
+          "{user} tát tớ á!? Đau quá! 😭💢",
+          "*né* {user} tát không trúng đâu~ 😏"
         ]
       },
       "tickle": {
         "name": "tickle",
         "description": "Cù ai đó",
         "message": [
-          "{user} cù {target}! 🤗",
+          "*cù {target}* 🤗",
           "{user} cù cù {target}! 😂",
-          "{user} cù {target} không thương tiếc! 🤣"
+          "Cù {target} thôi! 🤣",
+          "{user} *cù {target} không thương tiếc!* Hehe~ (｡•̀ᴗ-)✧"
         ],
         "self": [
-          "{user} tự cù mình! 🤗",
-          "{user} cù chính mình... Có được không? 😅"
+          "{user} tự cù mình... Sao lại làm vậy? 🤗💦",
+          "{user} cù bản thân... Có được không nhỉ? 😅"
         ],
         "bot": [
-          "{user} cù tôi! Haha! 🤗",
-          "{user} cù tôi! Dừng lại! 😂😂"
+          "{user} cù tớ! Haha! Ngứa quá! 😂",
+          "{user} cù tớ! *cười lăn lộn* Dừng lại! 🤣🤣",
+          "Nyaa~ {user} đừng cù tớ! Ngứa lắm! (=^･ェ･^=) 😂"
         ]
       },
       "yeet": {
