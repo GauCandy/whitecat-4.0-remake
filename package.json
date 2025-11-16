@@ -1,7 +1,7 @@
 {
-  "name": "whitecat-hosting-bot",
+  "name": "whitecat-bot",
   "version": "4.0.0",
-  "description": "WhiteCat Discord Bot - Hosting Management with TypeScript",
+  "description": "WhiteCat Discord Bot with TypeScript",
   "main": "dist/index.js",
   "scripts": {
     "build": "rimraf dist && tsc && mkdir -p dist/locales && cp src/locales/*.json dist/locales/",
@@ -28,14 +28,13 @@
   "keywords": [
     "discord",
     "bot",
-    "hosting",
     "typescript",
     "postgresql"
   ],
   "author": "GauCandy",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.6.5",
+    "axios": "^1.13.2",
     "cors": "^2.8.5",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",

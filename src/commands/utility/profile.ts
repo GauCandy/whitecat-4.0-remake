@@ -2,12 +2,11 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, Message
 import type { Command } from '../../types/command';
 import { CommandCategory } from '../../types/command';
 import { pool } from '../../database/config';
-import { pterodactyl } from '../../utils/pterodactyl';
 
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('profile')
-    .setDescription('View your hosting account profile and statistics')
+    .setDescription('View your account profile and statistics')
     .addUserOption(option =>
       option
         .setName('user')
@@ -51,19 +50,6 @@ const command: Command = {
       const dbUser = userResult.rows[0];
       const userId = dbUser.id;
 
-      // Get hosting statistics
-      const hostingStats = await pool.query(
-        `SELECT
-          COUNT(*) as total_servers,
-          COUNT(*) FILTER (WHERE is_active = true) as active_servers
-         FROM user_hosting
-         WHERE user_id = $1`,
-        [userId]
-      );
-
-      const totalServers = parseInt(hostingStats.rows[0].total_servers) || 0;
-      const activeServers = parseInt(hostingStats.rows[0].active_servers) || 0;
-
       // Get transaction statistics
       const transactionStats = await pool.query(
         `SELECT
@@ -81,22 +67,6 @@ const command: Command = {
       const totalReceived = parseInt(transactionStats.rows[0].total_received) || 0;
       const totalSent = parseInt(transactionStats.rows[0].total_sent) || 0;
 
-      // Get Pterodactyl account info
-      let pteroUsername = 'Not registered';
-      let pteroEmail = 'N/A';
-
-      if (dbUser.pterodactyl_user_id) {
-        try {
-          const pteroUser = await pterodactyl.getUserById(dbUser.pterodactyl_user_id);
-          if (pteroUser) {
-            pteroUsername = pteroUser.username;
-            pteroEmail = isSelf ? pteroUser.email : '[Hidden]';
-          }
-        } catch (error) {
-          // Pterodactyl API error, skip
-        }
-      }
-
       // Build embed
       const embed = new EmbedBuilder()
         .setColor(0x5865f2)
@@ -111,17 +81,6 @@ const command: Command = {
               `**Registered:** <t:${Math.floor(new Date(dbUser.created_at).getTime() / 1000)}:R>`,
               `**Last Seen:** <t:${Math.floor(new Date(dbUser.last_seen).getTime() / 1000)}:R>`,
             ].join('\n'),
-            inline: false,
-          },
-          {
-            name: '🎮 Pterodactyl Account',
-            value: [
-              `**Username:** \`${pteroUsername}\``,
-              isSelf ? `**Email:** \`${pteroEmail}\`` : null,
-              dbUser.pterodactyl_user_id ? `**Panel ID:** #${dbUser.pterodactyl_user_id}` : null,
-            ]
-              .filter(Boolean)
-              .join('\n') || 'Not registered',
             inline: false,
           }
         );
@@ -145,21 +104,6 @@ const command: Command = {
         });
       }
 
-      // Add hosting info
-      embed.addFields({
-        name: '🖥️ Hosting',
-        value: [
-          `**Total Servers:** ${totalServers}`,
-          `**Active Servers:** ${activeServers}`,
-          totalServers > 0 && activeServers < totalServers
-            ? `**Inactive Servers:** ${totalServers - activeServers}`
-            : null,
-        ]
-          .filter(Boolean)
-          .join('\n') || 'No servers yet',
-        inline: false,
-      });
-
       // Add verification status (only for self)
       if (isSelf) {
         embed.addFields({
@@ -172,7 +116,7 @@ const command: Command = {
         });
       }
 
-      embed.setTimestamp().setFooter({ text: 'WhiteCat Hosting Bot' });
+      embed.setTimestamp().setFooter({ text: 'WhiteCat Bot' });
 
       await interaction.editReply({ embeds: [embed] });
     } catch (error) {
