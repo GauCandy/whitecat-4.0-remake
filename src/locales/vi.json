@@ -568,10 +568,13 @@
   "events": {
     "guildCreate": {
       "welcome_title": "👋 Cảm ơn bạn đã mời WhiteCat Cloud!",
-      "welcome_description": "Tôi là WhiteCat Cloud - bot hosting game server cao cấp của bạn!\n\n**Bắt đầu:**\n• Dùng `/help` để xem tất cả lệnh\n• Thiết lập server với `/setup`\n• Đổi prefix với `/prefix`\n\n**Tính năng:**\n🎮 Hosting game server\n💰 Hệ thống kinh tế ảo\n🎉 Giveaway và lệnh giải trí\n\nCần hỗ trợ? Tham gia server hỗ trợ của chúng tôi!",
+      "welcome_description": "Hãy bắt đầu với thiết lập nhanh!\n\n**Bước 1:** Chọn ngôn ngữ bạn muốn\n**Bước 2:** Đặt prefix cho lệnh\n\nChỉ mất vài giây thôi!",
       "locale_detected": "Đã phát hiện ngôn ngữ server: **{locale}**",
-      "setup_prompt": "{inviter} Vui lòng thiết lập server bằng cách chọn ngôn ngữ bên dưới!",
+      "setup_prompt": "{inviter} Vui lòng hoàn tất thiết lập bên dưới:",
       "language_select_label": "Bước 1: Chọn Ngôn Ngữ",
+      "step1_title": "🌍 Bước 1: Chọn Ngôn Ngữ",
+      "step2_title": "⚙️ Bước 2: Thiết Lập Prefix",
+      "step2_description": "**Ngôn ngữ đã chọn:** {locale}\n\nBây giờ hãy chọn prefix cho lệnh text.\nPrefix được dùng trước các lệnh như `{prefix}help`",
       "language_select_placeholder": "Chọn ngôn ngữ bạn muốn...",
       "prefix_setup_label": "Bước 2: Thiết Lập Prefix",
       "language_option_en_us": "English (US)",
@@ -580,12 +583,13 @@
       "button_custom_prefix": "Prefix Tùy Chỉnh",
       "button_default_prefix": "Prefix Mặc Định (!)",
       "language_updated": "✅ Đã cập nhật ngôn ngữ thành: **{locale}**",
-      "prefix_updated": "✅ Đã cập nhật prefix thành: **{prefix}**",
+      "prefix_updated": "✅ Prefix đã được đặt thành {prefix}",
       "prefix_modal_title": "Đặt Prefix Tùy Chỉnh",
       "prefix_modal_label": "Prefix",
       "prefix_modal_placeholder": "Nhập prefix bạn muốn (ví dụ: !, ?, $)",
       "prefix_invalid": "❌ Prefix không hợp lệ! Vui lòng dùng 1-10 ký tự.",
-      "setup_complete": "🎉 Thiết lập hoàn tất! Bạn đã sẵn sàng!"
+      "setup_complete": "Thiết Lập Hoàn Tất!",
+      "setup_complete_description": "Xong rồi! Server của bạn đã sẵn sàng sử dụng WhiteCat Cloud.\n\n**Bắt đầu nhanh:**\n• Dùng `/help` để xem tất cả lệnh\n• Thử các lệnh vui như `/hug` hoặc `/kiss`\n• Kiểm tra `/balance` để xem số xu\n\nChúc vui vẻ! 🎉"
     }
   }
 }

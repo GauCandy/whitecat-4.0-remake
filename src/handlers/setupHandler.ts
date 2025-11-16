@@ -11,7 +11,8 @@ import {
     TextInputBuilder,
     ActionRowBuilder,
     TextInputStyle,
-    PermissionFlagsBits
+    PermissionFlagsBits,
+    EmbedBuilder
 } from 'discord.js';
 import { pool } from '../database/config';
 import { t } from '../utils/i18n';
@@ -77,11 +78,9 @@ export async function handleLanguageSelect(interaction: StringSelectMenuInteract
 
         // Build prefix setup message with new language
         const prefixMessage = buildPrefixSetupMessage(selectedLocale);
-        const confirmationText = t(selectedLocale, 'events.guildCreate.language_updated').replace('{locale}', selectedLocale);
 
-        // Edit original message to show prefix setup
+        // Edit original message to show prefix setup (keep original content/ping)
         await interaction.update({
-            content: `✅ ${confirmationText}`,
             embeds: prefixMessage.embeds,
             components: prefixMessage.components
         });
@@ -121,11 +120,9 @@ export async function handleDefaultLanguageButton(interaction: ButtonInteraction
 
         // Build prefix setup message with new language
         const prefixMessage = buildPrefixSetupMessage(defaultLocale);
-        const confirmationText = t(defaultLocale, 'events.guildCreate.language_updated').replace('{locale}', defaultLocale);
 
-        // Edit original message to show prefix setup
+        // Edit original message to show prefix setup (keep original content/ping)
         await interaction.update({
-            content: `✅ ${confirmationText}`,
             embeds: prefixMessage.embeds,
             components: prefixMessage.components
         });
@@ -207,16 +204,20 @@ export async function handleDefaultPrefixButton(interaction: ButtonInteraction) 
         // Update guild prefix in database
         await updateGuildPrefix(interaction.guildId!, defaultPrefix);
 
-        // Update message to remove components
-        await interaction.update({
-            components: []
-        });
+        // Build completion embed
+        const completionEmbed = new EmbedBuilder()
+            .setColor(0x57F287) // Green
+            .setTitle('🎉 ' + t(locale, 'events.guildCreate.setup_complete'))
+            .setDescription(
+                t(locale, 'events.guildCreate.prefix_updated').replace('{prefix}', `\`${defaultPrefix}\``) +
+                '\n\n' + t(locale, 'events.guildCreate.setup_complete_description')
+            )
+            .setTimestamp();
 
-        // Send confirmation
-        await interaction.followUp({
-            content: t(locale, 'events.guildCreate.prefix_updated').replace('{prefix}', defaultPrefix) +
-                '\n' + t(locale, 'events.guildCreate.setup_complete'),
-            ephemeral: false
+        // Update message with completion (keep original content/ping)
+        await interaction.update({
+            embeds: [completionEmbed],
+            components: []
         });
 
         logger.info(`Guild ${interaction.guild.name} prefix set to default: ${defaultPrefix}`);
@@ -251,17 +252,27 @@ export async function handleCustomPrefixModal(interaction: ModalSubmitInteractio
         // Update guild prefix in database
         await updateGuildPrefix(interaction.guildId!, customPrefix);
 
-        // Update the message that triggered the modal (remove components)
+        // Build completion embed
+        const completionEmbed = new EmbedBuilder()
+            .setColor(0x57F287) // Green
+            .setTitle('🎉 ' + t(locale, 'events.guildCreate.setup_complete'))
+            .setDescription(
+                t(locale, 'events.guildCreate.prefix_updated').replace('{prefix}', `\`${customPrefix}\``) +
+                '\n\n' + t(locale, 'events.guildCreate.setup_complete_description')
+            )
+            .setTimestamp();
+
+        // Update the message that triggered the modal (keep original content/ping)
         await interaction.message?.edit({
+            embeds: [completionEmbed],
             components: []
         });
 
-        // Send confirmation
+        // Acknowledge modal submission
         await interaction.reply({
-            content: t(locale, 'events.guildCreate.prefix_updated').replace('{prefix}', customPrefix) +
-                '\n' + t(locale, 'events.guildCreate.setup_complete'),
-            ephemeral: false
-        });
+            content: '✅',
+            ephemeral: true
+        }).catch(() => {}); // Ignore if already acknowledged
 
         logger.info(`Guild ${interaction.guild.name} custom prefix set to: ${customPrefix}`);
     } catch (error) {
