@@ -34,6 +34,10 @@ async function syncGuilds(client: any) {
       dbGuilds.rows.map(row => row.guild_id)
     );
 
+    // Get default locale from ENV
+    const envLocale = process.env.DEFAULT_LOCALE || 'en';
+    const defaultLocale = envLocale === 'vi' ? 'vi' : 'en-US';
+
     // Prepare bulk insert for new guilds only
     const guildsToInsert: any[] = [];
 
@@ -43,12 +47,10 @@ async function syncGuilds(client: any) {
         skipped++;
       } else {
         // Guild not in database - prepare to add
-        const discordLocale = guild.preferredLocale;
-        const mappedLocale = mapDiscordLocale(discordLocale);
-
+        // Use default locale from ENV (guild sync doesn't change existing settings)
         guildsToInsert.push({
           guildId,
-          locale: mappedLocale,
+          locale: defaultLocale,
           name: guild.name
         });
         added++;
@@ -61,7 +63,8 @@ async function syncGuilds(client: any) {
         .map((_, i) => `($${i * 3 + 1}, $${i * 3 + 2}, $${i * 3 + 3})`)
         .join(', ');
 
-      const params = guildsToInsert.flatMap(g => [g.guildId, g.locale, '!']);
+      const defaultPrefix = process.env.BOT_PREFIX || '!';
+      const params = guildsToInsert.flatMap(g => [g.guildId, g.locale, defaultPrefix]);
 
       await pool.query(
         `INSERT INTO guilds (guild_id, locale, prefix) VALUES ${values}`,

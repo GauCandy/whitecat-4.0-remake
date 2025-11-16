@@ -182,10 +182,11 @@ const event: Event<'guildCreate'> = {
                 logger.info(`Guild ${guild.name} updated in database`);
             } else {
                 // Insert new guild into database
+                const defaultPrefix = process.env.BOT_PREFIX || '!';
                 await pool.query(
                     `INSERT INTO guilds (guild_id, locale, prefix)
                      VALUES ($1, $2, $3)`,
-                    [guild.id, mappedLocale, '!']
+                    [guild.id, mappedLocale, defaultPrefix]
                 );
 
                 logger.info(`Guild ${guild.name} added to database with locale: ${mappedLocale}`);
