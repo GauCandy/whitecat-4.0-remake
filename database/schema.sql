@@ -26,7 +26,6 @@ DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS user_economy CASCADE;
 DROP TABLE IF EXISTS currencies CASCADE;
 DROP TABLE IF EXISTS guilds CASCADE;
-DROP TABLE IF EXISTS user_verify_history CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS server_nodes CASCADE;
 
@@ -70,32 +69,7 @@ CREATE INDEX idx_users_discord_id ON users(discord_id);
 CREATE INDEX idx_users_pterodactyl_user_id ON users(pterodactyl_user_id);
 
 -- ==========================================
--- 2. BẢNG USER_VERIFY_HISTORY (Lịch Sử Xác Thực)
--- ==========================================
--- Lưu lại tất cả các lần user xác thực OAuth
--- Dùng để phát hiện clone account và theo dõi IP thay đổi
-CREATE TABLE IF NOT EXISTS user_verify_history (
-  id BIGSERIAL PRIMARY KEY,
-
-  user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
-
-  -- Thông tin xác thực
-  verify_ip VARCHAR(45) NOT NULL,              -- IP address (IPv4 hoặc IPv6)
-  verify_user_agent TEXT,                      -- User agent của browser
-  verify_method VARCHAR(50) DEFAULT 'oauth',   -- Phương thức: 'oauth', 'manual', 'auto'
-
-  -- Metadata
-  verified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  metadata JSONB                               -- Thông tin bổ sung (JSON)
-);
-
--- Index cho query thường dùng
-CREATE INDEX idx_verify_history_user_id ON user_verify_history(user_id);
-CREATE INDEX idx_verify_history_ip ON user_verify_history(verify_ip);
-CREATE INDEX idx_verify_history_verified_at ON user_verify_history(verified_at DESC);
-
--- ==========================================
--- 3. BẢNG CURRENCIES (Tiền tệ)
+-- 2. BẢNG CURRENCIES (Tiền tệ)
 -- ==========================================
 -- Quản lý các loại tiền tệ trong hệ thống kinh tế
 -- Hỗ trợ cả tiền ảo và tiền thật
@@ -119,7 +93,7 @@ INSERT INTO currencies (code, name, symbol, is_default, exchange_rate, is_active
 ON CONFLICT (code) DO NOTHING;
 
 -- ==========================================
--- 4. BẢNG USER ECONOMY (Kinh tế người dùng)
+-- 3. BẢNG USER ECONOMY (Kinh tế người dùng)
 -- ==========================================
 -- Theo dõi số dư của người dùng cho từng loại tiền tệ
 -- Một người dùng có thể có số dư ở nhiều loại tiền khác nhau
@@ -146,7 +120,7 @@ CREATE INDEX idx_user_economy_user_id ON user_economy(user_id);
 CREATE INDEX idx_user_economy_currency_id ON user_economy(currency_id);
 
 -- ==========================================
--- 5. BẢNG GUILDS (Server Discord)
+-- 4. BẢNG GUILDS (Server Discord)
 -- ==========================================
 -- Lưu cấu hình của các server Discord (guild)
 -- Theo dõi cài đặt bot cho từng server
@@ -164,7 +138,7 @@ CREATE TABLE IF NOT EXISTS guilds (
 CREATE INDEX idx_guilds_guild_id ON guilds(guild_id);
 
 -- ==========================================
--- 6. BẢNG TRANSACTIONS (Giao dịch)
+-- 5. BẢNG TRANSACTIONS (Giao dịch)
 -- ==========================================
 -- Ghi lại tất cả giao dịch kinh tế để kiểm toán
 -- Hỗ trợ nhiều loại giao dịch và tiền tệ
@@ -207,7 +181,7 @@ CREATE INDEX idx_transactions_type ON transactions(type);
 CREATE INDEX idx_transactions_created_at ON transactions(created_at DESC);
 
 -- ==========================================
--- 7. BẢNG SERVER NODES (Node Server Vật Lý)
+-- 6. BẢNG SERVER NODES (Node Server Vật Lý)
 -- ==========================================
 -- Quản lý các node server vật lý để hosting
 -- Mỗi node có thể chứa nhiều game server
@@ -228,7 +202,7 @@ CREATE TABLE IF NOT EXISTS server_nodes (
 CREATE INDEX idx_server_nodes_is_active ON server_nodes(is_active);
 
 -- ==========================================
--- 8. BẢNG HOSTING PRICING (Bảng Giá Hosting)
+-- 7. BẢNG HOSTING PRICING (Bảng Giá Hosting)
 -- ==========================================
 -- Định nghĩa giá cho các tài nguyên server
 -- User có thể tùy chỉnh lượng RAM, CPU và storage
@@ -272,7 +246,7 @@ INSERT INTO hosting_pricing (resource_type, amount, price, description, display_
 ON CONFLICT (resource_type, amount) DO NOTHING;
 
 -- ==========================================
--- 9. BẢNG PORTS (Cổng Mạng)
+-- 8. BẢNG PORTS (Cổng Mạng)
 -- ==========================================
 -- Quản lý các cổng có sẵn cho game server
 -- Mỗi server cần một cổng riêng
@@ -289,7 +263,7 @@ CREATE TABLE IF NOT EXISTS ports (
 CREATE INDEX idx_ports_is_in_use ON ports(is_in_use);
 
 -- ==========================================
--- 10. BẢNG USER HOSTING (Server Của User)
+-- 9. BẢNG USER HOSTING (Server Của User)
 -- ==========================================
 -- Theo dõi các game server thuộc sở hữu của user
 -- Liên kết với Pterodactyl để quản lý server thực tế
@@ -343,7 +317,7 @@ ALTER TABLE ports
   FOREIGN KEY (reserved_for) REFERENCES user_hosting(id) ON DELETE SET NULL;
 
 -- ==========================================
--- 11. BẢNG WEBHOOKS (Webhook Discord)
+-- 10. BẢNG WEBHOOKS (Webhook Discord)
 -- ==========================================
 -- Lưu URL webhook Discord để gửi thông báo
 -- Gửi tin nhắn tự động cho các sự kiện
@@ -367,7 +341,7 @@ CREATE INDEX idx_webhooks_guild_id ON webhooks(guild_id);
 CREATE INDEX idx_webhooks_event_type ON webhooks(event_type);
 
 -- ==========================================
--- 12. BẢNG GIVEAWAYS (Phần Quà/Thi)
+-- 11. BẢNG GIVEAWAYS (Phần Quà/Thi)
 -- ==========================================
 -- Quản lý các cuộc thi/phần quà trên Discord
 -- User có thể react để tham gia, chọn người thắng ngẫu nhiên
@@ -383,7 +357,6 @@ CREATE TABLE IF NOT EXISTS giveaways (
   -- Yêu cầu để tham gia (tùy chọn)
   required_role_id VARCHAR(20),                -- Phải có role này mới được vào
   min_account_age_days INTEGER,                -- Tuổi tài khoản Discord tối thiểu
-  prevent_alts BOOLEAN DEFAULT false,          -- Ngăn tài khoản clone/alt (kiểm tra IP trùng)
 
   -- Trạng thái
   ends_at TIMESTAMP NOT NULL,                  -- Thời điểm kết thúc
@@ -398,7 +371,7 @@ CREATE INDEX idx_giveaways_ended ON giveaways(ended);
 CREATE INDEX idx_giveaways_ends_at ON giveaways(ends_at);
 
 -- ==========================================
--- 13. BẢNG GIVEAWAY ENTRIES (Người Tham Gia)
+-- 12. BẢNG GIVEAWAY ENTRIES (Người Tham Gia)
 -- ==========================================
 -- Theo dõi ai đã tham gia giveaway nào
 -- Một người chỉ được tham gia mỗi giveaway một lần
@@ -418,7 +391,7 @@ CREATE INDEX idx_giveaway_entries_giveaway_id ON giveaway_entries(giveaway_id);
 CREATE INDEX idx_giveaway_entries_user_id ON giveaway_entries(user_id);
 
 -- ==========================================
--- 14. BẢNG STATISTICS (Thống Kê)
+-- 13. BẢNG STATISTICS (Thống Kê)
 -- ==========================================
 -- Lưu thống kê toàn bot theo ngày
 -- Theo dõi số liệu như servers joined/left, commands used, etc.
@@ -441,7 +414,7 @@ CREATE INDEX idx_statistics_stat_type ON statistics(stat_type);
 CREATE INDEX idx_statistics_date ON statistics(date DESC);
 
 -- ==========================================
--- 15. BẢNG COMMAND LOGS (Nhật Ký Lệnh)
+-- 14. BẢNG COMMAND LOGS (Nhật Ký Lệnh)
 -- ==========================================
 -- Ghi lại tất cả lệnh được thực thi để phân tích
 -- Theo dõi thành công/thất bại, thời gian thực thi, lỗi
