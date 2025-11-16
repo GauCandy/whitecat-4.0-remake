@@ -3,11 +3,29 @@ import type { Event } from '../types/event';
 import type { ExtendedClient } from '../types/client';
 import { botLogger } from '../utils/logger';
 import { checkAuthorization, registerUser } from '../middlewares/authorization';
+import { handleResetPasswordButton, handleResetPasswordModal } from '../handlers/pterodactylHandler';
 
 const event: Event<'interactionCreate'> = {
   name: 'interactionCreate',
 
   async execute(interaction) {
+    // Handle button interactions
+    if (interaction.isButton()) {
+      if (interaction.customId.startsWith('reset_password_')) {
+        await handleResetPasswordButton(interaction);
+      }
+      return;
+    }
+
+    // Handle modal submissions
+    if (interaction.isModalSubmit()) {
+      if (interaction.customId.startsWith('reset_password_modal_')) {
+        await handleResetPasswordModal(interaction);
+      }
+      return;
+    }
+
+    // Handle slash commands
     if (!interaction.isChatInputCommand()) return;
 
     const client = interaction.client as ExtendedClient;
