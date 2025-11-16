@@ -2,24 +2,42 @@
 
 Discord Bot for hosting management - Built with TypeScript, Discord.js v14, and PostgreSQL.
 
-## 🎯 Project Status
+## 🎯 Features
 
-**Current Phase:** PHASE 1: MVP - Foundation & Setup ✅
+### ✅ Core Features
 
-### ✅ Completed (Tuần 1-2)
+**Bot Infrastructure:**
+- 🤖 Discord.js v14 with TypeScript
+- 📁 Dynamic command & event handlers
+- 📝 Winston logging system
+- ⚡ Error handling & validation
+- 🔄 Hot-reload support in development
 
-- ✅ Project setup with TypeScript
-- ✅ Discord.js v14 integration
-- ✅ Folder structure (commands, events, utils, etc.)
-- ✅ Winston logger setup
-- ✅ Dynamic command handler
-- ✅ Dynamic event handler
-- ✅ Bot connection & basic ping command
-- ✅ Error handling system
-- ✅ PostgreSQL database schema (13 tables)
-- ✅ OAuth2 Authorization system
-- ✅ Terms acceptance flow
-- ✅ Command deployment system (guild/global)
+**Server Management:**
+- 🏰 Automatic guild synchronization on startup
+- 👋 Welcome messages with interactive setup
+- 🌍 Multi-language support (English, Vietnamese)
+- ⚙️ Custom prefix per server (configurable via env)
+- 🎨 Interactive language & prefix selection buttons
+
+**Authentication & Security:**
+- 🔐 Discord OAuth2 User-Installable App
+- ✅ 2-level authorization system (public/private commands)
+- 🔒 Token expiry validation & auto-refresh
+- 🛡️ CSRF protection with state parameter
+
+**Database:**
+- 🗄️ PostgreSQL with 13 tables
+- 📊 User economy system ready
+- 💾 Guild settings & configurations
+- 📈 Transaction & statistics tracking
+
+### 🚧 Coming Soon (Phase 1)
+
+- User registration & profiles
+- Economy system (coins, transactions)
+- Hosting package management
+- Pterodactyl Panel integration
 
 ---
 
@@ -255,27 +273,31 @@ npm run archive:source # Archive source code for backup/sharing (src + configs)
 
 ## 🏗️ Development Roadmap
 
-### ✅ PHASE 1: MVP (Tuần 1-8) - IN PROGRESS
+### ✅ Phase 1: Foundation (Completed)
+- [x] TypeScript + Discord.js v14 setup
+- [x] Command & event handlers
+- [x] PostgreSQL database (13 tables)
+- [x] OAuth2 authentication system
+- [x] Guild sync & welcome system
+- [x] Multi-language support (EN/VI)
 
-#### Tuần 1-2: Foundation & Setup ✅
-- [x] Setup project
-- [x] Command/Event handlers
-- [x] Logger & Error handling
+### 🚧 Phase 2: User System (In Progress)
+- [ ] User registration & profiles
+- [ ] Economy system with coins
+- [ ] Transaction history
+- [ ] User statistics tracking
 
-#### Tuần 3-4: User System (NEXT)
-- [ ] User registration & authentication
-- [ ] Custom prefix per server
-- [ ] Basic economy (1 currency)
+### 📋 Phase 3: Hosting System (Planned)
+- [ ] Pterodactyl Panel API integration
+- [ ] Hosting packages & pricing
+- [ ] Server creation & management
+- [ ] Auto-suspension system
 
-#### Tuần 5-6: Hosting Core
-- [ ] Pterodactyl API integration
-- [ ] Package system
-- [ ] Buy hosting command
-
-#### Tuần 7-8: Management & Payment
-- [ ] Server management commands
-- [ ] Manual payment system
-- [ ] Auto-suspend expired servers
+### 🎯 Phase 4: Advanced Features (Planned)
+- [ ] Payment integration
+- [ ] Giveaway system
+- [ ] Admin dashboard
+- [ ] Analytics & statistics
 
 ---
 
