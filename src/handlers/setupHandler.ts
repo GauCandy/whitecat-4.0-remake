@@ -204,13 +204,17 @@ export async function handleDefaultPrefixButton(interaction: ButtonInteraction) 
         // Update guild prefix in database
         await updateGuildPrefix(interaction.guildId!, defaultPrefix);
 
+        // Get locale display name
+        const localeDisplayName = locale === 'vi' ? 'Tiếng Việt' : 'English (US)';
+
         // Build completion embed
         const completionEmbed = new EmbedBuilder()
             .setColor(0x57F287) // Green
             .setTitle('🎉 ' + t(locale, 'events.guildCreate.setup_complete'))
             .setDescription(
-                t(locale, 'events.guildCreate.prefix_updated').replace('{prefix}', `\`${defaultPrefix}\``) +
-                '\n\n' + t(locale, 'events.guildCreate.setup_complete_description')
+                t(locale, 'events.guildCreate.setup_complete_description')
+                    .replace('{locale}', localeDisplayName)
+                    .replace(/{prefix}/g, `\`${defaultPrefix}\``)
             )
             .setTimestamp();
 
@@ -252,13 +256,17 @@ export async function handleCustomPrefixModal(interaction: ModalSubmitInteractio
         // Update guild prefix in database
         await updateGuildPrefix(interaction.guildId!, customPrefix);
 
+        // Get locale display name
+        const localeDisplayName = locale === 'vi' ? 'Tiếng Việt' : 'English (US)';
+
         // Build completion embed
         const completionEmbed = new EmbedBuilder()
             .setColor(0x57F287) // Green
             .setTitle('🎉 ' + t(locale, 'events.guildCreate.setup_complete'))
             .setDescription(
-                t(locale, 'events.guildCreate.prefix_updated').replace('{prefix}', `\`${customPrefix}\``) +
-                '\n\n' + t(locale, 'events.guildCreate.setup_complete_description')
+                t(locale, 'events.guildCreate.setup_complete_description')
+                    .replace('{locale}', localeDisplayName)
+                    .replace(/{prefix}/g, `\`${customPrefix}\``)
             )
             .setTimestamp();
 
