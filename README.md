@@ -256,16 +256,37 @@ npm run archive:source # Archive source code for backup/sharing (src + configs)
 
 ## 🤖 Bot Commands
 
-### Utility (Public - No Auth Required)
+### Slash Commands (/)
+
+**Utility (Public - No Auth Required):**
 - `/ping` - Check bot latency and response time
 - `/verify` - Authorize bot to access your Discord account
 
-### Coming Soon (Phase 1)
+**Coming Soon (Phase 1):**
 - `/register` - Register user account
 - `/profile` - View user profile
 - `/balance` - Check coin balance
 - `/packages` - View hosting packages
 - `/buy` - Purchase hosting
+
+### Text/Prefix Commands (,)
+
+**Fun & Roleplay (Requires Auth):**
+- `,hug @user` - Give warm hugs (supports group hugs!)
+- `,kiss @user` - Give a kiss (romantic or... scandalous?)
+- `,pat @user` - Gentle headpats (mass headpat distribution!)
+- `,slap @user` - Slap someone (combo violence spree!)
+- `,kick @user` - Kick someone (Kung Fu roundhouse!)
+- `,bite @user` - Bite someone (vampire mode activated!)
+- `,cuddle @user` - Cuddle together (cozy cuddle piles!)
+
+**Features:**
+- Support multiple @mentions with unique behaviors
+- Contextual responses matching action emotions
+- Self-targeting with humorous messages
+- Bot-targeting support
+- Anime GIFs from Nekobest API
+- Multi-language support (EN/VI)
 
 > **Note:** Most commands require OAuth2 authorization via `/verify` command first.
 

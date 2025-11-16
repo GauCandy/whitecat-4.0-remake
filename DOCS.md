@@ -471,6 +471,167 @@ await pool.query(
 
 ---
 
+### 6. Text/Prefix Commands System
+
+**Files:** `src/textCommands/fun/*.ts`, `src/handlers/textCommandHandler.ts`, `src/events/messageCreate.ts`
+
+**Purpose:** Support traditional prefix commands (`,command @user`) alongside slash commands.
+
+#### Architecture
+
+```
+User sends: ,hug @user1 @user2
+      │
+      ▼
+events/messageCreate.ts
+      │
+      ├─ Parse prefix from guild settings
+      ├─ Extract command name & args
+      ├─ Get command from textCommands Collection
+      ├─ Check authorization (if required)
+      ├─ Check cooldown
+      │
+      ▼
+textCommands/fun/hug.ts
+      │
+      ├─ Parse @mentions from message
+      ├─ Handle multiple targets (group hug!)
+      ├─ Fetch GIF from Nekobest API
+      ├─ Create embed with contextual message
+      └─ Reply to user
+```
+
+#### Fun Commands Implementation
+
+WhiteCat Bot có **7 fun text commands** với unique personalities:
+
+**1. Hug (🤗 Wholesome)**
+```typescript
+// Single target: Romantic hug
+,hug @user → "**You** gives **user** a warm hug! 💕"
+
+// Multiple targets: GROUP HUG!
+,hug @user1 @user2 → "GROUP HUG TIME! **You** hugs **user1**, **user2** all at once!"
+```
+
+**2. Kiss (💋 Romantic / Scandal)**
+```typescript
+// Single target: Romantic
+,kiss @user → "**You** kisses **user**! 💋"
+
+// Multiple targets: SCANDAL!
+,kiss @user1 @user2 → "Wait... **You** wants to kiss **user1**, **user2**?! WHAT?!
+                       Nhưng tại sao bạn lại muốn làm điều đó?!?!"
+```
+
+**3. Slap (💥 Violence Spree)**
+```typescript
+// Single target: Normal slap
+,slap @user → "**You** slaps **user**! *ouch*"
+
+// Multiple targets: COMBO!
+,slap @user1 @user2 @user3 → "COMBO x3! **You** delivers rapid slaps!
+                               *Mortal Kombat theme plays*"
+```
+
+**4. Pat (✨ Gentle Headpats)**
+```typescript
+// Multiple targets: Mass headpat distribution
+,pat @user1 @user2 → "**You** gives soft headpats to **user1**, **user2**!
+                      Everyone gets comfort! 🥰"
+```
+
+**5. Kick (🥋 Kung Fu)**
+```typescript
+// Multiple targets: Roundhouse combo
+,kick @user1 @user2 → "ROUNDHOUSE KICK! **You** hits **user1**, **user2**!
+                       COMBO x2! *Street Fighter theme*"
+```
+
+**6. Bite (🦷 Playful / Vampire)**
+```typescript
+// Single: Playful bite
+,bite @user → "**You** playfully bites **user**! *nom nom*"
+
+// Multiple: VAMPIRE MODE!
+,bite @user1 @user2 → "VAMPIRE MODE ACTIVATED! **You** bites **user1**, **user2**!
+                       Nom nom nom! *feral noises*"
+```
+
+**7. Cuddle (🫂 Wholesome)**
+```typescript
+// Multiple: Cuddle pile
+,cuddle @user1 @user2 → "CUDDLE PILE! **You** cuddles with **user1**, **user2**!
+                         So warm and cozy! 💕"
+```
+
+#### Key Features
+
+**Mention Parsing:**
+```typescript
+// Helper function to parse all @mentions
+export function parseAllMentionedUsers(message: Message): User[] {
+  return Array.from(message.mentions.users.values());
+}
+```
+
+**Contextual Responses:**
+- Each command has unique personality
+- Different behaviors for single vs multiple targets
+- Self-targeting with humorous messages
+- Bot-targeting special responses
+
+**Random Messages:**
+```typescript
+const scandalMessages = [
+  "Wait... trying to kiss multiple people?! WHAT?!",
+  "SCANDAL! Someone call the drama police!",
+  "This is getting out of hand! Pick one!"
+];
+
+const message = getRandomMessage(scandalMessages);
+```
+
+**Integration with Slash Commands:**
+- Share same i18n system (locale translations)
+- Share same Nekobest API integration (anime GIFs)
+- Share same authorization middleware
+- Share same cooldown system
+
+**Authorization Check:**
+```typescript
+// messageCreate.ts
+if (command.requiresAuth !== false) {
+  const user = await pool.query(
+    'SELECT is_authorized FROM users WHERE discord_id = $1',
+    [message.author.id]
+  );
+
+  if (!user || !user.is_authorized) {
+    // Show /verify prompt
+    return;
+  }
+}
+```
+
+#### Advantages of Text Commands
+
+**Why both slash AND text commands?**
+
+✅ **Flexibility** - Some users prefer traditional prefix commands
+✅ **Speed** - Faster to type `,hug @user` than navigating slash menu
+✅ **Multiple mentions** - Easier to mention multiple users with text
+✅ **Fun factor** - Prefix commands allow for more creative/chaotic interactions
+✅ **Backwards compatibility** - Users familiar with classic bots
+
+**Disadvantages:**
+
+❌ Prefix can conflict with other bots
+❌ No autocomplete/hints like slash commands
+❌ Need to parse message content manually
+
+---
+
 ## 🗄️ Database Schema
 
 WhiteCat Bot sử dụng **PostgreSQL** với **13 tables**.
