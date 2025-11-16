@@ -19,20 +19,24 @@
       },
       "baka": {
         "name": "baka",
-        "description": "Gọi ai đó là ngốc",
+        "description": "Gọi ai đó là baka (バカ)",
         "message": [
-          "{user} gọi {target} là baka! 😤",
-          "{user}: {target}, ngốc quá! バカ！",
-          "{user} nghĩ {target} là baka! 💢",
-          "{user} chỉ vào {target}: Baka baka baka! 😤"
+          "{user} chỉ vào {target}: **BAKA!** バカ！😤",
+          "{user} đỏ mặt gọi {target} là baka~ 😳💢",
+          "{user}: {target} là đồ ngốc! Không phải là {user} thích cậu hay gì đâu nhé! バカ！ 💢",
+          "{user} *đánh nhẹ* {target}: B-baka! 😤",
+          "{user} nhìn {target} với ánh mắt khinh bỉ... \"Tch, baka.\" 😒",
+          "{user}: {target}-baka desu! ばか〜 (｡•ˇ‸ˇ•｡)"
         ],
         "self": [
-          "{user} tự gọi mình là baka... Tự chê mình à? 😅",
-          "{user}: Mình ngốc quá! 🤦"
+          "{user} tự gọi mình là baka... Cậu không sao chứ? 😅💦",
+          "{user} tự đánh đầu mình: \"Mình là baka!\" 🤦‍♂️✨",
+          "{user}: \"Watashi wa baka desu...\" *cười khổ* 😔"
         ],
         "bot": [
-          "{user} gọi mình là baka! Thật vô lễ! 😤",
-          "{user} nghĩ mình ngốc... Mình đang cố gắng hết sức rồi! 😢"
+          "{user} dám gọi mình là baka!? Ê-hèm! 😤💢",
+          "{user}: \"Bot này baka quá!\" - Ơi này, mình đang cố gắng lắm rồi nè! 😢",
+          "Mình đâu phải baka, {user}-baka! ヽ(｀Д´)ﾉ"
         ]
       },
       "blush": {
