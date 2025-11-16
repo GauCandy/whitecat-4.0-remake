@@ -194,7 +194,10 @@ const event: Event<'guildCreate'> = {
                     const inviterMention = invitedBy ? `<@${invitedBy}>` : undefined;
                     const welcomeMessage = buildWelcomeMessage(mappedLocale, inviterMention);
 
-                    await welcomeChannel.send(welcomeMessage);
+                    await welcomeChannel.send({
+                        ...welcomeMessage,
+                        allowedMentions: { users: invitedBy ? [invitedBy] : [] }
+                    });
                     logger.info(`Sent welcome message to ${guild.name} in channel: ${welcomeChannel.name}`);
                 } catch (error) {
                     logger.error(`Failed to send welcome message to ${guild.name}:`, error);

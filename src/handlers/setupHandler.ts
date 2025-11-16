@@ -75,29 +75,16 @@ export async function handleLanguageSelect(interaction: StringSelectMenuInteract
         // Update guild locale in database
         await updateGuildLocale(interaction.guildId!, selectedLocale);
 
-        // Update the original message to reflect the new language
-        const embed = interaction.message.embeds[0];
-        const newEmbed = {
-            ...embed.toJSON(),
-            title: t(selectedLocale, 'events.guildCreate.welcome_title'),
-            description: t(selectedLocale, 'events.guildCreate.welcome_description'),
-            footer: { text: t(selectedLocale, 'events.guildCreate.language_select_label') }
-        };
-
-        await interaction.update({
-            embeds: [newEmbed],
-            components: [] // Remove components after selection
-        });
-
-        // Send confirmation and prefix setup
-        await interaction.followUp({
-            content: t(selectedLocale, 'events.guildCreate.language_updated').replace('{locale}', selectedLocale),
-            ephemeral: false
-        });
-
-        // Send prefix setup message
+        // Build prefix setup message with new language
         const prefixMessage = buildPrefixSetupMessage(selectedLocale);
-        await interaction.followUp(prefixMessage);
+        const confirmationText = t(selectedLocale, 'events.guildCreate.language_updated').replace('{locale}', selectedLocale);
+
+        // Edit original message to show prefix setup
+        await interaction.update({
+            content: `✅ ${confirmationText}`,
+            embeds: prefixMessage.embeds,
+            components: prefixMessage.components
+        });
 
         logger.info(`Guild ${interaction.guild.name} language updated to ${selectedLocale}`);
     } catch (error) {
@@ -132,29 +119,16 @@ export async function handleDefaultLanguageButton(interaction: ButtonInteraction
         // Update guild locale in database
         await updateGuildLocale(interaction.guildId!, defaultLocale);
 
-        // Update the original message
-        const embed = interaction.message.embeds[0];
-        const newEmbed = {
-            ...embed.toJSON(),
-            title: t(defaultLocale, 'events.guildCreate.welcome_title'),
-            description: t(defaultLocale, 'events.guildCreate.welcome_description'),
-            footer: { text: t(defaultLocale, 'events.guildCreate.language_select_label') }
-        };
-
-        await interaction.update({
-            embeds: [newEmbed],
-            components: [] // Remove components
-        });
-
-        // Send confirmation and prefix setup
-        await interaction.followUp({
-            content: t(defaultLocale, 'events.guildCreate.language_updated').replace('{locale}', defaultLocale),
-            ephemeral: false
-        });
-
-        // Send prefix setup message
+        // Build prefix setup message with new language
         const prefixMessage = buildPrefixSetupMessage(defaultLocale);
-        await interaction.followUp(prefixMessage);
+        const confirmationText = t(defaultLocale, 'events.guildCreate.language_updated').replace('{locale}', defaultLocale);
+
+        // Edit original message to show prefix setup
+        await interaction.update({
+            content: `✅ ${confirmationText}`,
+            embeds: prefixMessage.embeds,
+            components: prefixMessage.components
+        });
 
         logger.info(`Guild ${interaction.guild.name} language set to default: ${defaultLocale}`);
     } catch (error) {
