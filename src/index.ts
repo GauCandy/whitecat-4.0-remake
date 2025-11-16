@@ -6,7 +6,7 @@ import { loadTextCommands } from './handlers/textCommandHandler';
 import { loadEvents } from './handlers/eventHandler';
 import { initI18n } from './utils/i18n';
 import { GiveawayManager } from './managers/giveawayManager';
-import app from './web/server';
+import app from '../web/server';
 import type { ExtendedClient } from './types/client';
 import type { Command } from './types/command';
 import type { TextCommand } from './types/textCommand';
