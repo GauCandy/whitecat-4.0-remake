@@ -34,6 +34,7 @@ export enum NekobestAction {
     Slap = 'slap',
     Handhold = 'handhold',
     Yeet = 'yeet',
+    Baka = 'baka',
 }
 
 export enum NekobestExpression {
@@ -54,7 +55,6 @@ export enum NekobestExpression {
     Yawn = 'yawn',
     Facepalm = 'facepalm',
     Happy = 'happy',
-    Baka = 'baka',
     Angry = 'angry',
     Run = 'run',
     Nod = 'nod',

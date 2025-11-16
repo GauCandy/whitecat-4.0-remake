@@ -21,9 +21,18 @@
         "name": "baka",
         "description": "Gọi ai đó là ngốc",
         "message": [
-          "{user} nói: Baka! 😤",
-          "{user}: Baka baka baka! バカ！",
-          "{user} gọi bạn là baka! 😤"
+          "{user} gọi {target} là baka! 😤",
+          "{user}: {target}, ngốc quá! バカ！",
+          "{user} nghĩ {target} là baka! 💢",
+          "{user} chỉ vào {target}: Baka baka baka! 😤"
+        ],
+        "self": [
+          "{user} tự gọi mình là baka... Tự chê mình à? 😅",
+          "{user}: Mình ngốc quá! 🤦"
+        ],
+        "bot": [
+          "{user} gọi mình là baka! Thật vô lễ! 😤",
+          "{user} nghĩ mình ngốc... Mình đang cố gắng hết sức rồi! 😢"
         ]
       },
       "blush": {
