@@ -566,14 +566,14 @@
   },
   "events": {
     "guildCreate": {
-      "welcome_title": "👋 Thanks for inviting WhiteCat Cloud!",
-      "welcome_description": "Let's get started with a quick setup!\n\n**Step 1:** Choose your preferred language\n**Step 2:** Set your command prefix\n\nThis will only take a moment!",
+      "welcome_title": "👋 Thanks for inviting me!",
+      "welcome_description": "Hey there! Let's get you set up real quick.\n\nJust pick your language and choose a prefix - takes like 10 seconds!",
       "locale_detected": "Detected server language: **{locale}**",
-      "setup_prompt": "{inviter} Please complete the setup below:",
+      "setup_prompt": "{inviter} Let's set things up!",
       "language_select_label": "Step 1: Select Language",
-      "step1_title": "🌍 Step 1: Choose Language",
-      "step2_title": "⚙️ Step 2: Setup Prefix",
-      "step2_description": "**Selected Language:** {locale}\n\nNow choose a prefix for text commands.\nThe prefix is used before commands like `{prefix}help`",
+      "step1_title": "🌍 Step 1: Pick Your Language",
+      "step2_title": "⚙️ Step 2: Choose a Prefix",
+      "step2_description": "Nice! You picked **{locale}** 🎉\n\nNow choose a prefix - this goes before text commands.\nFor example: `{prefix}help` to get help",
       "language_select_placeholder": "Choose your preferred language...",
       "prefix_setup_label": "Step 2: Setup Prefix",
       "language_option_en_us": "English (US)",
@@ -582,13 +582,13 @@
       "button_custom_prefix": "Custom Prefix",
       "button_default_prefix": "Default Prefix (!)",
       "language_updated": "✅ Language updated to: **{locale}**",
-      "prefix_updated": "✅ Prefix set to {prefix}",
-      "prefix_modal_title": "Set Custom Prefix",
+      "prefix_updated": "✅ Your prefix is now {prefix}",
+      "prefix_modal_title": "Custom Prefix",
       "prefix_modal_label": "Prefix",
-      "prefix_modal_placeholder": "Enter your desired prefix (e.g., !, ?, $)",
-      "prefix_invalid": "❌ Invalid prefix! Please use 1-10 characters.",
-      "setup_complete": "Setup Complete!",
-      "setup_complete_description": "All done! Your server is ready to use WhiteCat Cloud.\n\n**Quick Start:**\n• Use `/help` to see all commands\n• Try some fun commands like `/hug` or `/kiss`\n• Check `/balance` to see your coins\n\nEnjoy! 🎉"
+      "prefix_modal_placeholder": "Type your prefix (like !, ?, $, etc.)",
+      "prefix_invalid": "❌ Oops! Prefix must be 1-10 characters.",
+      "setup_complete": "You're All Set!",
+      "setup_complete_description": "Done! 🎉 Your server is ready to roll.\n\n**Try these out:**\n• `/help` - See what I can do\n• `/hug`, `/kiss` - Fun interaction commands\n• `/balance` - Check your coins\n\nHave fun!"
     }
   }
 }
