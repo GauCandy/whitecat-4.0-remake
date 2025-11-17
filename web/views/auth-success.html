@@ -44,27 +44,49 @@
       50% { opacity: 1; transform: scale(1.2); }
     }
 
-    /* Clouds */
+    /* Clouds - Enhanced 3D */
     .cloud {
       position: absolute;
-      background: rgba(150, 150, 170, 0.3);
-      border-radius: 100px;
-      filter: blur(2px);
+      background: linear-gradient(135deg,
+        rgba(200, 200, 220, 0.6) 0%,
+        rgba(150, 150, 180, 0.7) 50%,
+        rgba(120, 120, 150, 0.8) 100%
+      );
+      border-radius: 150px;
+      filter: blur(3px) drop-shadow(0 8px 20px rgba(100, 100, 150, 0.4));
       animation: float 20s infinite ease-in-out;
       transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      transform-style: preserve-3d;
+      box-shadow: inset -15px -15px 40px rgba(100, 100, 120, 0.3),
+                  inset 15px 15px 40px rgba(220, 220, 240, 0.4);
     }
 
     .cloud::before,
     .cloud::after {
       content: '';
       position: absolute;
-      background: rgba(150, 150, 170, 0.3);
-      border-radius: 100px;
+      background: linear-gradient(135deg,
+        rgba(200, 200, 220, 0.6) 0%,
+        rgba(150, 150, 180, 0.7) 50%,
+        rgba(120, 120, 150, 0.8) 100%
+      );
+      border-radius: 150px;
+      box-shadow: inset -8px -8px 20px rgba(100, 100, 120, 0.3);
     }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0px) translateX(0px); }
-      50% { transform: translateY(-20px) translateX(10px); }
+      0%, 100% {
+        transform: translateY(0px) translateX(0px) rotateX(0deg);
+      }
+      25% {
+        transform: translateY(-20px) translateX(10px) rotateX(-3deg);
+      }
+      50% {
+        transform: translateY(-25px) translateX(15px) rotateX(2deg);
+      }
+      75% {
+        transform: translateY(-15px) translateX(8px) rotateX(-2deg);
+      }
     }
 
     .cloud.active {
@@ -98,6 +120,13 @@
       max-width: 500px;
       width: 90%;
       backdrop-filter: blur(10px);
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .container:hover {
+      transform: rotateX(2deg) rotateY(2deg);
+      transition: transform 0.3s ease;
     }
 
     /* Cat avatar */
@@ -250,6 +279,151 @@
       margin-bottom: 10px;
       animation: float 3s infinite ease-in-out;
     }
+
+    /* Ground/Landscape */
+    .ground {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 40%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .ground-layer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .ground-back {
+      height: 60%;
+      background: linear-gradient(180deg,
+        rgba(42, 157, 143, 0.3) 0%,
+        rgba(38, 140, 130, 0.5) 50%,
+        rgba(34, 124, 117, 0.7) 100%
+      );
+      clip-path: polygon(
+        0 40%, 15% 35%, 30% 45%, 45% 30%, 60% 38%, 75% 32%, 90% 42%, 100% 35%,
+        100% 100%, 0 100%
+      );
+      animation: gentleMove 20s infinite ease-in-out;
+    }
+
+    .ground-mid {
+      height: 45%;
+      background: linear-gradient(180deg,
+        rgba(56, 173, 169, 0.6) 0%,
+        rgba(42, 157, 143, 0.8) 50%,
+        rgba(28, 141, 127, 0.9) 100%
+      );
+      clip-path: polygon(
+        0 60%, 20% 52%, 35% 65%, 50% 55%, 65% 62%, 80% 58%, 95% 65%, 100% 60%,
+        100% 100%, 0 100%
+      );
+      animation: gentleMove 15s infinite ease-in-out reverse;
+    }
+
+    .ground-front {
+      height: 30%;
+      background: linear-gradient(180deg,
+        #2a9d8f 0%,
+        #264653 50%,
+        #1d3557 100%
+      );
+      clip-path: polygon(
+        0 75%, 10% 70%, 25% 78%, 40% 72%, 55% 76%, 70% 71%, 85% 77%, 100% 73%,
+        100% 100%, 0 100%
+      );
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes gentleMove {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-20px); }
+    }
+
+    /* Grass blades */
+    .grass {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .grass-blade {
+      position: absolute;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #4ecca3 0%, #2a9d8f 100%);
+      border-radius: 3px 3px 0 0;
+      transform-origin: bottom center;
+      animation: grassSway 3s infinite ease-in-out;
+    }
+
+    @keyframes grassSway {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    /* Trees */
+    .tree {
+      position: absolute;
+      bottom: 80px;
+      z-index: 1;
+      animation: treeSwayy 4s infinite ease-in-out;
+      transform-origin: bottom center;
+    }
+
+    @keyframes treeSwayy {
+      0%, 100% { transform: rotate(-1deg); }
+      50% { transform: rotate(1deg); }
+    }
+
+    .tree-trunk {
+      width: 20px;
+      height: 60px;
+      background: linear-gradient(90deg, #6b4423 0%, #8b5a3c 100%);
+      border-radius: 3px;
+      margin: 0 auto;
+      box-shadow: inset -3px 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .tree-leaves {
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle, #2d6a4f 0%, #1b4332 100%);
+      border-radius: 50%;
+      position: relative;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .tree-leaves::before,
+    .tree-leaves::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, #2d6a4f 0%, #1b4332 100%);
+      border-radius: 50%;
+    }
+
+    .tree-leaves::before {
+      top: -25px;
+      left: -15px;
+    }
+
+    .tree-leaves::after {
+      top: -25px;
+      right: -15px;
+    }
   </style>
 </head>
 <body>
@@ -257,10 +431,14 @@
   <div class="stars" id="starsContainer"></div>
 
   <!-- Clouds -->
-  <div class="cloud" id="cloud1" style="width: 120px; height: 60px; top: 15%; left: 10%;"></div>
-  <div class="cloud" id="cloud2" style="width: 150px; height: 70px; top: 25%; right: 15%;"></div>
-  <div class="cloud" id="cloud3" style="width: 100px; height: 50px; top: 60%; left: 20%;"></div>
-  <div class="cloud" id="cloud4" style="width: 130px; height: 65px; top: 70%; right: 25%;"></div>
+  <div class="cloud" id="cloud1" style="width: 160px; height: 80px; top: 8%; left: 5%;"></div>
+  <div class="cloud" id="cloud2" style="width: 180px; height: 90px; top: 15%; right: 10%;"></div>
+  <div class="cloud" id="cloud3" style="width: 140px; height: 70px; top: 12%; left: 40%;"></div>
+  <div class="cloud" id="cloud4" style="width: 150px; height: 75px; top: 22%; left: 65%;"></div>
+  <div class="cloud" style="width: 170px; height: 85px; top: 28%; right: 20%;"></div>
+  <div class="cloud" style="width: 130px; height: 65px; top: 32%; left: 25%;"></div>
+  <div class="cloud" style="width: 155px; height: 78px; top: 38%; right: 45%;"></div>
+  <div class="cloud" style="width: 145px; height: 72px; top: 42%; left: 8%;"></div>
 
   <!-- Data stream SVG -->
   <svg class="data-stream" id="dataStream">
@@ -270,9 +448,36 @@
         <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
         <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
       </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
     </defs>
     <path class="stream-path" id="streamPath" d=""></path>
   </svg>
+
+  <!-- Ground landscape -->
+  <div class="ground">
+    <div class="ground-layer ground-back"></div>
+    <div class="ground-layer ground-mid"></div>
+    <div class="ground-layer ground-front"></div>
+  </div>
+
+  <!-- Trees -->
+  <div class="tree" style="left: 15%; bottom: 12%;">
+    <div class="tree-leaves"></div>
+    <div class="tree-trunk"></div>
+  </div>
+  <div class="tree" style="left: 75%; bottom: 10%;">
+    <div class="tree-leaves"></div>
+    <div class="tree-trunk"></div>
+  </div>
+
+  <!-- Grass -->
+  <div class="grass" id="grassContainer"></div>
 
   <!-- Main container -->
   <div class="container">
@@ -307,11 +512,28 @@
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 70 + '%'; // Only in sky area
         star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
         star.style.animationDelay = Math.random() * 3 + 's';
         star.style.animationDuration = (Math.random() * 2 + 2) + 's';
         starsContainer.appendChild(star);
+      }
+    }
+
+    // Create grass blades
+    function createGrass() {
+      const grassContainer = document.getElementById('grassContainer');
+      const grassCount = 80;
+
+      for (let i = 0; i < grassCount; i++) {
+        const blade = document.createElement('div');
+        blade.className = 'grass-blade';
+        blade.style.left = Math.random() * 100 + '%';
+        blade.style.height = (Math.random() * 40 + 20) + 'px';
+        blade.style.animationDelay = Math.random() * 3 + 's';
+        blade.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        blade.style.opacity = Math.random() * 0.3 + 0.5;
+        grassContainer.appendChild(blade);
       }
     }
 
@@ -365,7 +587,7 @@
               Q ${curve2X} ${curve2Y}, ${toX} ${toY}`;
     }
 
-    // Animate data stream to cloud
+    // Animate data stream to cloud with particles
     function animateDataStream() {
       // Get profile position
       const profile = document.getElementById('profileCard');
@@ -390,6 +612,14 @@
         path.classList.add('animate');
       }, 500);
 
+      // Create animated particles
+      const particleCount = 20;
+      for (let i = 0; i < particleCount; i++) {
+        setTimeout(() => {
+          createParticle(fromX, fromY, toX, toY);
+        }, i * 150);
+      }
+
       // Activate cloud after animation
       setTimeout(() => {
         targetCloud.classList.add('active');
@@ -406,8 +636,61 @@
       }, 2500);
     }
 
+    // Create flying particle
+    function createParticle(fromX, fromY, toX, toY) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = fromX + 'px';
+      particle.style.top = fromY + 'px';
+
+      // Random colors for particles
+      const colors = ['#667eea', '#764ba2', '#f093fb', '#4ecca3', '#f4d03f'];
+      particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+      particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+
+      document.body.appendChild(particle);
+
+      // Animate particle along curved path
+      const duration = 2000;
+      const startTime = Date.now();
+
+      function animateParticle() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+
+        // Ease-in-out function
+        const ease = progress < 0.5
+          ? 2 * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+        // Calculate position along curve
+        const midX = (fromX + toX) / 2;
+        const midY = (fromY + toY) / 2 - 100;
+
+        const x1 = fromX + (midX - fromX) * ease;
+        const y1 = fromY + (midY - fromY) * ease;
+        const x2 = midX + (toX - midX) * ease;
+        const y2 = midY + (toY - midY) * ease;
+        const finalX = x1 + (x2 - x1) * ease;
+        const finalY = y1 + (y2 - y1) * ease;
+
+        particle.style.left = finalX + 'px';
+        particle.style.top = finalY + 'px';
+        particle.style.opacity = Math.sin(progress * Math.PI);
+
+        if (progress < 1) {
+          requestAnimationFrame(animateParticle);
+        } else {
+          particle.remove();
+        }
+      }
+
+      requestAnimationFrame(animateParticle);
+    }
+
     // Initialize
     createStars();
+    createGrass();
     initClouds();
 
     // Start animation when page loads
