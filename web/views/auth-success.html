@@ -12,691 +12,260 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #2a2f4a 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      overflow: hidden;
-      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
-    /* Stars background */
-    .stars {
-      position: fixed;
-      top: 0;
-      left: 0;
+    .container {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
       width: 100%;
-      height: 100%;
-      pointer-events: none;
+      padding: 40px;
+      text-align: center;
     }
 
-    .star {
-      position: absolute;
-      background: white;
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: #10b981;
       border-radius: 50%;
-      animation: twinkle 3s infinite ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
     }
 
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.2); }
-    }
-
-    /* Clouds - Enhanced 3D */
-    .cloud {
-      position: absolute;
-      background: linear-gradient(135deg,
-        rgba(200, 200, 220, 0.6) 0%,
-        rgba(150, 150, 180, 0.7) 50%,
-        rgba(120, 120, 150, 0.8) 100%
-      );
-      border-radius: 150px;
-      filter: blur(3px) drop-shadow(0 8px 20px rgba(100, 100, 150, 0.4));
-      animation: float 20s infinite ease-in-out;
-      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      transform-style: preserve-3d;
-      box-shadow: inset -15px -15px 40px rgba(100, 100, 120, 0.3),
-                  inset 15px 15px 40px rgba(220, 220, 240, 0.4);
-    }
-
-    .cloud::before,
-    .cloud::after {
+    .success-icon::after {
       content: '';
       position: absolute;
-      background: linear-gradient(135deg,
-        rgba(200, 200, 220, 0.6) 0%,
-        rgba(150, 150, 180, 0.7) 50%,
-        rgba(120, 120, 150, 0.8) 100%
-      );
-      border-radius: 150px;
-      box-shadow: inset -8px -8px 20px rgba(100, 100, 120, 0.3);
+      width: 30px;
+      height: 15px;
+      border-left: 4px solid white;
+      border-bottom: 4px solid white;
+      transform: rotate(-45deg) translate(2px, -4px);
     }
 
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0px) translateX(0px) rotateX(0deg);
-      }
-      25% {
-        transform: translateY(-20px) translateX(10px) rotateX(-3deg);
-      }
-      50% {
-        transform: translateY(-25px) translateX(15px) rotateX(2deg);
-      }
-      75% {
-        transform: translateY(-15px) translateX(8px) rotateX(-2deg);
-      }
-    }
-
-    .cloud.active {
-      background: rgba(255, 140, 60, 0.6) !important;
-      filter: blur(2px) drop-shadow(0 0 20px rgba(255, 140, 60, 0.8));
-      animation: cloudBounce 0.6s ease-out, float 20s infinite ease-in-out;
-    }
-
-    .cloud.active::before,
-    .cloud.active::after {
-      background: rgba(255, 140, 60, 0.6) !important;
-    }
-
-    @keyframes cloudBounce {
-      0% { transform: translateY(0px) scale(1); }
-      30% { transform: translateY(-30px) scale(1.1); }
-      50% { transform: translateY(-20px) scale(1.05); }
-      70% { transform: translateY(-25px) scale(1.08); }
-      100% { transform: translateY(-20px) scale(1.05); }
-    }
-
-    /* Main container */
-    .container {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-      padding: 50px;
-      text-align: center;
-      position: relative;
-      z-index: 10;
-      max-width: 500px;
-      width: 90%;
-      backdrop-filter: blur(10px);
-      transform-style: preserve-3d;
-      perspective: 1000px;
-    }
-
-    .container:hover {
-      transform: rotateX(2deg) rotateY(2deg);
-      transition: transform 0.3s ease;
-    }
-
-    /* Cat avatar */
-    .cat-avatar {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 20px;
-      position: relative;
-      animation: catAppear 0.6s ease-out;
-    }
-
-    @keyframes catAppear {
-      0% { transform: scale(0) rotate(-180deg); opacity: 0; }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-
-    .cat-avatar img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 4px solid #667eea;
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
-    }
-
-    /* User profile */
-    .profile {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 16px;
-      padding: 20px;
-      margin: 20px 0;
-      color: white;
-      position: relative;
-      animation: profileSlide 0.8s ease-out 0.3s backwards;
-    }
-
-    @keyframes profileSlide {
-      0% { transform: translateY(30px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    .profile h2 {
-      font-size: 24px;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .user-info {
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 15px;
-      text-align: left;
-      backdrop-filter: blur(10px);
-    }
-
-    .info-item {
-      margin: 8px 0;
-      font-size: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .info-label {
-      font-weight: bold;
-      opacity: 0.9;
-    }
-
-    /* Data stream SVG */
-    .data-stream {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 5;
-    }
-
-    .stream-path {
-      fill: none;
-      stroke: url(#streamGradient);
-      stroke-width: 3;
-      stroke-dasharray: 1000;
-      stroke-dashoffset: 1000;
-      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.8));
-    }
-
-    .stream-path.animate {
-      animation: drawPath 2s ease-in-out forwards;
-    }
-
-    @keyframes drawPath {
-      to { stroke-dashoffset: 0; }
-    }
-
-    /* Data particles */
-    .particle {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: #667eea;
-      border-radius: 50%;
-      opacity: 0;
-      box-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
-    }
-
-    /* Success message */
     h1 {
-      color: #333;
-      margin: 20px 0 10px;
-      font-size: 28px;
-      animation: fadeInUp 0.8s ease-out 0.5s backwards;
+      font-size: 24px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 12px;
     }
 
     p {
-      color: #666;
-      margin: 10px 0;
       font-size: 16px;
+      color: #6b7280;
       line-height: 1.6;
-      animation: fadeInUp 0.8s ease-out 0.7s backwards;
+      margin-bottom: 24px;
     }
 
-    @keyframes fadeInUp {
-      0% { transform: translateY(20px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
+    .user-info {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left;
     }
 
-    .close-message {
-      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    .user-info-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .user-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .user-info-item:last-child {
+      border-bottom: none;
+    }
+
+    .user-info-label {
+      font-size: 14px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .user-info-value {
+      font-size: 14px;
+      color: #111827;
+      font-weight: 600;
+    }
+
+    .message {
+      background: #dbeafe;
+      border-left: 4px solid #3b82f6;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .message p {
+      font-size: 14px;
+      color: #1e40af;
+      margin: 0;
+    }
+
+    .btn {
+      background: #667eea;
       color: white;
-      padding: 15px 30px;
-      border-radius: 12px;
-      margin-top: 20px;
-      font-weight: bold;
-      display: none;
-      animation: fadeInUp 0.8s ease-out backwards;
-      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-    }
-
-    .close-message.show {
-      display: block;
-    }
-
-    /* WhiteCat logo */
-    .whitecat-logo {
-      font-size: 48px;
-      margin-bottom: 10px;
-      animation: float 3s infinite ease-in-out;
-    }
-
-    /* Ground/Landscape */
-    .ground {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 40%;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .ground-layer {
-      position: absolute;
-      bottom: 0;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
       width: 100%;
     }
 
-    .ground-back {
-      height: 60%;
-      background: linear-gradient(180deg,
-        rgba(42, 157, 143, 0.3) 0%,
-        rgba(38, 140, 130, 0.5) 50%,
-        rgba(34, 124, 117, 0.7) 100%
-      );
-      clip-path: polygon(
-        0 40%, 15% 35%, 30% 45%, 45% 30%, 60% 38%, 75% 32%, 90% 42%, 100% 35%,
-        100% 100%, 0 100%
-      );
-      animation: gentleMove 20s infinite ease-in-out;
+    .btn:hover {
+      background: #5568d3;
     }
 
-    .ground-mid {
-      height: 45%;
-      background: linear-gradient(180deg,
-        rgba(56, 173, 169, 0.6) 0%,
-        rgba(42, 157, 143, 0.8) 50%,
-        rgba(28, 141, 127, 0.9) 100%
-      );
-      clip-path: polygon(
-        0 60%, 20% 52%, 35% 65%, 50% 55%, 65% 62%, 80% 58%, 95% 65%, 100% 60%,
-        100% 100%, 0 100%
-      );
-      animation: gentleMove 15s infinite ease-in-out reverse;
+    .btn:active {
+      transform: scale(0.98);
     }
 
-    .ground-front {
-      height: 30%;
-      background: linear-gradient(180deg,
-        #2a9d8f 0%,
-        #264653 50%,
-        #1d3557 100%
-      );
-      clip-path: polygon(
-        0 75%, 10% 70%, 25% 78%, 40% 72%, 55% 76%, 70% 71%, 85% 77%, 100% 73%,
-        100% 100%, 0 100%
-      );
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #9ca3af;
     }
 
-    @keyframes gentleMove {
-      0%, 100% { transform: translateX(0); }
-      50% { transform: translateX(-20px); }
+    /* Mobile: Simplified version */
+    @media (max-width: 768px) {
+      body {
+        background: #667eea;
+      }
+
+      .container {
+        padding: 30px 20px;
+        box-shadow: none;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .success-icon {
+        width: 60px;
+        height: 60px;
+      }
+
+      .success-icon::after {
+        width: 24px;
+        height: 12px;
+        border-left: 3px solid white;
+        border-bottom: 3px solid white;
+      }
+
+      .user-info {
+        display: none; /* Hide on mobile for simplicity */
+      }
+
+      .message {
+        padding: 12px;
+      }
     }
 
-    /* Grass blades */
-    .grass {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 80px;
-      z-index: 2;
-      pointer-events: none;
-    }
+    /* Desktop: Subtle animations */
+    @media (min-width: 769px) {
+      .container {
+        animation: fadeInUp 0.5s ease-out;
+      }
 
-    .grass-blade {
-      position: absolute;
-      bottom: 0;
-      width: 3px;
-      background: linear-gradient(180deg, #4ecca3 0%, #2a9d8f 100%);
-      border-radius: 3px 3px 0 0;
-      transform-origin: bottom center;
-      animation: grassSway 3s infinite ease-in-out;
-    }
+      .success-icon {
+        animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
 
-    @keyframes grassSway {
-      0%, 100% { transform: rotate(-2deg); }
-      50% { transform: rotate(2deg); }
-    }
+      .user-info {
+        animation: fadeIn 0.8s ease-out 0.3s backwards;
+      }
 
-    /* Trees */
-    .tree {
-      position: absolute;
-      bottom: 80px;
-      z-index: 1;
-      animation: treeSwayy 4s infinite ease-in-out;
-      transform-origin: bottom center;
-    }
+      .message {
+        animation: fadeIn 0.8s ease-out 0.5s backwards;
+      }
 
-    @keyframes treeSwayy {
-      0%, 100% { transform: rotate(-1deg); }
-      50% { transform: rotate(1deg); }
-    }
+      .btn {
+        animation: fadeIn 0.8s ease-out 0.7s backwards;
+      }
 
-    .tree-trunk {
-      width: 20px;
-      height: 60px;
-      background: linear-gradient(90deg, #6b4423 0%, #8b5a3c 100%);
-      border-radius: 3px;
-      margin: 0 auto;
-      box-shadow: inset -3px 0 5px rgba(0, 0, 0, 0.3);
-    }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-    .tree-leaves {
-      width: 70px;
-      height: 70px;
-      background: radial-gradient(circle, #2d6a4f 0%, #1b4332 100%);
-      border-radius: 50%;
-      position: relative;
-      top: -40px;
-      left: 50%;
-      transform: translateX(-50%);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
 
-    .tree-leaves::before,
-    .tree-leaves::after {
-      content: '';
-      position: absolute;
-      width: 60px;
-      height: 60px;
-      background: radial-gradient(circle, #2d6a4f 0%, #1b4332 100%);
-      border-radius: 50%;
-    }
-
-    .tree-leaves::before {
-      top: -25px;
-      left: -15px;
-    }
-
-    .tree-leaves::after {
-      top: -25px;
-      right: -15px;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Stars -->
-  <div class="stars" id="starsContainer"></div>
-
-  <!-- Clouds -->
-  <div class="cloud" id="cloud1" style="width: 160px; height: 80px; top: 8%; left: 5%;"></div>
-  <div class="cloud" id="cloud2" style="width: 180px; height: 90px; top: 15%; right: 10%;"></div>
-  <div class="cloud" id="cloud3" style="width: 140px; height: 70px; top: 12%; left: 40%;"></div>
-  <div class="cloud" id="cloud4" style="width: 150px; height: 75px; top: 22%; left: 65%;"></div>
-  <div class="cloud" style="width: 170px; height: 85px; top: 28%; right: 20%;"></div>
-  <div class="cloud" style="width: 130px; height: 65px; top: 32%; left: 25%;"></div>
-  <div class="cloud" style="width: 155px; height: 78px; top: 38%; right: 45%;"></div>
-  <div class="cloud" style="width: 145px; height: 72px; top: 42%; left: 8%;"></div>
-
-  <!-- Data stream SVG -->
-  <svg class="data-stream" id="dataStream">
-    <defs>
-      <linearGradient id="streamGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
-        <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
-      </linearGradient>
-      <filter id="glow">
-        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-        <feMerge>
-          <feMergeNode in="coloredBlur"/>
-          <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-      </filter>
-    </defs>
-    <path class="stream-path" id="streamPath" d=""></path>
-  </svg>
-
-  <!-- Ground landscape -->
-  <div class="ground">
-    <div class="ground-layer ground-back"></div>
-    <div class="ground-layer ground-mid"></div>
-    <div class="ground-layer ground-front"></div>
-  </div>
-
-  <!-- Trees -->
-  <div class="tree" style="left: 15%; bottom: 12%;">
-    <div class="tree-leaves"></div>
-    <div class="tree-trunk"></div>
-  </div>
-  <div class="tree" style="left: 75%; bottom: 10%;">
-    <div class="tree-leaves"></div>
-    <div class="tree-trunk"></div>
-  </div>
-
-  <!-- Grass -->
-  <div class="grass" id="grassContainer"></div>
-
-  <!-- Main container -->
   <div class="container">
-    <div class="whitecat-logo">🐱☁️</div>
+    <div class="success-icon"></div>
 
-    <div class="profile" id="profileCard">
-      <h2>
-        <span>✨</span>
-        <span>User Profile</span>
-        <span>✨</span>
-      </h2>
-      <div class="user-info" id="userInfo">
-        <!-- User info will be injected here -->
-      </div>
+    <h1>Authorization Successful</h1>
+    <p>Your WhiteCat Bot account has been successfully linked.</p>
+
+    <div class="user-info" id="userInfo">
+      <div class="user-info-header">Account Details</div>
+      <!-- User info will be injected here -->
     </div>
 
-    <h1>🎉 Authorization Successful!</h1>
-    <p>Your data is being securely stored in the WhiteCat Cloud...</p>
+    <div class="message">
+      <p><strong>What's next?</strong> You can now return to Discord and start using WhiteCat Bot with your authorized account.</p>
+    </div>
 
-    <div class="close-message" id="closeMessage">
-      ✅ All set! You can now close this window.
+    <button class="btn" onclick="window.close()">Return to Discord</button>
+
+    <div class="footer">
+      You can safely close this window
     </div>
   </div>
-
-  <script>
-    // Create stars
-    function createStars() {
-      const starsContainer = document.getElementById('starsContainer');
-      const starCount = 150;
-
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 70 + '%'; // Only in sky area
-        star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        starsContainer.appendChild(star);
-      }
-    }
-
-    // Create grass blades
-    function createGrass() {
-      const grassContainer = document.getElementById('grassContainer');
-      const grassCount = 80;
-
-      for (let i = 0; i < grassCount; i++) {
-        const blade = document.createElement('div');
-        blade.className = 'grass-blade';
-        blade.style.left = Math.random() * 100 + '%';
-        blade.style.height = (Math.random() * 40 + 20) + 'px';
-        blade.style.animationDelay = Math.random() * 3 + 's';
-        blade.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        blade.style.opacity = Math.random() * 0.3 + 0.5;
-        grassContainer.appendChild(blade);
-      }
-    }
-
-    // Add cloud pseudo-elements styling
-    function initClouds() {
-      const clouds = document.querySelectorAll('.cloud');
-      clouds.forEach((cloud, index) => {
-        const width = parseInt(cloud.style.width);
-        const height = parseInt(cloud.style.height);
-
-        cloud.style.animationDelay = index * 0.5 + 's';
-
-        // Before pseudo-element
-        const before = document.createElement('div');
-        before.style.cssText = `
-          position: absolute;
-          width: ${width * 0.5}px;
-          height: ${height * 0.7}px;
-          background: rgba(150, 150, 170, 0.3);
-          border-radius: 100px;
-          top: -${height * 0.3}px;
-          left: ${width * 0.15}px;
-        `;
-        cloud.appendChild(before);
-
-        // After pseudo-element
-        const after = document.createElement('div');
-        after.style.cssText = `
-          position: absolute;
-          width: ${width * 0.6}px;
-          height: ${height * 0.8}px;
-          background: rgba(150, 150, 170, 0.3);
-          border-radius: 100px;
-          top: -${height * 0.4}px;
-          right: ${width * 0.15}px;
-        `;
-        cloud.appendChild(after);
-      });
-    }
-
-    // Create curved path from profile to cloud
-    function createPath(fromX, fromY, toX, toY) {
-      const midX = (fromX + toX) / 2;
-      const curve1X = fromX < toX ? fromX + (toX - fromX) * 0.3 : fromX - (fromX - toX) * 0.3;
-      const curve1Y = fromY - 100;
-      const curve2X = fromX < toX ? fromX + (toX - fromX) * 0.7 : fromX - (fromX - toX) * 0.7;
-      const curve2Y = toY + 80;
-
-      return `M ${fromX} ${fromY}
-              Q ${curve1X} ${curve1Y}, ${midX} ${(fromY + toY) / 2}
-              Q ${curve2X} ${curve2Y}, ${toX} ${toY}`;
-    }
-
-    // Animate data stream to cloud with particles
-    function animateDataStream() {
-      // Get profile position
-      const profile = document.getElementById('profileCard');
-      const profileRect = profile.getBoundingClientRect();
-      const fromX = profileRect.left + profileRect.width / 2;
-      const fromY = profileRect.top + profileRect.height / 2;
-
-      // Select random cloud
-      const clouds = ['cloud1', 'cloud2', 'cloud3', 'cloud4'];
-      const targetCloud = document.getElementById(clouds[Math.floor(Math.random() * clouds.length)]);
-      const cloudRect = targetCloud.getBoundingClientRect();
-      const toX = cloudRect.left + cloudRect.width / 2;
-      const toY = cloudRect.bottom;
-
-      // Create path
-      const path = document.getElementById('streamPath');
-      const pathData = createPath(fromX, fromY, toX, toY);
-      path.setAttribute('d', pathData);
-
-      // Animate path
-      setTimeout(() => {
-        path.classList.add('animate');
-      }, 500);
-
-      // Create animated particles
-      const particleCount = 20;
-      for (let i = 0; i < particleCount; i++) {
-        setTimeout(() => {
-          createParticle(fromX, fromY, toX, toY);
-        }, i * 150);
-      }
-
-      // Activate cloud after animation
-      setTimeout(() => {
-        targetCloud.classList.add('active');
-
-        // Show close message
-        setTimeout(() => {
-          document.getElementById('closeMessage').classList.add('show');
-
-          // Deactivate cloud after a while
-          setTimeout(() => {
-            targetCloud.classList.remove('active');
-          }, 2000);
-        }, 500);
-      }, 2500);
-    }
-
-    // Create flying particle
-    function createParticle(fromX, fromY, toX, toY) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = fromX + 'px';
-      particle.style.top = fromY + 'px';
-
-      // Random colors for particles
-      const colors = ['#667eea', '#764ba2', '#f093fb', '#4ecca3', '#f4d03f'];
-      particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-      particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
-
-      document.body.appendChild(particle);
-
-      // Animate particle along curved path
-      const duration = 2000;
-      const startTime = Date.now();
-
-      function animateParticle() {
-        const elapsed = Date.now() - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        // Ease-in-out function
-        const ease = progress < 0.5
-          ? 2 * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 2) / 2;
-
-        // Calculate position along curve
-        const midX = (fromX + toX) / 2;
-        const midY = (fromY + toY) / 2 - 100;
-
-        const x1 = fromX + (midX - fromX) * ease;
-        const y1 = fromY + (midY - fromY) * ease;
-        const x2 = midX + (toX - midX) * ease;
-        const y2 = midY + (toY - midY) * ease;
-        const finalX = x1 + (x2 - x1) * ease;
-        const finalY = y1 + (y2 - y1) * ease;
-
-        particle.style.left = finalX + 'px';
-        particle.style.top = finalY + 'px';
-        particle.style.opacity = Math.sin(progress * Math.PI);
-
-        if (progress < 1) {
-          requestAnimationFrame(animateParticle);
-        } else {
-          particle.remove();
-        }
-      }
-
-      requestAnimationFrame(animateParticle);
-    }
-
-    // Initialize
-    createStars();
-    createGrass();
-    initClouds();
-
-    // Start animation when page loads
-    window.addEventListener('load', () => {
-      setTimeout(animateDataStream, 1000);
-    });
-  </script>
 </body>
 </html>

@@ -12,617 +12,302 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, #1a0a0e 0%, #2a1a1f 50%, #3a2a2f 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       min-height: 100vh;
-      overflow: hidden;
-      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 20px;
     }
 
-    /* Stars background */
-    .stars {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    .star {
-      position: absolute;
-      background: white;
-      border-radius: 50%;
-      animation: twinkle 3s infinite ease-in-out;
-    }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.2; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.2); }
-    }
-
-    /* Storm clouds - Enhanced 3D */
-    .cloud {
-      position: absolute;
-      background: linear-gradient(135deg,
-        rgba(60, 60, 70, 0.7) 0%,
-        rgba(40, 40, 50, 0.8) 50%,
-        rgba(20, 20, 30, 0.9) 100%
-      );
-      border-radius: 150px;
-      filter: blur(4px) drop-shadow(0 10px 30px rgba(0, 0, 0, 0.8));
-      animation: stormFloat 15s infinite ease-in-out;
-      transform-style: preserve-3d;
-      box-shadow: inset -20px -20px 50px rgba(0, 0, 0, 0.5),
-                  inset 20px 20px 50px rgba(80, 80, 90, 0.2);
-    }
-
-    .cloud::before,
-    .cloud::after {
-      content: '';
-      position: absolute;
-      background: linear-gradient(135deg,
-        rgba(60, 60, 70, 0.7) 0%,
-        rgba(40, 40, 50, 0.8) 50%,
-        rgba(20, 20, 30, 0.9) 100%
-      );
-      border-radius: 150px;
-      box-shadow: inset -10px -10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    @keyframes stormFloat {
-      0%, 100% {
-        transform: translateY(0px) translateX(0px) rotateX(0deg);
-      }
-      25% {
-        transform: translateY(-15px) translateX(-10px) rotateX(5deg);
-      }
-      50% {
-        transform: translateY(-20px) translateX(-15px) rotateX(-3deg);
-      }
-      75% {
-        transform: translateY(-10px) translateX(-8px) rotateX(4deg);
-      }
-    }
-
-    /* Lightning effect - Enhanced */
-    @keyframes lightning {
-      0%, 100% { opacity: 0; }
-      5% { opacity: 0.9; }
-      10% { opacity: 0; }
-      15% { opacity: 1; }
-      20% { opacity: 0; }
-      22% { opacity: 0.7; }
-      25% { opacity: 0; }
-    }
-
-    .lightning {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.8) 0%, rgba(200, 200, 255, 0.3) 30%, transparent 70%);
-      pointer-events: none;
-      opacity: 0;
-      z-index: 100;
-    }
-
-    /* Lightning bolts */
-    .lightning-bolt {
-      position: fixed;
-      width: 4px;
-      background: linear-gradient(180deg,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(147, 197, 253, 0.9) 50%,
-        rgba(59, 130, 246, 0.6) 100%
-      );
-      box-shadow: 0 0 20px rgba(147, 197, 253, 1),
-                  0 0 40px rgba(59, 130, 246, 0.8),
-                  0 0 60px rgba(29, 78, 216, 0.6);
-      opacity: 0;
-      z-index: 99;
-      filter: blur(1px);
-    }
-
-    @keyframes boltFlash {
-      0%, 100% { opacity: 0; transform: scaleY(0); }
-      5% { opacity: 1; transform: scaleY(1); }
-      10% { opacity: 0; transform: scaleY(1); }
-      15% { opacity: 0.8; transform: scaleY(1); }
-      20% { opacity: 0; transform: scaleY(1); }
-    }
-
-    /* Rain */
-    .rain {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 50;
-    }
-
-    .raindrop {
-      position: absolute;
-      width: 2px;
-      height: 15px;
-      background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.1) 0%,
-        rgba(147, 197, 253, 0.3) 50%,
-        rgba(59, 130, 246, 0.5) 100%
-      );
-      animation: fall linear infinite;
-      opacity: 0.6;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-100vh) translateX(0);
-        opacity: 0.6;
-      }
-      100% {
-        transform: translateY(100vh) translateX(30px);
-        opacity: 0;
-      }
-    }
-
-    /* Splash when rain hits ground */
-    .splash {
-      position: absolute;
-      bottom: 0;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: rgba(147, 197, 253, 0.4);
-      animation: splashAnim 0.5s ease-out forwards;
-      pointer-events: none;
-    }
-
-    @keyframes splashAnim {
-      0% {
-        transform: scale(0);
-        opacity: 1;
-      }
-      100% {
-        transform: scale(3);
-        opacity: 0;
-      }
-    }
-
-    /* Main container */
     .container {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-      padding: 50px;
-      text-align: center;
-      position: relative;
-      z-index: 10;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
       max-width: 500px;
-      width: 90%;
-      backdrop-filter: blur(10px);
-      animation: containerShake 0.5s ease-out;
+      width: 100%;
+      padding: 40px;
+      text-align: center;
     }
 
-    @keyframes containerShake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
-    }
-
-    /* Sad cat */
-    .sad-cat {
-      font-size: 80px;
-      margin-bottom: 20px;
-      animation: sadCatBounce 2s infinite ease-in-out;
-      filter: grayscale(0.3);
-    }
-
-    @keyframes sadCatBounce {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    /* Error icon */
-    .error-circle {
-      width: 100px;
-      height: 100px;
+    .error-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: #ef4444;
       border-radius: 50%;
-      border: 4px solid #f5576c;
-      margin: 20px auto;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      animation: errorAppear 0.6s ease-out;
     }
 
-    @keyframes errorAppear {
-      0% { transform: scale(0) rotate(180deg); opacity: 0; }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-
-    .error-circle::before,
-    .error-circle::after {
+    .error-icon::before,
+    .error-icon::after {
       content: '';
       position: absolute;
-      width: 4px;
-      height: 50px;
-      background: #f5576c;
+      width: 30px;
+      height: 4px;
+      background: white;
       border-radius: 2px;
     }
 
-    .error-circle::before {
+    .error-icon::before {
       transform: rotate(45deg);
     }
 
-    .error-circle::after {
+    .error-icon::after {
       transform: rotate(-45deg);
     }
 
     h1 {
-      color: #333;
-      margin: 20px 0 10px;
-      font-size: 28px;
-      animation: fadeInUp 0.8s ease-out 0.3s backwards;
+      font-size: 24px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 12px;
     }
 
     p {
-      color: #666;
-      margin: 10px 0;
       font-size: 16px;
+      color: #6b7280;
       line-height: 1.6;
-      animation: fadeInUp 0.8s ease-out 0.5s backwards;
+      margin-bottom: 24px;
     }
 
-    @keyframes fadeInUp {
-      0% { transform: translateY(20px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
-    }
-
-    /* Error details */
     .error-details {
-      background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
-      border: 2px solid #ffc107;
-      border-radius: 12px;
-      padding: 20px;
-      margin: 20px 0;
-      color: #856404;
-      font-size: 14px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-left: 4px solid #ef4444;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 24px;
       text-align: left;
+    }
+
+    .error-details-header {
+      font-size: 14px;
+      font-weight: 600;
+      color: #991b1b;
+      margin-bottom: 8px;
+    }
+
+    .error-details-content {
+      font-size: 13px;
+      color: #7f1d1d;
+      font-family: 'Courier New', monospace;
       word-break: break-word;
-      animation: fadeInUp 0.8s ease-out 0.7s backwards;
-      box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+      background: #fee2e2;
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 8px;
     }
 
-    .error-details strong {
-      display: block;
-      margin-bottom: 10px;
-      font-size: 16px;
-      color: #664d03;
+    .help-message {
+      background: #f3f4f6;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: left;
     }
 
-    /* Retry button */
-    .retry-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .help-message h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    .help-message ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .help-message li {
+      font-size: 14px;
+      color: #6b7280;
+      padding: 6px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .help-message li::before {
+      content: '•';
+      position: absolute;
+      left: 8px;
+      color: #9ca3af;
+    }
+
+    .btn {
+      background: #ef4444;
       color: white;
-      padding: 15px 40px;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
+      padding: 12px 24px;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 20px;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-      animation: fadeInUp 0.8s ease-out 0.9s backwards;
-    }
-
-    .retry-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .retry-btn:active {
-      transform: translateY(0);
-    }
-
-    /* WhiteCat logo */
-    .whitecat-logo {
-      font-size: 48px;
-      margin-bottom: 10px;
-      animation: sadFloat 3s infinite ease-in-out;
-      filter: grayscale(0.5);
-    }
-
-    @keyframes sadFloat {
-      0%, 100% { transform: translateY(0px) rotate(-5deg); }
-      50% { transform: translateY(-5px) rotate(5deg); }
-    }
-
-    /* Dark Ground/Landscape */
-    .ground {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 35%;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .ground-layer {
-      position: absolute;
-      bottom: 0;
+      transition: background 0.2s;
       width: 100%;
     }
 
-    .ground-back {
-      height: 60%;
-      background: linear-gradient(180deg,
-        rgba(30, 20, 25, 0.4) 0%,
-        rgba(40, 25, 30, 0.6) 50%,
-        rgba(50, 30, 35, 0.8) 100%
-      );
-      clip-path: polygon(
-        0 45%, 15% 40%, 30% 50%, 45% 38%, 60% 45%, 75% 40%, 90% 48%, 100% 42%,
-        100% 100%, 0 100%
-      );
-      animation: stormShake 8s infinite ease-in-out;
+    .btn:hover {
+      background: #dc2626;
     }
 
-    .ground-mid {
-      height: 45%;
-      background: linear-gradient(180deg,
-        rgba(40, 25, 30, 0.7) 0%,
-        rgba(50, 30, 35, 0.85) 50%,
-        rgba(60, 35, 40, 0.95) 100%
-      );
-      clip-path: polygon(
-        0 65%, 20% 58%, 35% 68%, 50% 60%, 65% 66%, 80% 62%, 95% 69%, 100% 64%,
-        100% 100%, 0 100%
-      );
-      animation: stormShake 6s infinite ease-in-out reverse;
+    .btn:active {
+      transform: scale(0.98);
     }
 
-    .ground-front {
-      height: 30%;
-      background: linear-gradient(180deg,
-        #3a2a2f 0%,
-        #2a1a1f 50%,
-        #1a0a0e 100%
-      );
-      clip-path: polygon(
-        0 78%, 10% 74%, 25% 80%, 40% 76%, 55% 79%, 70% 75%, 85% 81%, 100% 77%,
-        100% 100%, 0 100%
-      );
-      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+    .footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #9ca3af;
     }
 
-    @keyframes stormShake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-5px); }
-      75% { transform: translateX(5px); }
+    .footer a {
+      color: #667eea;
+      text-decoration: none;
     }
 
-    /* Dead trees */
-    .dead-tree {
-      position: absolute;
-      bottom: 60px;
-      z-index: 2;
-      opacity: 0.6;
-      animation: treeShake 5s infinite ease-in-out;
-      transform-origin: bottom center;
-      filter: brightness(0.4);
+    .footer a:hover {
+      text-decoration: underline;
     }
 
-    @keyframes treeShake {
-      0%, 100% { transform: rotate(-3deg); }
-      50% { transform: rotate(3deg); }
+    /* Mobile: Simplified version */
+    @media (max-width: 768px) {
+      body {
+        background: #ef4444;
+      }
+
+      .container {
+        padding: 30px 20px;
+        box-shadow: none;
+      }
+
+      h1 {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 14px;
+      }
+
+      .error-icon {
+        width: 60px;
+        height: 60px;
+      }
+
+      .error-icon::before,
+      .error-icon::after {
+        width: 24px;
+        height: 3px;
+      }
+
+      .error-details {
+        padding: 12px;
+      }
+
+      .error-details-content {
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      .help-message {
+        display: none; /* Hide on mobile for simplicity */
+      }
     }
 
-    .dead-tree-trunk {
-      width: 15px;
-      height: 50px;
-      background: linear-gradient(90deg, #2a1a1f 0%, #3a2a2f 100%);
-      border-radius: 2px;
-      margin: 0 auto;
-    }
+    /* Desktop: Subtle animations */
+    @media (min-width: 769px) {
+      .container {
+        animation: shake 0.5s ease-out, fadeInUp 0.5s ease-out;
+      }
 
-    .dead-tree-branch {
-      position: absolute;
-      width: 30px;
-      height: 3px;
-      background: #2a1a1f;
-      border-radius: 2px;
-    }
+      .error-icon {
+        animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s backwards;
+      }
 
-    /* 3D perspective effects */
-    .container {
-      transform-style: preserve-3d;
-      perspective: 1000px;
-    }
+      .error-details {
+        animation: fadeIn 0.8s ease-out 0.4s backwards;
+      }
 
-    .container:hover {
-      transform: rotateX(2deg) rotateY(2deg);
-      transition: transform 0.3s ease;
-    }
+      .help-message {
+        animation: fadeIn 0.8s ease-out 0.6s backwards;
+      }
 
-    .error-circle {
-      transform-style: preserve-3d;
-      transform: translateZ(20px);
+      .btn {
+        animation: fadeIn 0.8s ease-out 0.8s backwards;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0) rotate(180deg);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Stars -->
-  <div class="stars" id="starsContainer"></div>
-
-  <!-- Lightning effect -->
-  <div class="lightning" id="lightning"></div>
-
-  <!-- Lightning bolts container -->
-  <div id="lightningBolts"></div>
-
-  <!-- Rain -->
-  <div class="rain" id="rainContainer"></div>
-
-  <!-- Storm clouds -->
-  <div class="cloud" style="width: 200px; height: 100px; top: 5%; left: 5%;"></div>
-  <div class="cloud" style="width: 220px; height: 110px; top: 12%; right: 8%;"></div>
-  <div class="cloud" style="width: 180px; height: 90px; top: 8%; left: 40%;"></div>
-  <div class="cloud" style="width: 190px; height: 95px; top: 18%; left: 65%;"></div>
-  <div class="cloud" style="width: 210px; height: 105px; top: 25%; right: 15%;"></div>
-  <div class="cloud" style="width: 170px; height: 85px; top: 22%; left: 25%;"></div>
-  <div class="cloud" style="width: 195px; height: 98px; top: 32%; right: 35%;"></div>
-  <div class="cloud" style="width: 185px; height: 92px; top: 35%; left: 10%;"></div>
-  <div class="cloud" style="width: 205px; height: 103px; top: 40%; right: 5%;"></div>
-  <div class="cloud" style="width: 175px; height: 88px; top: 45%; left: 50%;"></div>
-
-  <!-- Ground landscape -->
-  <div class="ground">
-    <div class="ground-layer ground-back"></div>
-    <div class="ground-layer ground-mid"></div>
-    <div class="ground-layer ground-front"></div>
-  </div>
-
-  <!-- Dead trees -->
-  <div class="dead-tree" style="left: 20%;">
-    <div class="dead-tree-branch" style="top: 10px; left: -10px; transform: rotate(-35deg);"></div>
-    <div class="dead-tree-branch" style="top: 20px; right: -10px; transform: rotate(40deg);"></div>
-    <div class="dead-tree-trunk"></div>
-  </div>
-  <div class="dead-tree" style="left: 70%;">
-    <div class="dead-tree-branch" style="top: 15px; left: -8px; transform: rotate(-40deg);"></div>
-    <div class="dead-tree-branch" style="top: 25px; right: -12px; transform: rotate(35deg);"></div>
-    <div class="dead-tree-trunk"></div>
-  </div>
-
-  <!-- Main container -->
   <div class="container">
-    <div class="whitecat-logo">😿☁️</div>
+    <div class="error-icon"></div>
 
-    <div class="error-circle"></div>
+    <h1>Authorization Failed</h1>
+    <p>We couldn't complete the authorization process. Please try again.</p>
 
-    <h1>❌ Authorization Failed</h1>
-    <p>Oops! We couldn't connect to WhiteCat Cloud.</p>
-
-    <div class="error-details" id="errorMessage">
-      <!-- Error message will be injected here -->
+    <div class="error-details" id="errorDetails">
+      <div class="error-details-header">Error Details</div>
+      <div class="error-details-content" id="errorMessage">
+        <!-- Error message will be injected here -->
+      </div>
     </div>
 
-    <p style="margin-top: 20px;">Please try again or contact support if the problem persists.</p>
+    <div class="help-message">
+      <h3>What can you do?</h3>
+      <ul>
+        <li>Try authorizing again from Discord</li>
+        <li>Check your internet connection</li>
+        <li>Make sure you're using the correct Discord account</li>
+        <li>Contact support if the problem persists</li>
+      </ul>
+    </div>
 
-    <button class="retry-btn" onclick="window.close()">Close Window</button>
+    <button class="btn" onclick="window.close()">Close Window</button>
+
+    <div class="footer">
+      Need help? Visit our <a href="#">support page</a>
+    </div>
   </div>
-
-  <script>
-    // Create stars (fewer and dimmer for error state)
-    function createStars() {
-      const starsContainer = document.getElementById('starsContainer');
-      const starCount = 100;
-
-      for (let i = 0; i < starCount; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 70 + '%'; // Only in sky area
-        star.style.width = star.style.height = (Math.random() * 1.5 + 0.5) + 'px';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        starsContainer.appendChild(star);
-      }
-    }
-
-    // Create rain
-    function createRain() {
-      const rainContainer = document.getElementById('rainContainer');
-      const rainCount = 150; // Heavy rain!
-
-      for (let i = 0; i < rainCount; i++) {
-        const drop = document.createElement('div');
-        drop.className = 'raindrop';
-        drop.style.left = Math.random() * 100 + '%';
-        drop.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
-        drop.style.animationDelay = Math.random() * 2 + 's';
-        rainContainer.appendChild(drop);
-
-        // Create splash when rain hits ground
-        setInterval(() => {
-          if (Math.random() < 0.3) { // 30% chance to create splash
-            const splash = document.createElement('div');
-            splash.className = 'splash';
-            splash.style.left = Math.random() * 100 + '%';
-            splash.style.zIndex = '3';
-            document.body.appendChild(splash);
-
-            setTimeout(() => splash.remove(), 500);
-          }
-        }, 3000);
-      }
-    }
-
-    // Create lightning bolt
-    function createLightningBolt() {
-      const bolt = document.createElement('div');
-      bolt.className = 'lightning-bolt';
-
-      // Random position in sky
-      const left = Math.random() * 80 + 10; // 10-90%
-      const top = Math.random() * 30 + 5; // 5-35% from top
-      const height = Math.random() * 200 + 100; // 100-300px
-
-      bolt.style.left = left + '%';
-      bolt.style.top = top + '%';
-      bolt.style.height = height + 'px';
-      bolt.style.transformOrigin = 'top center';
-
-      document.getElementById('lightningBolts').appendChild(bolt);
-
-      // Animate bolt
-      setTimeout(() => {
-        bolt.style.animation = 'boltFlash 0.6s ease-out';
-      }, 50);
-
-      // Remove after animation
-      setTimeout(() => {
-        bolt.remove();
-      }, 700);
-    }
-
-    // Enhanced lightning effect with bolts
-    function triggerLightning() {
-      const lightning = document.getElementById('lightning');
-      lightning.style.animation = 'lightning 0.6s ease-out';
-
-      // Create 1-3 lightning bolts
-      const boltCount = Math.floor(Math.random() * 3) + 1;
-      for (let i = 0; i < boltCount; i++) {
-        setTimeout(() => {
-          createLightningBolt();
-        }, i * 150);
-      }
-
-      setTimeout(() => {
-        lightning.style.animation = '';
-      }, 600);
-
-      // Random next lightning (3-8 seconds)
-      const nextLightning = Math.random() * 5000 + 3000;
-      setTimeout(triggerLightning, nextLightning);
-    }
-
-    // Initialize
-    createStars();
-    createRain();
-
-    // Start lightning after a random delay
-    setTimeout(triggerLightning, Math.random() * 3000 + 1000);
-  </script>
 </body>
 </html>
