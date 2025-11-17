@@ -49,14 +49,17 @@ router.get('/callback', async (req: Request, res: Response) => {
 
     // Build user info HTML (with XSS protection)
     const userInfoHtml = `
-      <div class="info-item">
-        <span class="info-label">Username:</span> ${escapeHtml(userData.username)}
+      <div class="user-info-item">
+        <span class="user-info-label">Username</span>
+        <span class="user-info-value">${escapeHtml(userData.username)}</span>
       </div>
-      <div class="info-item">
-        <span class="info-label">User ID:</span> ${escapeHtml(userData.id)}
+      <div class="user-info-item">
+        <span class="user-info-label">User ID</span>
+        <span class="user-info-value">${escapeHtml(userData.id)}</span>
       </div>
-      <div class="info-item">
-        <span class="info-label">Status:</span> ✅ Connected to WhiteCat Bot
+      <div class="user-info-item">
+        <span class="user-info-label">Status</span>
+        <span class="user-info-value status-indicator">ACTIVE</span>
       </div>
     `;
 
@@ -66,7 +69,7 @@ router.get('/callback', async (req: Request, res: Response) => {
     webLogger.error('OAuth callback error:', error);
 
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorDetailsHtml = `<strong>Error:</strong> ${escapeHtml(errorMessage)}`;
+    const errorDetailsHtml = escapeHtml(errorMessage);
 
     // Send error response
     res.status(500).send(errorHtml.replace('<!-- Error message will be injected here -->', errorDetailsHtml));
