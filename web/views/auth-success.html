@@ -12,84 +12,282 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Courier New', 'Consolas', monospace;
+      background: #0a0a0f;
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Starry sky background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* Falling code/stars (Matrix style) */
+    .code-rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .code-char {
+      position: absolute;
+      color: #667eea;
+      font-size: 14px;
+      opacity: 0.6;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+
+    /* Ground/Landscape */
+    .ground {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 200px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .ground-layer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(180deg, transparent 0%, #0a0a0f 50%);
+    }
+
+    .ground-silhouette {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background: #000;
+      clip-path: polygon(
+        0 100%, 0 60%, 10% 55%, 20% 65%, 30% 50%, 40% 58%, 50% 45%,
+        60% 52%, 70% 40%, 80% 48%, 90% 55%, 100% 50%, 100% 100%
+      );
+      opacity: 0.8;
+    }
+
+    .ground-silhouette::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg,
+        transparent,
+        #00ff41 20%,
+        #00ff41 80%,
+        transparent
+      );
+      box-shadow: 0 0 10px #667eea;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background-image:
+        linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      transform-origin: bottom;
+      transform: perspective(500px) rotateX(60deg);
+      opacity: 0.3;
+    }
+
+    /* Scanlines CRT effect */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        rgba(102, 126, 234, 0.03) 2px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 100;
     }
 
     .container {
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      max-width: 500px;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(0, 255, 65, 0.3);
+      box-shadow:
+        0 0 30px rgba(0, 255, 65, 0.2),
+        inset 0 0 20px rgba(0, 255, 65, 0.05);
+      max-width: 520px;
       width: 100%;
       padding: 40px;
-      text-align: center;
-    }
-
-    .success-icon {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 24px;
-      background: #10b981;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       position: relative;
+      z-index: 10;
     }
 
-    .success-icon::after {
+    /* RGB border animation */
+    .container::before {
       content: '';
       position: absolute;
-      width: 30px;
-      height: 15px;
-      border-left: 4px solid white;
-      border-bottom: 4px solid white;
-      transform: rotate(-45deg) translate(2px, -4px);
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      background: linear-gradient(
+        90deg,
+        #667eea,
+        #06b6d4,
+        #a855f7,
+        #ec4899,
+        #667eea
+      );
+      background-size: 400% 400%;
+      animation: rgbFlow 6s linear infinite;
+      z-index: -1;
+      opacity: 0.5;
+    }
+
+    @keyframes rgbFlow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    /* Cat ASCII art */
+    .cat-icon {
+      text-align: center;
+      font-size: 48px;
+      margin-bottom: 24px;
+      color: #667eea;
+      text-shadow:
+        0 0 10px #00ff41,
+        0 0 20px #00ff41,
+        0 0 30px #00ff41;
+      animation: catGlow 2s ease-in-out infinite;
+      line-height: 1.2;
+      white-space: pre;
+    }
+
+    @keyframes catGlow {
+      0%, 100% {
+        text-shadow:
+          0 0 10px #00ff41,
+          0 0 20px #00ff41,
+          0 0 30px #00ff41;
+      }
+      50% {
+        text-shadow:
+          0 0 15px #00ff41,
+          0 0 30px #00ff41,
+          0 0 45px #00ff41;
+      }
     }
 
     h1 {
       font-size: 24px;
-      font-weight: 600;
-      color: #111827;
-      margin-bottom: 12px;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 8px;
+      text-align: center;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
     }
 
-    p {
-      font-size: 16px;
-      color: #6b7280;
+    h1::before {
+      content: '> ';
+      color: #00d4ff;
+    }
+
+    h1::after {
+      content: '_';
+      animation: blink 1s step-end infinite;
+      color: #00d4ff;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 32px;
       line-height: 1.6;
-      margin-bottom: 24px;
     }
 
     .user-info {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(0, 255, 65, 0.2);
       padding: 20px;
       margin-bottom: 24px;
-      text-align: left;
+      position: relative;
+      font-size: 13px;
     }
 
-    .user-info-header {
-      font-size: 14px;
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .user-info::before {
+      content: '[ ACCOUNT DATA ]';
+      position: absolute;
+      top: -10px;
+      left: 12px;
+      background: #0a0a0f;
+      padding: 0 8px;
+      color: #667eea;
+      font-size: 11px;
+      letter-spacing: 1px;
     }
 
     .user-info-item {
       display: flex;
       justify-content: space-between;
       padding: 8px 0;
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+      color: #aaa;
     }
 
     .user-info-item:last-child {
@@ -97,125 +295,187 @@
     }
 
     .user-info-label {
-      font-size: 14px;
-      color: #6b7280;
-      font-weight: 500;
+      color: #00d4ff;
+    }
+
+    .user-info-label::before {
+      content: '$ ';
     }
 
     .user-info-value {
-      font-size: 14px;
-      color: #111827;
-      font-weight: 600;
+      color: #fff;
+      text-align: right;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #667eea;
+    }
+
+    .status-indicator::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #667eea;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #667eea;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
     }
 
     .message {
-      background: #dbeafe;
-      border-left: 4px solid #3b82f6;
-      border-radius: 4px;
+      background: linear-gradient(135deg, rgba(0, 255, 65, 0.05), rgba(0, 212, 255, 0.05));
+      border-left: 3px solid #00ff41;
       padding: 16px;
       margin-bottom: 24px;
-      text-align: left;
+      color: #ddd;
+      font-size: 13px;
+      line-height: 1.6;
     }
 
-    .message p {
-      font-size: 14px;
-      color: #1e40af;
-      margin: 0;
+    .message::before {
+      content: '// ';
+      color: #667eea;
     }
 
     .btn {
-      background: #667eea;
-      color: white;
+      background: linear-gradient(135deg, #667eea, #a855f7);
+      color: #000;
       border: none;
-      border-radius: 8px;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: 600;
+      padding: 14px 28px;
+      font-size: 14px;
+      font-weight: 700;
       cursor: pointer;
-      transition: background 0.2s;
       width: 100%;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
     }
 
     .btn:hover {
-      background: #5568d3;
+      box-shadow:
+        0 0 20px rgba(0, 255, 65, 0.6),
+        0 4px 15px rgba(0, 0, 0, 0.4);
+      transform: translateY(-2px);
     }
 
     .btn:active {
-      transform: scale(0.98);
+      transform: translateY(0);
     }
 
     .footer {
       margin-top: 24px;
-      font-size: 12px;
-      color: #9ca3af;
+      text-align: center;
+      font-size: 11px;
+      color: #444;
+      letter-spacing: 1px;
     }
 
-    /* Mobile: Simplified version */
+    .footer::before {
+      content: '[ ';
+      color: #667eea;
+    }
+
+    .footer::after {
+      content: ' ]';
+      color: #667eea;
+    }
+
+    /* Mobile: Simplified */
     @media (max-width: 768px) {
-      body {
-        background: #667eea;
+      .code-rain,
+      .grid-overlay {
+        display: none;
       }
 
-      .container {
-        padding: 30px 20px;
-        box-shadow: none;
+      .ground {
+        height: 120px;
       }
 
-      h1 {
-        font-size: 20px;
-      }
-
-      p {
-        font-size: 14px;
-      }
-
-      .success-icon {
-        width: 60px;
+      .ground-silhouette {
         height: 60px;
       }
 
-      .success-icon::after {
-        width: 24px;
-        height: 12px;
-        border-left: 3px solid white;
-        border-bottom: 3px solid white;
+      .container {
+        padding: 28px 20px;
+      }
+
+      .container::before {
+        display: none; /* No RGB animation on mobile */
+      }
+
+      .cat-icon {
+        font-size: 36px;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        font-size: 18px;
+      }
+
+      .subtitle {
+        font-size: 12px;
       }
 
       .user-info {
-        display: none; /* Hide on mobile for simplicity */
-      }
-
-      .message {
-        padding: 12px;
+        display: none; /* Hide on mobile */
       }
     }
 
-    /* Desktop: Subtle animations */
+    /* Desktop: Smooth animations */
     @media (min-width: 769px) {
       .container {
-        animation: fadeInUp 0.5s ease-out;
+        animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
-      .success-icon {
-        animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      .cat-icon {
+        animation: catGlow 2s ease-in-out infinite, scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
       }
 
-      .user-info {
-        animation: fadeIn 0.8s ease-out 0.3s backwards;
-      }
-
-      .message {
+      h1, .subtitle {
         animation: fadeIn 0.8s ease-out 0.5s backwards;
       }
 
-      .btn {
-        animation: fadeIn 0.8s ease-out 0.7s backwards;
+      .user-info {
+        animation: slideRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s backwards;
       }
 
-      @keyframes fadeInUp {
+      .message {
+        animation: fadeIn 0.8s ease-out 0.9s backwards;
+      }
+
+      .btn {
+        animation: fadeIn 0.8s ease-out 1.1s backwards;
+      }
+
+      @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(20px);
+          transform: translateY(40px);
         }
         to {
           opacity: 1;
@@ -226,7 +486,7 @@
       @keyframes scaleIn {
         from {
           opacity: 0;
-          transform: scale(0);
+          transform: scale(0.5);
         }
         to {
           opacity: 1;
@@ -235,37 +495,96 @@
       }
 
       @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes slideRight {
         from {
           opacity: 0;
+          transform: translateX(-30px);
         }
         to {
           opacity: 1;
+          transform: translateX(0);
         }
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="success-icon"></div>
+  <!-- Stars -->
+  <div class="stars" id="starsContainer"></div>
 
-    <h1>Authorization Successful</h1>
-    <p>Your WhiteCat Bot account has been successfully linked.</p>
+  <!-- Falling code rain -->
+  <div class="code-rain" id="codeRain"></div>
+
+  <!-- Ground landscape -->
+  <div class="ground">
+    <div class="ground-layer"></div>
+    <div class="ground-silhouette"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <div class="container">
+    <div class="cat-icon">/\_/\
+( o.o )
+ > ^ <</div>
+
+    <h1>Auth Success</h1>
+    <p class="subtitle">Connection established | WhiteCat Bot protocol initiated</p>
 
     <div class="user-info" id="userInfo">
-      <div class="user-info-header">Account Details</div>
       <!-- User info will be injected here -->
     </div>
 
     <div class="message">
-      <p><strong>What's next?</strong> You can now return to Discord and start using WhiteCat Bot with your authorized account.</p>
+      Authorization complete. You may now return to Discord terminal and execute bot commands with elevated privileges.
     </div>
 
-    <button class="btn" onclick="window.close()">Return to Discord</button>
+    <button class="btn" onclick="window.close()">← Return to Discord</button>
 
-    <div class="footer">
-      You can safely close this window
-    </div>
+    <div class="footer">Secure Connection Active</div>
   </div>
+
+  <script>
+    // Create stars
+    (function() {
+      const starsContainer = document.getElementById('starsContainer');
+      const starCount = 100;
+
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 60 + '%';
+        star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        starsContainer.appendChild(star);
+      }
+    })();
+
+    // Create falling code rain (desktop only)
+    if (window.innerWidth > 768) {
+      (function() {
+        const codeRain = document.getElementById('codeRain');
+        const chars = '01アイウエオカキクケコサシスセソタチツテト0123456789ABCDEF<>/';
+        const columns = Math.floor(window.innerWidth / 20);
+
+        for (let i = 0; i < columns; i++) {
+          setTimeout(() => {
+            const char = document.createElement('div');
+            char.className = 'code-char';
+            char.textContent = chars[Math.floor(Math.random() * chars.length)];
+            char.style.left = (i * 20) + 'px';
+            char.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            char.style.animationDelay = Math.random() * 2 + 's';
+            codeRain.appendChild(char);
+          }, i * 50);
+        }
+      })();
+    }
+  </script>
 </body>
 </html>

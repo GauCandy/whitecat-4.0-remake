@@ -71,7 +71,7 @@ router.get('/callback', async (req: Request, res: Response) => {
       </div>
       <div class="user-info-item">
         <span class="user-info-label">Status</span>
-        <span class="user-info-value">Connected</span>
+        <span class="user-info-value status-indicator">ACTIVE</span>
       </div>
     `;
 
