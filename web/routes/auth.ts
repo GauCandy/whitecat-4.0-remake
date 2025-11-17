@@ -75,8 +75,14 @@ router.get('/callback', async (req: Request, res: Response) => {
       </div>
     `;
 
+    // Inject user info and Discord invite link
+    const discordInvite = process.env.DISCORD_SUPPORT_SERVER_INVITE || 'https://discord.gg/your-server-invite';
+    const finalHtml = successHtml
+      .replace('<!-- User info will be injected here -->', userInfoHtml)
+      .replace('https://discord.gg/your-server-invite', discordInvite);
+
     // Send success response
-    res.send(successHtml.replace('<!-- User info will be injected here -->', userInfoHtml));
+    res.send(finalHtml);
   } catch (error) {
     webLogger.error('OAuth callback error:', error);
 
