@@ -27,27 +27,16 @@ router.get('/callback', async (req: Request, res: Response) => {
     const tokenData = await exchangeCode(code);
     const userData = await getOAuthUser(tokenData.access_token);
 
-    // Calculate token expiry
-    const expiresAt = new Date(Date.now() + tokenData.expires_in * 1000);
-
-    // Save tokens to database
+    // Save user to database (create if not exists, update if exists)
     await pool.query(
-      `UPDATE users
-       SET oauth_access_token = $1,
-           oauth_refresh_token = $2,
-           oauth_token_expires_at = $3,
-           oauth_scopes = $4,
-           is_authorized = true,
-           email = COALESCE($5, email),
-           last_seen = NOW()
-       WHERE discord_id = $6`,
+      `INSERT INTO users (discord_id, username, last_seen)
+       VALUES ($1, $2, NOW())
+       ON CONFLICT (discord_id) DO UPDATE SET
+         username = EXCLUDED.username,
+         last_seen = NOW()`,
       [
-        tokenData.access_token,
-        tokenData.refresh_token,
-        expiresAt,
-        tokenData.scope,
-        userData.email || null,
         userData.id,
+        userData.username,
       ]
     );
 
@@ -56,14 +45,13 @@ router.get('/callback', async (req: Request, res: Response) => {
     // Build user info HTML
     const userInfoHtml = `
       <div class="info-item">
-        <span class="info-label">Username:</span> ${userData.username}#${userData.discriminator}
+        <span class="info-label">Username:</span> ${userData.username}
       </div>
       <div class="info-item">
         <span class="info-label">User ID:</span> ${userData.id}
       </div>
-      ${userData.email ? `<div class="info-item"><span class="info-label">Email:</span> ${userData.email}</div>` : ''}
       <div class="info-item">
-        <span class="info-label">Scopes:</span> ${tokenData.scope}
+        <span class="info-label">Status:</span> ✅ Connected to WhiteCat Bot
       </div>
     `;
 

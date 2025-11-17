@@ -60,39 +60,28 @@ const command: Command = {
     const requiredRole = interaction.options.getRole('required_role');
 
     try {
-      // Get or create guild
-      let guildResult = await pool.query(
-        'SELECT id FROM guilds WHERE guild_id = $1',
+      // Get or create guild (upsert)
+      const guildResult = await pool.query(
+        `INSERT INTO guilds (guild_id)
+         VALUES ($1)
+         ON CONFLICT (guild_id) DO UPDATE SET
+           left_at = NULL
+         RETURNING id`,
         [interaction.guildId]
       );
+      const guildDbId = guildResult.rows[0].id;
 
-      let guildDbId: number;
-      if (guildResult.rows.length === 0) {
-        const insertResult = await pool.query(
-          'INSERT INTO guilds (guild_id) VALUES ($1) RETURNING id',
-          [interaction.guildId]
-        );
-        guildDbId = insertResult.rows[0].id;
-      } else {
-        guildDbId = guildResult.rows[0].id;
-      }
-
-      // Get or create user
-      let userResult = await pool.query(
-        'SELECT id FROM users WHERE discord_id = $1',
-        [interaction.user.id]
+      // Get or create user (upsert)
+      const userResult = await pool.query(
+        `INSERT INTO users (discord_id, username, last_seen)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (discord_id) DO UPDATE SET
+           username = EXCLUDED.username,
+           last_seen = NOW()
+         RETURNING id`,
+        [interaction.user.id, interaction.user.username]
       );
-
-      let userDbId: number;
-      if (userResult.rows.length === 0) {
-        const insertResult = await pool.query(
-          'INSERT INTO users (discord_id, username) VALUES ($1, $2) RETURNING id',
-          [interaction.user.id, interaction.user.username]
-        );
-        userDbId = insertResult.rows[0].id;
-      } else {
-        userDbId = userResult.rows[0].id;
-      }
+      const userDbId = userResult.rows[0].id;
 
       // Calculate end time
       const endsAt = new Date(Date.now() + duration * 60 * 1000);
