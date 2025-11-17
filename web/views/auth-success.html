@@ -46,7 +46,7 @@
       50% { opacity: 1; }
     }
 
-    /* Soft clouds */
+    /* Clouds - realistic shape with multiple circles */
     .clouds {
       position: fixed;
       top: 0;
@@ -59,10 +59,52 @@
 
     .cloud {
       position: absolute;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 100px;
-      filter: blur(40px);
+      width: 140px;
+      height: 50px;
       animation: cloudFloat 25s infinite ease-in-out;
+    }
+
+    .cloud-circle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      filter: blur(8px);
+    }
+
+    /* Cloud circles positioned to form realistic cloud shape */
+    .cloud .c1 {
+      width: 50px;
+      height: 50px;
+      left: 0;
+      top: 20px;
+    }
+
+    .cloud .c2 {
+      width: 60px;
+      height: 60px;
+      left: 30px;
+      top: 10px;
+    }
+
+    .cloud .c3 {
+      width: 55px;
+      height: 55px;
+      left: 60px;
+      top: 0;
+    }
+
+    .cloud .c4 {
+      width: 50px;
+      height: 50px;
+      left: 90px;
+      top: 15px;
+    }
+
+    .cloud .c5 {
+      width: 40px;
+      height: 40px;
+      left: 45px;
+      top: 30px;
     }
 
     @keyframes cloudFloat {
@@ -211,10 +253,8 @@
       line-height: 1.6;
     }
 
-    /* Button */
+    /* Buttons */
     .btn {
-      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-      color: white;
       border: none;
       border-radius: 10px;
       padding: 14px 28px;
@@ -223,12 +263,34 @@
       cursor: pointer;
       width: 100%;
       transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      color: white;
       box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
     }
 
-    .btn:hover {
+    .btn-primary:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(96, 165, 250, 0.4);
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #6b7280;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 
     .btn:active {
@@ -243,16 +305,17 @@
       color: #9ca3af;
     }
 
-    /* Data particles animation */
+    /* Data characters (encrypted data) */
     .particle {
       position: fixed;
-      width: 4px;
-      height: 4px;
-      background: #60a5fa;
-      border-radius: 50%;
+      font-size: 12px;
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      color: #60a5fa;
       pointer-events: none;
       z-index: 5;
       opacity: 0;
+      text-shadow: 0 0 4px rgba(96, 165, 250, 0.5);
     }
 
     /* Mobile optimization */
@@ -307,8 +370,12 @@
         animation: fadeIn 0.6s ease-out 0.8s backwards;
       }
 
-      .btn {
+      .btn-primary {
         animation: fadeIn 0.6s ease-out 1s backwards;
+      }
+
+      .btn-secondary {
+        animation: fadeIn 0.6s ease-out 1.2s backwards;
       }
 
       @keyframes slideUp {
@@ -346,9 +413,27 @@
 
   <!-- Clouds -->
   <div class="clouds">
-    <div class="cloud" id="cloud1" style="width: 200px; height: 200px; top: 15%; left: 10%;"></div>
-    <div class="cloud" id="cloud2" style="width: 250px; height: 250px; top: 20%; right: 15%; animation-delay: -5s;"></div>
-    <div class="cloud" id="cloud3" style="width: 180px; height: 180px; top: 50%; left: 20%; animation-delay: -10s;"></div>
+    <div class="cloud" id="cloud1" style="top: 15%; left: 10%;">
+      <div class="cloud-circle c1"></div>
+      <div class="cloud-circle c2"></div>
+      <div class="cloud-circle c3"></div>
+      <div class="cloud-circle c4"></div>
+      <div class="cloud-circle c5"></div>
+    </div>
+    <div class="cloud" id="cloud2" style="top: 20%; right: 15%; animation-delay: -5s;">
+      <div class="cloud-circle c1"></div>
+      <div class="cloud-circle c2"></div>
+      <div class="cloud-circle c3"></div>
+      <div class="cloud-circle c4"></div>
+      <div class="cloud-circle c5"></div>
+    </div>
+    <div class="cloud" id="cloud3" style="top: 50%; left: 20%; animation-delay: -10s;">
+      <div class="cloud-circle c1"></div>
+      <div class="cloud-circle c2"></div>
+      <div class="cloud-circle c3"></div>
+      <div class="cloud-circle c4"></div>
+      <div class="cloud-circle c5"></div>
+    </div>
   </div>
 
   <!-- Ground -->
@@ -369,9 +454,10 @@
       Your data is being synced to WhiteCat Cloud. You can now return to Discord and start using the bot.
     </div>
 
-    <button class="btn" onclick="window.close()">Return to Discord</button>
+    <a href="https://discord.gg/your-server-invite" target="_blank" class="btn btn-primary">Join Bot Support Server</a>
+    <button class="btn btn-secondary" onclick="window.close()">Close This Page</button>
 
-    <div class="footer">You can safely close this window</div>
+    <div class="footer">✓ Authorization complete — You can safely close this page now</div>
   </div>
 
   <script>
@@ -422,6 +508,11 @@
       function createParticle(startX, startY, endX, endY) {
         const particle = document.createElement('div');
         particle.className = 'particle';
+
+        // Random encrypted characters
+        const chars = '01ABCDEFabcdef0123456789';
+        particle.textContent = chars[Math.floor(Math.random() * chars.length)];
+
         particle.style.left = startX + 'px';
         particle.style.top = startY + 'px';
         document.body.appendChild(particle);

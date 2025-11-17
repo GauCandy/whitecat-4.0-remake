@@ -46,7 +46,7 @@
       50% { opacity: 0.6; }
     }
 
-    /* Soft clouds - darker */
+    /* Clouds - darker storm clouds */
     .clouds {
       position: fixed;
       top: 0;
@@ -59,10 +59,52 @@
 
     .cloud {
       position: absolute;
-      background: rgba(100, 50, 60, 0.06);
-      border-radius: 100px;
-      filter: blur(40px);
+      width: 140px;
+      height: 50px;
       animation: cloudFloat 25s infinite ease-in-out;
+    }
+
+    .cloud-circle {
+      position: absolute;
+      background: rgba(80, 50, 60, 0.2);
+      border-radius: 50%;
+      filter: blur(10px);
+    }
+
+    /* Cloud circles positioned to form realistic cloud shape */
+    .cloud .c1 {
+      width: 50px;
+      height: 50px;
+      left: 0;
+      top: 20px;
+    }
+
+    .cloud .c2 {
+      width: 60px;
+      height: 60px;
+      left: 30px;
+      top: 10px;
+    }
+
+    .cloud .c3 {
+      width: 55px;
+      height: 55px;
+      left: 60px;
+      top: 0;
+    }
+
+    .cloud .c4 {
+      width: 50px;
+      height: 50px;
+      left: 90px;
+      top: 15px;
+    }
+
+    .cloud .c5 {
+      width: 40px;
+      height: 40px;
+      left: 45px;
+      top: 30px;
     }
 
     @keyframes cloudFloat {
@@ -324,9 +366,27 @@
 
   <!-- Clouds -->
   <div class="clouds">
-    <div class="cloud" style="width: 200px; height: 200px; top: 15%; left: 10%;"></div>
-    <div class="cloud" style="width: 250px; height: 250px; top: 20%; right: 15%; animation-delay: -5s;"></div>
-    <div class="cloud" style="width: 180px; height: 180px; top: 50%; left: 20%; animation-delay: -10s;"></div>
+    <div class="cloud" style="top: 15%; left: 10%;">
+      <div class="cloud-circle c1"></div>
+      <div class="cloud-circle c2"></div>
+      <div class="cloud-circle c3"></div>
+      <div class="cloud-circle c4"></div>
+      <div class="cloud-circle c5"></div>
+    </div>
+    <div class="cloud" style="top: 20%; right: 15%; animation-delay: -5s;">
+      <div class="cloud-circle c1"></div>
+      <div class="cloud-circle c2"></div>
+      <div class="cloud-circle c3"></div>
+      <div class="cloud-circle c4"></div>
+      <div class="cloud-circle c5"></div>
+    </div>
+    <div class="cloud" style="top: 50%; left: 20%; animation-delay: -10s;">
+      <div class="cloud-circle c1"></div>
+      <div class="cloud-circle c2"></div>
+      <div class="cloud-circle c3"></div>
+      <div class="cloud-circle c4"></div>
+      <div class="cloud-circle c5"></div>
+    </div>
   </div>
 
   <!-- Ground -->
@@ -355,9 +415,9 @@
       </ul>
     </div>
 
-    <button class="btn" onclick="window.close()">Close Window</button>
+    <button class="btn" onclick="window.close()">Close This Page</button>
 
-    <div class="footer">Need help? Contact our support team</div>
+    <div class="footer">✗ Authorization failed — You can safely close this page now</div>
   </div>
 
   <script>
