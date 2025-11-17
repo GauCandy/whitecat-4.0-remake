@@ -17,65 +17,28 @@ export interface AuthorizationStatus {
 
 /**
  * Get user authorization status
- * Checks for default scopes: identify + applications.commands + email
+ * Simplified - just checks if user exists in database
  * @param discordId - Discord user ID
  * @returns Authorization status
  */
 export async function getUserAuthorizationStatus(
   discordId: string
 ): Promise<AuthorizationStatus> {
-  // Default scopes (always required for all commands)
-  const DEFAULT_SCOPES = USER_INSTALL_SCOPES;
-
   try {
     const result = await pool.query(
-      `SELECT
-        u.id,
-        uo.refresh_token,
-        uo.token_expires_at
-       FROM users u
-       LEFT JOIN user_oauth uo ON u.id = uo.user_id
-       WHERE u.discord_id = $1`,
+      'SELECT id FROM users WHERE discord_id = $1',
       [discordId]
     );
 
-    // User not in database
-    if (result.rows.length === 0) {
-      return {
-        isAuthorized: false,
-        isExpired: false,
-        hasAllScopes: false,
-        missingScopes: DEFAULT_SCOPES,
-        userScopes: [],
-      };
-    }
+    // User in database = authorized
+    const isAuthorized = result.rows.length > 0;
 
-    const user = result.rows[0];
-
-    // User not authorized (no refresh token = not authorized)
-    if (!user.refresh_token) {
-      return {
-        isAuthorized: false,
-        isExpired: false,
-        hasAllScopes: false,
-        missingScopes: DEFAULT_SCOPES,
-        userScopes: [],
-      };
-    }
-
-    // Check if refresh token expired
-    const expiresAt = user.token_expires_at ? new Date(user.token_expires_at) : undefined;
-    const isExpired = expiresAt ? expiresAt < new Date() : false;
-
-    // User has refresh token = authorized and has all scopes
-    // (scopes được verify lúc OAuth, không cần lưu DB)
     return {
-      isAuthorized: true,
-      isExpired,
+      isAuthorized,
+      isExpired: false,
       hasAllScopes: true,
       missingScopes: [],
-      expiresAt,
-      userScopes: DEFAULT_SCOPES,
+      userScopes: [],
     };
   } catch (error) {
     logger.error('Error getting user authorization status:', error);
@@ -83,7 +46,7 @@ export async function getUserAuthorizationStatus(
       isAuthorized: false,
       isExpired: false,
       hasAllScopes: false,
-      missingScopes: DEFAULT_SCOPES,
+      missingScopes: [],
       userScopes: [],
     };
   }
@@ -98,48 +61,9 @@ export async function getUserAuthorizationStatus(
 export async function checkAuthorization(
   interaction: ChatInputCommandInteraction
 ): Promise<boolean> {
-  try {
-    const result = await pool.query(
-      `SELECT
-        u.id,
-        uo.refresh_token,
-        uo.token_expires_at
-       FROM users u
-       LEFT JOIN user_oauth uo ON u.id = uo.user_id
-       WHERE u.discord_id = $1`,
-      [interaction.user.id]
-    );
-
-    // User not in database yet
-    if (result.rows.length === 0) {
-      await sendAuthorizationRequest(interaction);
-      return false;
-    }
-
-    const user = result.rows[0];
-
-    // User not authorized (no refresh token)
-    if (!user.refresh_token) {
-      await sendAuthorizationRequest(interaction);
-      return false;
-    }
-
-    // Check if refresh token expired
-    if (user.token_expires_at && new Date(user.token_expires_at) < new Date()) {
-      logger.warn(`OAuth token expired for user ${interaction.user.tag}`);
-      await sendAuthorizationRequest(interaction, true);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    logger.error('Error checking authorization:', error);
-    await interaction.reply({
-      content: '❌ An error occurred while checking your authorization status.',
-      flags: MessageFlags.Ephemeral,
-    });
-    return false;
-  }
+  // OAuth authorization is handled separately via web interface
+  // Bot commands don't require OAuth - user just needs to exist in database
+  return true;
 }
 
 /**
@@ -230,51 +154,26 @@ async function sendAuthorizationRequest(
  * Register or update user in database
  * @param discordId - Discord user ID
  * @param username - Discord username
- * @param discriminator - Discord discriminator
- * @param avatar - Discord avatar hash
  */
 export async function registerUser(
   discordId: string,
-  username: string,
-  discriminator: string,
-  avatar: string | null
+  username: string
 ): Promise<void> {
-  // Insert/update base user info
-  const userResult = await pool.query(
+  await pool.query(
     `INSERT INTO users (discord_id, username, last_seen)
-     VALUES ($1, $2, CURRENT_TIMESTAMP)
+     VALUES ($1, $2, NOW())
      ON CONFLICT (discord_id)
      DO UPDATE SET
        username = EXCLUDED.username,
-       last_seen = CURRENT_TIMESTAMP
-     RETURNING id`,
+       last_seen = NOW()`,
     [discordId, username]
-  );
-
-  const userId = userResult.rows[0].id;
-
-  // Insert/update user profile (extended info)
-  await pool.query(
-    `INSERT INTO user_profiles (user_id, discriminator, avatar)
-     VALUES ($1, $2, $3)
-     ON CONFLICT (user_id)
-     DO UPDATE SET
-       discriminator = EXCLUDED.discriminator,
-       avatar = EXCLUDED.avatar`,
-    [userId, discriminator, avatar]
   );
 }
 
 /**
- * Store OAuth2 tokens in database
- * @param discordId - Discord user ID
- * @param accessToken - OAuth2 access token
- * @param refreshToken - OAuth2 refresh token
- * @param expiresIn - Token expiry time in seconds
- * @param scopes - Granted scopes
- * @param email - User email (if email scope granted)
- * @param clientIP - Client IP address (for anti-clone detection)
- * @param userAgent - Client user agent (for anti-clone detection)
+ * Store OAuth2 tokens - DEPRECATED
+ * OAuth is now handled separately via web interface
+ * This function is kept for backwards compatibility but does nothing
  */
 export async function storeOAuthTokens(
   discordId: string,
@@ -286,44 +185,7 @@ export async function storeOAuthTokens(
   clientIP?: string | null,
   userAgent?: string | null
 ): Promise<void> {
-  const expiresAt = new Date(Date.now() + expiresIn * 1000);
-
-  // Get user ID
-  const userResult = await pool.query(
-    'SELECT id FROM users WHERE discord_id = $1',
-    [discordId]
-  );
-
-  if (userResult.rows.length === 0) {
-    throw new Error(`User not found: ${discordId}`);
-  }
-
-  const userId = userResult.rows[0].id;
-
-  // Store ONLY refresh token (access token không cần lưu)
-  await pool.query(
-    `INSERT INTO user_oauth (
-       user_id,
-       refresh_token,
-       token_expires_at
-     )
-     VALUES ($1, $2, $3)
-     ON CONFLICT (user_id)
-     DO UPDATE SET
-       refresh_token = EXCLUDED.refresh_token,
-       token_expires_at = EXCLUDED.token_expires_at,
-       updated_at = CURRENT_TIMESTAMP`,
-    [userId, refreshToken, expiresAt]
-  );
-
-  // Store email in user_profiles if provided
-  if (email) {
-    await pool.query(
-      `INSERT INTO user_profiles (user_id, email)
-       VALUES ($1, $2)
-       ON CONFLICT (user_id)
-       DO UPDATE SET email = EXCLUDED.email`,
-      [userId, email]
-    );
-  }
+  // OAuth tokens are no longer stored in bot database
+  // Web interface handles OAuth separately
+  return;
 }

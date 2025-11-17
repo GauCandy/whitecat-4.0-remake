@@ -17,9 +17,7 @@ const command: Command = {
     // Register user if not exists (creates user record in database)
     await registerUser(
       interaction.user.id,
-      interaction.user.username,
-      interaction.user.discriminator,
-      interaction.user.avatar
+      interaction.user.username
     );
 
     // Check if user already has full authorization
