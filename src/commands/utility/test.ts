@@ -68,12 +68,12 @@ const command: Command = {
         },
         {
           name: '🔑 Authorization Status',
-          value: '✅ Authorized with `identify` + `applications.commands` scopes',
+          value: '✅ Authorized (terms accepted via OAuth)',
           inline: false,
         }
       )
       .setFooter({
-        text: 'WhiteCat Hosting Bot - User Install Test',
+        text: 'WhiteCat Bot - User Install Test',
       })
       .setTimestamp();
 

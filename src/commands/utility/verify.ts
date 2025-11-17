@@ -7,7 +7,7 @@ import { registerUser, getUserAuthorizationStatus } from '../../middlewares/auth
 const command: Command = {
   data: new SlashCommandBuilder()
     .setName('verify')
-    .setDescription('Authorize the bot to access your Discord account and email'),
+    .setDescription('Authorize the bot to access your Discord account'),
 
   category: CommandCategory.Utility,
   cooldown: 5,
@@ -21,7 +21,7 @@ const command: Command = {
     // Note: We use getUserAuthorizationStatus service instead of direct database query
     const authStatus = await getUserAuthorizationStatus(interaction.user.id);
 
-    // User already authorized with all required scopes (identify + applications.commands + email)
+    // User already authorized (terms_accepted = true)
     if (authStatus.isAuthorized && !authStatus.isExpired && authStatus.hasAllScopes) {
       const embed = new EmbedBuilder()
         .setColor(0x57f287)
@@ -35,7 +35,7 @@ const command: Command = {
           inline: false,
         })
         .setFooter({
-          text: 'WhiteCat Hosting Bot',
+          text: 'WhiteCat Bot',
         })
         .setTimestamp();
 
@@ -71,25 +71,15 @@ const command: Command = {
           name: '📋 Required Permissions',
           value:
             '• **identify** - Access your basic Discord info (username, avatar, etc.)\n' +
-            '• **applications.commands** - Allow you to use bot slash commands (User Install)\n' +
-            '• **email** - Verify your account and send important notifications',
-          inline: false,
-        },
-        {
-          name: '📧 Why We Need Your Email',
-          value:
-            '• 🛡️ **Prevent spam & alt accounts** - Verify legitimate users\n' +
-            '• 📨 **Important notifications** - Server expiring, payment confirmations\n' +
-            '• 🔑 **Account recovery** - Restore access if you lose your Discord account\n' +
-            '• 📜 **Receipts & invoices** - Send purchase confirmations for hosting',
+            '• **applications.commands** - Allow you to use bot slash commands (User Install)',
           inline: false,
         },
         {
           name: '🔒 Privacy & Security',
           value:
-            'Your data is stored securely and encrypted. We only collect necessary information to provide bot functionality.\n\n' +
-            '• ✅ We will NEVER sell or share your email\n' +
-            '• ✅ No spam - Only important bot notifications\n' +
+            'Your data is stored securely. We only collect necessary information to provide bot functionality.\n\n' +
+            '• ✅ We will NEVER sell or share your data\n' +
+            '• ✅ Only basic Discord info is collected\n' +
             '• ✅ You can revoke access at any time in Discord settings\n' +
             '• ✅ We comply with Discord ToS and privacy regulations',
           inline: false,
