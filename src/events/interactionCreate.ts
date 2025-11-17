@@ -105,9 +105,7 @@ const event: Event<'interactionCreate'> = {
       // Register user if not exists
       await registerUser(
         interaction.user.id,
-        interaction.user.username,
-        interaction.user.discriminator,
-        interaction.user.avatar
+        interaction.user.username
       );
 
       // Check if user is authorized (requires: identify + applications.commands + email)

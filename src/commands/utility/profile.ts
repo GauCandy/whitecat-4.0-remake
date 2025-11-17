@@ -29,8 +29,7 @@ const command: Command = {
       // Get user from database
       const userResult = await pool.query(
         `SELECT
-          u.id, u.discord_id, u.username, u.discriminator, u.email,
-          u.pterodactyl_user_id, u.is_authorized, u.created_at, u.last_seen,
+          u.id, u.discord_id, u.username, u.created_at, u.last_seen,
           ue.balance
          FROM users u
          LEFT JOIN user_economy ue ON u.id = ue.user_id AND ue.currency_id = 1
