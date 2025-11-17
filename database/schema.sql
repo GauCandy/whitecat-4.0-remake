@@ -36,6 +36,22 @@ CREATE TABLE IF NOT EXISTS users (
   -- Thông tin Discord
   discord_id VARCHAR(20) UNIQUE NOT NULL,     -- Discord user ID (snowflake)
   username VARCHAR(100) NOT NULL,              -- Tên người dùng Discord
+  discriminator VARCHAR(10),                   -- Discord discriminator (#1234)
+  avatar VARCHAR(100),                         -- Discord avatar hash
+  email VARCHAR(255),                          -- Email (from OAuth scope)
+
+  -- OAuth Authorization
+  is_authorized BOOLEAN DEFAULT false,         -- Đã authorize OAuth chưa?
+  oauth_access_token TEXT,                     -- OAuth2 access token (encrypted)
+  oauth_refresh_token TEXT,                    -- OAuth2 refresh token (encrypted)
+  oauth_token_expires_at TIMESTAMP,            -- Token expiration time
+  oauth_scopes TEXT,                           -- Granted OAuth scopes (space-separated)
+
+  -- Terms & Compliance
+  terms_accepted_at TIMESTAMP,                 -- Thời điểm chấp nhận điều khoản
+
+  -- Integrations
+  pterodactyl_user_id INTEGER,                 -- Pterodactyl panel user ID (nếu có)
 
   -- Metadata
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -45,6 +61,9 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Index để tìm kiếm nhanh
 CREATE INDEX idx_users_discord_id ON users(discord_id);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_is_authorized ON users(is_authorized);
+CREATE INDEX idx_users_oauth_token_expires_at ON users(oauth_token_expires_at);
 
 -- ==========================================
 -- 2. BẢNG CURRENCIES (Tiền tệ)
