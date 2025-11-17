@@ -107,10 +107,11 @@ const command: Command = {
 
       // Add verification status (only for self)
       if (isSelf) {
+        const isAuthorized = !!dbUser.refresh_token;
         embed.addFields({
           name: '🔐 Verification Status',
           value: [
-            `**Authorized:** ${dbUser.is_authorized ? '✅ Yes' : '❌ No'}`,
+            `**Authorized:** ${isAuthorized ? '✅ Yes' : '❌ No'}`,
             dbUser.email ? `**Email Verified:** ✅ ${dbUser.email}` : '❌ No email verified',
           ].join('\n'),
           inline: false,
