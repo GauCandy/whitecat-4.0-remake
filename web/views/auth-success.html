@@ -5,111 +5,415 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Authorization Successful - WhiteCat Bot</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(180deg, #0a0e27 0%, #1a1f3a 50%, #2a2f4a 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
     }
-    .container {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      max-width: 500px;
+
+    /* Stars background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 40px;
-      text-align: center;
+      height: 100%;
+      pointer-events: none;
     }
-    .checkmark {
-      width: 80px;
-      height: 80px;
+
+    .star {
+      position: absolute;
+      background: white;
       border-radius: 50%;
-      display: block;
-      stroke-width: 3;
-      stroke: #4CAF50;
-      stroke-miterlimit: 10;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Clouds */
+    .cloud {
+      position: absolute;
+      background: rgba(150, 150, 170, 0.3);
+      border-radius: 100px;
+      filter: blur(2px);
+      animation: float 20s infinite ease-in-out;
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: '';
+      position: absolute;
+      background: rgba(150, 150, 170, 0.3);
+      border-radius: 100px;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-20px) translateX(10px); }
+    }
+
+    .cloud.active {
+      background: rgba(255, 140, 60, 0.6) !important;
+      filter: blur(2px) drop-shadow(0 0 20px rgba(255, 140, 60, 0.8));
+      animation: cloudBounce 0.6s ease-out, float 20s infinite ease-in-out;
+    }
+
+    .cloud.active::before,
+    .cloud.active::after {
+      background: rgba(255, 140, 60, 0.6) !important;
+    }
+
+    @keyframes cloudBounce {
+      0% { transform: translateY(0px) scale(1); }
+      30% { transform: translateY(-30px) scale(1.1); }
+      50% { transform: translateY(-20px) scale(1.05); }
+      70% { transform: translateY(-25px) scale(1.08); }
+      100% { transform: translateY(-20px) scale(1.05); }
+    }
+
+    /* Main container */
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 50px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      max-width: 500px;
+      width: 90%;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Cat avatar */
+    .cat-avatar {
+      width: 120px;
+      height: 120px;
       margin: 0 auto 20px;
-      box-shadow: inset 0px 0px 0px #4CAF50;
-      animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+      position: relative;
+      animation: catAppear 0.6s ease-out;
     }
-    .checkmark__circle {
-      stroke-dasharray: 166;
-      stroke-dashoffset: 166;
-      stroke-width: 3;
-      stroke-miterlimit: 10;
-      stroke: #4CAF50;
-      fill: none;
-      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+
+    @keyframes catAppear {
+      0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
     }
-    .checkmark__check {
-      transform-origin: 50% 50%;
-      stroke-dasharray: 48;
-      stroke-dashoffset: 48;
-      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+
+    .cat-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 4px solid #667eea;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
     }
-    @keyframes stroke {
-      100% {
-        stroke-dashoffset: 0;
-      }
-    }
-    @keyframes scale {
-      0%, 100% {
-        transform: none;
-      }
-      50% {
-        transform: scale3d(1.1, 1.1, 1);
-      }
-    }
-    @keyframes fill {
-      100% {
-        box-shadow: inset 0px 0px 0px 40px #4CAF50;
-      }
-    }
-    h1 {
-      color: #333;
-      margin: 0 0 10px 0;
-      font-size: 28px;
-    }
-    p {
-      color: #666;
-      margin: 0 0 30px 0;
-      font-size: 16px;
-      line-height: 1.6;
-    }
-    .info {
-      background: #f5f5f5;
-      border-radius: 8px;
+
+    /* User profile */
+    .profile {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 16px;
       padding: 20px;
       margin: 20px 0;
-      text-align: left;
+      color: white;
+      position: relative;
+      animation: profileSlide 0.8s ease-out 0.3s backwards;
     }
+
+    @keyframes profileSlide {
+      0% { transform: translateY(30px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .profile h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .user-info {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: left;
+      backdrop-filter: blur(10px);
+    }
+
     .info-item {
       margin: 8px 0;
-      font-size: 14px;
-      color: #555;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+
     .info-label {
       font-weight: bold;
+      opacity: 0.9;
+    }
+
+    /* Data stream SVG */
+    .data-stream {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .stream-path {
+      fill: none;
+      stroke: url(#streamGradient);
+      stroke-width: 3;
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.8));
+    }
+
+    .stream-path.animate {
+      animation: drawPath 2s ease-in-out forwards;
+    }
+
+    @keyframes drawPath {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Data particles */
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #667eea;
+      border-radius: 50%;
+      opacity: 0;
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
+    }
+
+    /* Success message */
+    h1 {
       color: #333;
+      margin: 20px 0 10px;
+      font-size: 28px;
+      animation: fadeInUp 0.8s ease-out 0.5s backwards;
+    }
+
+    p {
+      color: #666;
+      margin: 10px 0;
+      font-size: 16px;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease-out 0.7s backwards;
+    }
+
+    @keyframes fadeInUp {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .close-message {
+      background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 12px;
+      margin-top: 20px;
+      font-weight: bold;
+      display: none;
+      animation: fadeInUp 0.8s ease-out backwards;
+      box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    }
+
+    .close-message.show {
+      display: block;
+    }
+
+    /* WhiteCat logo */
+    .whitecat-logo {
+      font-size: 48px;
+      margin-bottom: 10px;
+      animation: float 3s infinite ease-in-out;
     }
   </style>
 </head>
 <body>
+  <!-- Stars -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Clouds -->
+  <div class="cloud" id="cloud1" style="width: 120px; height: 60px; top: 15%; left: 10%;"></div>
+  <div class="cloud" id="cloud2" style="width: 150px; height: 70px; top: 25%; right: 15%;"></div>
+  <div class="cloud" id="cloud3" style="width: 100px; height: 50px; top: 60%; left: 20%;"></div>
+  <div class="cloud" id="cloud4" style="width: 130px; height: 65px; top: 70%; right: 25%;"></div>
+
+  <!-- Data stream SVG -->
+  <svg class="data-stream" id="dataStream">
+    <defs>
+      <linearGradient id="streamGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+        <stop offset="50%" style="stop-color:#764ba2;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#f093fb;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <path class="stream-path" id="streamPath" d=""></path>
+  </svg>
+
+  <!-- Main container -->
   <div class="container">
-    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-      <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-      <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-    </svg>
-    <h1>✅ Authorization Successful!</h1>
-    <p>You have successfully authorized WhiteCat Bot to access your Discord account.</p>
-    <div class="info" id="userInfo">
-      <!-- User info will be injected here -->
+    <div class="whitecat-logo">🐱☁️</div>
+
+    <div class="profile" id="profileCard">
+      <h2>
+        <span>✨</span>
+        <span>User Profile</span>
+        <span>✨</span>
+      </h2>
+      <div class="user-info" id="userInfo">
+        <!-- User info will be injected here -->
+      </div>
     </div>
-    <p>You can now use all bot commands. You may close this window.</p>
+
+    <h1>🎉 Authorization Successful!</h1>
+    <p>Your data is being securely stored in the WhiteCat Cloud...</p>
+
+    <div class="close-message" id="closeMessage">
+      ✅ All set! You can now close this window.
+    </div>
   </div>
+
+  <script>
+    // Create stars
+    function createStars() {
+      const starsContainer = document.getElementById('starsContainer');
+      const starCount = 150;
+
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // Add cloud pseudo-elements styling
+    function initClouds() {
+      const clouds = document.querySelectorAll('.cloud');
+      clouds.forEach((cloud, index) => {
+        const width = parseInt(cloud.style.width);
+        const height = parseInt(cloud.style.height);
+
+        cloud.style.animationDelay = index * 0.5 + 's';
+
+        // Before pseudo-element
+        const before = document.createElement('div');
+        before.style.cssText = `
+          position: absolute;
+          width: ${width * 0.5}px;
+          height: ${height * 0.7}px;
+          background: rgba(150, 150, 170, 0.3);
+          border-radius: 100px;
+          top: -${height * 0.3}px;
+          left: ${width * 0.15}px;
+        `;
+        cloud.appendChild(before);
+
+        // After pseudo-element
+        const after = document.createElement('div');
+        after.style.cssText = `
+          position: absolute;
+          width: ${width * 0.6}px;
+          height: ${height * 0.8}px;
+          background: rgba(150, 150, 170, 0.3);
+          border-radius: 100px;
+          top: -${height * 0.4}px;
+          right: ${width * 0.15}px;
+        `;
+        cloud.appendChild(after);
+      });
+    }
+
+    // Create curved path from profile to cloud
+    function createPath(fromX, fromY, toX, toY) {
+      const midX = (fromX + toX) / 2;
+      const curve1X = fromX < toX ? fromX + (toX - fromX) * 0.3 : fromX - (fromX - toX) * 0.3;
+      const curve1Y = fromY - 100;
+      const curve2X = fromX < toX ? fromX + (toX - fromX) * 0.7 : fromX - (fromX - toX) * 0.7;
+      const curve2Y = toY + 80;
+
+      return `M ${fromX} ${fromY}
+              Q ${curve1X} ${curve1Y}, ${midX} ${(fromY + toY) / 2}
+              Q ${curve2X} ${curve2Y}, ${toX} ${toY}`;
+    }
+
+    // Animate data stream to cloud
+    function animateDataStream() {
+      // Get profile position
+      const profile = document.getElementById('profileCard');
+      const profileRect = profile.getBoundingClientRect();
+      const fromX = profileRect.left + profileRect.width / 2;
+      const fromY = profileRect.top + profileRect.height / 2;
+
+      // Select random cloud
+      const clouds = ['cloud1', 'cloud2', 'cloud3', 'cloud4'];
+      const targetCloud = document.getElementById(clouds[Math.floor(Math.random() * clouds.length)]);
+      const cloudRect = targetCloud.getBoundingClientRect();
+      const toX = cloudRect.left + cloudRect.width / 2;
+      const toY = cloudRect.bottom;
+
+      // Create path
+      const path = document.getElementById('streamPath');
+      const pathData = createPath(fromX, fromY, toX, toY);
+      path.setAttribute('d', pathData);
+
+      // Animate path
+      setTimeout(() => {
+        path.classList.add('animate');
+      }, 500);
+
+      // Activate cloud after animation
+      setTimeout(() => {
+        targetCloud.classList.add('active');
+
+        // Show close message
+        setTimeout(() => {
+          document.getElementById('closeMessage').classList.add('show');
+
+          // Deactivate cloud after a while
+          setTimeout(() => {
+            targetCloud.classList.remove('active');
+          }, 2000);
+        }, 500);
+      }, 2500);
+    }
+
+    // Initialize
+    createStars();
+    initClouds();
+
+    // Start animation when page loads
+    window.addEventListener('load', () => {
+      setTimeout(animateDataStream, 1000);
+    });
+  </script>
 </body>
 </html>

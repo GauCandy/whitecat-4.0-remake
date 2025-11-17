@@ -5,62 +5,299 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Authorization Failed - WhiteCat Bot</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background: linear-gradient(180deg, #1a0a0e 0%, #2a1a1f 50%, #3a2a2f 100%);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
     }
-    .container {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      max-width: 500px;
+
+    /* Stars background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      padding: 40px;
-      text-align: center;
+      height: 100%;
+      pointer-events: none;
     }
-    .error-icon {
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    /* Storm clouds */
+    .cloud {
+      position: absolute;
+      background: rgba(80, 80, 90, 0.4);
+      border-radius: 100px;
+      filter: blur(3px);
+      animation: stormFloat 15s infinite ease-in-out;
+    }
+
+    @keyframes stormFloat {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      50% { transform: translateY(-15px) translateX(-10px); }
+    }
+
+    /* Lightning effect */
+    @keyframes lightning {
+      0%, 100% { opacity: 0; }
+      10% { opacity: 1; }
+      11% { opacity: 0; }
+      20% { opacity: 1; }
+      21% { opacity: 0; }
+    }
+
+    .lightning {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    /* Main container */
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      padding: 50px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      max-width: 500px;
+      width: 90%;
+      backdrop-filter: blur(10px);
+      animation: containerShake 0.5s ease-out;
+    }
+
+    @keyframes containerShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    /* Sad cat */
+    .sad-cat {
       font-size: 80px;
       margin-bottom: 20px;
+      animation: sadCatBounce 2s infinite ease-in-out;
+      filter: grayscale(0.3);
     }
+
+    @keyframes sadCatBounce {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Error icon */
+    .error-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 4px solid #f5576c;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      animation: errorAppear 0.6s ease-out;
+    }
+
+    @keyframes errorAppear {
+      0% { transform: scale(0) rotate(180deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .error-circle::before,
+    .error-circle::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 50px;
+      background: #f5576c;
+      border-radius: 2px;
+    }
+
+    .error-circle::before {
+      transform: rotate(45deg);
+    }
+
+    .error-circle::after {
+      transform: rotate(-45deg);
+    }
+
     h1 {
       color: #333;
-      margin: 0 0 10px 0;
+      margin: 20px 0 10px;
       font-size: 28px;
+      animation: fadeInUp 0.8s ease-out 0.3s backwards;
     }
+
     p {
       color: #666;
-      margin: 0 0 20px 0;
+      margin: 10px 0;
       font-size: 16px;
       line-height: 1.6;
+      animation: fadeInUp 0.8s ease-out 0.5s backwards;
     }
+
+    @keyframes fadeInUp {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Error details */
     .error-details {
-      background: #fff3cd;
-      border: 1px solid #ffc107;
-      border-radius: 8px;
-      padding: 15px;
+      background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%);
+      border: 2px solid #ffc107;
+      border-radius: 12px;
+      padding: 20px;
       margin: 20px 0;
       color: #856404;
       font-size: 14px;
       text-align: left;
       word-break: break-word;
+      animation: fadeInUp 0.8s ease-out 0.7s backwards;
+      box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+    }
+
+    .error-details strong {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #664d03;
+    }
+
+    /* Retry button */
+    .retry-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 15px 40px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      animation: fadeInUp 0.8s ease-out 0.9s backwards;
+    }
+
+    .retry-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .retry-btn:active {
+      transform: translateY(0);
+    }
+
+    /* WhiteCat logo */
+    .whitecat-logo {
+      font-size: 48px;
+      margin-bottom: 10px;
+      animation: sadFloat 3s infinite ease-in-out;
+      filter: grayscale(0.5);
+    }
+
+    @keyframes sadFloat {
+      0%, 100% { transform: translateY(0px) rotate(-5deg); }
+      50% { transform: translateY(-5px) rotate(5deg); }
     }
   </style>
 </head>
 <body>
+  <!-- Stars -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Lightning effect -->
+  <div class="lightning" id="lightning"></div>
+
+  <!-- Storm clouds -->
+  <div class="cloud" style="width: 140px; height: 70px; top: 10%; left: 5%;"></div>
+  <div class="cloud" style="width: 160px; height: 80px; top: 20%; right: 10%;"></div>
+  <div class="cloud" style="width: 120px; height: 60px; top: 65%; left: 15%;"></div>
+  <div class="cloud" style="width: 150px; height: 75px; top: 75%; right: 20%;"></div>
+
+  <!-- Main container -->
   <div class="container">
-    <div class="error-icon">❌</div>
-    <h1>Authorization Failed</h1>
-    <p>We couldn't authorize your Discord account. Please try again.</p>
+    <div class="whitecat-logo">😿☁️</div>
+
+    <div class="error-circle"></div>
+
+    <h1>❌ Authorization Failed</h1>
+    <p>Oops! We couldn't connect to WhiteCat Cloud.</p>
+
     <div class="error-details" id="errorMessage">
       <!-- Error message will be injected here -->
     </div>
-    <p>If this problem persists, please contact support.</p>
+
+    <p style="margin-top: 20px;">Please try again or contact support if the problem persists.</p>
+
+    <button class="retry-btn" onclick="window.close()">Close Window</button>
   </div>
+
+  <script>
+    // Create stars (fewer and dimmer for error state)
+    function createStars() {
+      const starsContainer = document.getElementById('starsContainer');
+      const starCount = 80;
+
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = star.style.height = (Math.random() * 1.5 + 0.5) + 'px';
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        starsContainer.appendChild(star);
+      }
+    }
+
+    // Random lightning effect
+    function triggerLightning() {
+      const lightning = document.getElementById('lightning');
+      lightning.style.animation = 'lightning 0.5s ease-out';
+
+      setTimeout(() => {
+        lightning.style.animation = '';
+      }, 500);
+
+      // Random next lightning (5-15 seconds)
+      const nextLightning = Math.random() * 10000 + 5000;
+      setTimeout(triggerLightning, nextLightning);
+    }
+
+    // Initialize
+    createStars();
+
+    // Start lightning after a random delay
+    setTimeout(triggerLightning, Math.random() * 5000 + 2000);
+  </script>
 </body>
 </html>

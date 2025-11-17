@@ -12,6 +12,18 @@ const errorHtml = readFileSync(join(__dirname, '../views/auth-error.html'), 'utf
 const router = Router();
 
 /**
+ * Escape HTML to prevent XSS attacks
+ */
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * OAuth2 callback endpoint
  * Handles Discord OAuth2 authorization callback
  */
@@ -42,13 +54,13 @@ router.get('/callback', async (req: Request, res: Response) => {
 
     webLogger.info(`OAuth callback successful for user ${userData.username}#${userData.discriminator}`);
 
-    // Build user info HTML
+    // Build user info HTML (with XSS protection)
     const userInfoHtml = `
       <div class="info-item">
-        <span class="info-label">Username:</span> ${userData.username}
+        <span class="info-label">Username:</span> ${escapeHtml(userData.username)}
       </div>
       <div class="info-item">
-        <span class="info-label">User ID:</span> ${userData.id}
+        <span class="info-label">User ID:</span> ${escapeHtml(userData.id)}
       </div>
       <div class="info-item">
         <span class="info-label">Status:</span> ✅ Connected to WhiteCat Bot
@@ -61,7 +73,7 @@ router.get('/callback', async (req: Request, res: Response) => {
     webLogger.error('OAuth callback error:', error);
 
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorDetailsHtml = `<strong>Error:</strong> ${errorMessage}`;
+    const errorDetailsHtml = `<strong>Error:</strong> ${escapeHtml(errorMessage)}`;
 
     // Send error response
     res.status(500).send(errorHtml.replace('<!-- Error message will be injected here -->', errorDetailsHtml));
