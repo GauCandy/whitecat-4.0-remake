@@ -73,13 +73,12 @@ const command: Command = {
 
       // Get or create user (upsert)
       const userResult = await pool.query(
-        `INSERT INTO users (discord_id, username, last_seen)
-         VALUES ($1, $2, NOW())
+        `INSERT INTO users (discord_id, last_seen)
+         VALUES ($1, NOW())
          ON CONFLICT (discord_id) DO UPDATE SET
-           username = EXCLUDED.username,
            last_seen = NOW()
          RETURNING id`,
-        [interaction.user.id, interaction.user.username]
+        [interaction.user.id]
       );
       const userDbId = userResult.rows[0].id;
 

@@ -14,11 +14,8 @@ const command: Command = {
   requiresAuth: false, // Must be false - this command is used to authorize, so it can't require authorization
 
   async execute(interaction) {
-    // Register user if not exists (creates user record in database)
-    await registerUser(
-      interaction.user.id,
-      interaction.user.username
-    );
+    // Register user if not exists (terms_accepted defaults to false)
+    await registerUser(interaction.user.id);
 
     // Check if user already has full authorization
     // Note: We use getUserAuthorizationStatus service instead of direct database query

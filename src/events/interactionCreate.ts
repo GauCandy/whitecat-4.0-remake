@@ -102,13 +102,10 @@ const event: Event<'interactionCreate'> = {
     const shouldCheckAuth = command.requiresAuth !== false;
 
     if (shouldCheckAuth) {
-      // Register user if not exists
-      await registerUser(
-        interaction.user.id,
-        interaction.user.username
-      );
+      // Register user if not exists (terms_accepted defaults to false)
+      await registerUser(interaction.user.id);
 
-      // Check if user is authorized (requires: identify + applications.commands + email)
+      // Check if user accepted terms via OAuth
       const isAuthorized = await checkAuthorization(interaction);
       if (!isAuthorized) {
         return; // Authorization middleware already sent response

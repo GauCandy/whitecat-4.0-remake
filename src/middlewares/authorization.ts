@@ -17,7 +17,7 @@ export interface AuthorizationStatus {
 
 /**
  * Get user authorization status
- * Simplified - just checks if user exists in database
+ * Checks if user accepted terms via OAuth
  * @param discordId - Discord user ID
  * @returns Authorization status
  */
@@ -26,12 +26,12 @@ export async function getUserAuthorizationStatus(
 ): Promise<AuthorizationStatus> {
   try {
     const result = await pool.query(
-      'SELECT id FROM users WHERE discord_id = $1',
+      'SELECT terms_accepted FROM users WHERE discord_id = $1',
       [discordId]
     );
 
-    // User in database = authorized
-    const isAuthorized = result.rows.length > 0;
+    // User accepted terms = authorized
+    const isAuthorized = result.rows.length > 0 && result.rows[0].terms_accepted === true;
 
     return {
       isAuthorized,
@@ -54,16 +54,34 @@ export async function getUserAuthorizationStatus(
 
 /**
  * Check if user is authorized to use commands
- * Requires default scopes: identify + applications.commands + email
+ * Requires user to accept terms via OAuth
  * @param interaction - Command interaction
  * @returns True if authorized, false otherwise
  */
 export async function checkAuthorization(
   interaction: ChatInputCommandInteraction
 ): Promise<boolean> {
-  // OAuth authorization is handled separately via web interface
-  // Bot commands don't require OAuth - user just needs to exist in database
-  return true;
+  try {
+    const result = await pool.query(
+      'SELECT terms_accepted FROM users WHERE discord_id = $1',
+      [interaction.user.id]
+    );
+
+    // User not in database OR terms not accepted
+    if (result.rows.length === 0 || !result.rows[0].terms_accepted) {
+      await sendAuthorizationRequest(interaction);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    logger.error('Error checking authorization:', error);
+    await interaction.reply({
+      content: '❌ An error occurred while checking your authorization status.',
+      flags: MessageFlags.Ephemeral,
+    });
+    return false;
+  }
 }
 
 /**
@@ -153,20 +171,23 @@ async function sendAuthorizationRequest(
 /**
  * Register or update user in database
  * @param discordId - Discord user ID
- * @param username - Discord username
+ * @param acceptedTerms - User accepted terms (default false, true if from OAuth)
  */
 export async function registerUser(
   discordId: string,
-  username: string
+  acceptedTerms: boolean = false
 ): Promise<void> {
   await pool.query(
-    `INSERT INTO users (discord_id, username, last_seen)
+    `INSERT INTO users (discord_id, terms_accepted, last_seen)
      VALUES ($1, $2, NOW())
      ON CONFLICT (discord_id)
      DO UPDATE SET
-       username = EXCLUDED.username,
+       terms_accepted = CASE
+         WHEN EXCLUDED.terms_accepted = true THEN true
+         ELSE users.terms_accepted
+       END,
        last_seen = NOW()`,
-    [discordId, username]
+    [discordId, acceptedTerms]
   );
 }
 

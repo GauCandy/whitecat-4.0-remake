@@ -32,15 +32,11 @@ async function initDatabase() {
 
     console.log('✅ Database initialized successfully!');
     console.log('📊 Tables created:');
-    console.log('   - users');
+    console.log('   - users (simplified with terms_accepted)');
+    console.log('   - currencies');
     console.log('   - user_economy');
     console.log('   - guilds');
     console.log('   - transactions');
-    console.log('   - server_nodes');
-    console.log('   - hosting_pricing (with default pricing)');
-    console.log('   - ports');
-    console.log('   - user_hosting');
-    console.log('   - webhooks');
     console.log('   - giveaways');
     console.log('   - giveaway_entries');
     console.log('   - statistics');

@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { exchangeCode, getOAuthUser } from '../../src/utils/oauth';
-import { registerUser, storeOAuthTokens } from '../../src/middlewares/authorization';
+import { registerUser } from '../../src/middlewares/authorization';
 import { webLogger } from '../../src/utils/logger';
 
 // Load HTML templates
@@ -39,25 +39,13 @@ router.get('/callback', async (req: Request, res: Response) => {
     const tokenData = await exchangeCode(code);
     const userData = await getOAuthUser(tokenData.access_token);
 
-    // Register user (saves to users + user_profiles tables)
+    // Register user with terms accepted (OAuth = true)
     await registerUser(
       userData.id,
-      userData.username,
-      userData.discriminator,
-      userData.avatar
+      true // OAuth qua web = đã đồng ý điều khoản
     );
 
-    // Store OAuth tokens (saves to user_oauth + user_profiles tables)
-    await storeOAuthTokens(
-      userData.id,
-      tokenData.access_token,
-      tokenData.refresh_token,
-      tokenData.expires_in,
-      tokenData.scope,
-      userData.email // Save email if provided by OAuth
-    );
-
-    webLogger.info(`OAuth callback successful for user ${userData.username}#${userData.discriminator}`);
+    webLogger.info(`OAuth callback successful for user ${userData.username}`);
 
     // Build user info HTML (with XSS protection)
     const userInfoHtml = `
