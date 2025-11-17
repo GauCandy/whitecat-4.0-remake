@@ -51,7 +51,7 @@ CREATE INDEX idx_users_discord_id ON users(discord_id);
 -- ==========================================
 -- 1.1. BẢNG USER_PROFILES (Thông tin mở rộng)
 -- ==========================================
--- Lưu thông tin Discord mở rộng và profile data
+-- Lưu thông tin Discord mở rộng
 -- Tách biệt để giữ bảng users nhỏ gọn
 CREATE TABLE IF NOT EXISTS user_profiles (
   user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
@@ -61,9 +61,6 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   avatar VARCHAR(100),                         -- Discord avatar hash
   email VARCHAR(255),                          -- Email (from OAuth scope)
 
-  -- Integrations
-  pterodactyl_user_id INTEGER,                 -- Pterodactyl panel user ID (nếu có)
-
   -- Metadata
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -72,31 +69,24 @@ CREATE TABLE IF NOT EXISTS user_profiles (
 CREATE INDEX idx_user_profiles_email ON user_profiles(email);
 
 -- ==========================================
--- 1.2. BẢNG USER_OAUTH (OAuth Tokens)
+-- 1.2. BẢNG USER_OAUTH (OAuth Refresh Tokens)
 -- ==========================================
--- Lưu OAuth2 authorization tokens
--- Tách biệt để bảo mật tốt hơn và dễ quản lý
+-- Lưu ONLY refresh token để renew access token khi cần
+-- Access token không cần lưu (chỉ sống 7 ngày, dùng xong bỏ)
+-- Có refresh_token = đã authorized
 CREATE TABLE IF NOT EXISTS user_oauth (
   user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
 
-  -- Authorization status
-  is_authorized BOOLEAN DEFAULT false,         -- Đã authorize chưa?
-  scopes TEXT,                                 -- Granted scopes (space-separated)
-
-  -- OAuth2 tokens (nên encrypt trong production)
-  access_token TEXT,                           -- OAuth2 access token
-  refresh_token TEXT,                          -- OAuth2 refresh token
-  token_expires_at TIMESTAMP,                  -- Token expiration time
-
-  -- Compliance
-  terms_accepted_at TIMESTAMP,                 -- Thời điểm chấp nhận điều khoản
+  -- OAuth2 refresh token (để lấy access token mới khi cần)
+  refresh_token TEXT NOT NULL,                 -- OAuth2 refresh token
+  token_expires_at TIMESTAMP NOT NULL,         -- Refresh token expiration
 
   -- Metadata
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_user_oauth_is_authorized ON user_oauth(is_authorized);
+-- Index cho check token expiry
 CREATE INDEX idx_user_oauth_token_expires_at ON user_oauth(token_expires_at);
 
 -- ==========================================

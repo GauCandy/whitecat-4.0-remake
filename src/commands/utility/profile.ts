@@ -30,8 +30,8 @@ const command: Command = {
       const userResult = await pool.query(
         `SELECT
           u.id, u.discord_id, u.username, u.created_at, u.last_seen,
-          up.email, up.discriminator, up.pterodactyl_user_id,
-          uo.is_authorized,
+          up.email, up.discriminator,
+          uo.refresh_token,
           ue.balance
          FROM users u
          LEFT JOIN user_profiles up ON u.id = up.user_id
@@ -109,10 +109,11 @@ const command: Command = {
 
       // Add verification status (only for self)
       if (isSelf) {
+        const isAuthorized = !!dbUser.refresh_token;
         embed.addFields({
           name: '🔐 Verification Status',
           value: [
-            `**Authorized:** ${dbUser.is_authorized ? '✅ Yes' : '❌ No'}`,
+            `**Authorized:** ${isAuthorized ? '✅ Yes' : '❌ No'}`,
             dbUser.email ? `**Email Verified:** ✅ ${dbUser.email}` : '❌ No email verified',
           ].join('\n'),
           inline: false,

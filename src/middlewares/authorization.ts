@@ -31,9 +31,8 @@ export async function getUserAuthorizationStatus(
     const result = await pool.query(
       `SELECT
         u.id,
-        uo.is_authorized,
-        uo.token_expires_at,
-        uo.scopes
+        uo.refresh_token,
+        uo.token_expires_at
        FROM users u
        LEFT JOIN user_oauth uo ON u.id = uo.user_id
        WHERE u.discord_id = $1`,
@@ -53,8 +52,8 @@ export async function getUserAuthorizationStatus(
 
     const user = result.rows[0];
 
-    // User not authorized (no OAuth record or not authorized)
-    if (!user.is_authorized) {
+    // User not authorized (no refresh token = not authorized)
+    if (!user.refresh_token) {
       return {
         isAuthorized: false,
         isExpired: false,
@@ -64,24 +63,19 @@ export async function getUserAuthorizationStatus(
       };
     }
 
-    // Check if token expired
+    // Check if refresh token expired
     const expiresAt = user.token_expires_at ? new Date(user.token_expires_at) : undefined;
     const isExpired = expiresAt ? expiresAt < new Date() : false;
 
-    // Get user scopes
-    const userScopes = user.scopes ? user.scopes.split(' ') : [];
-
-    // Check if user has ALL default scopes
-    const missingScopes = DEFAULT_SCOPES.filter(scope => !userScopes.includes(scope));
-    const hasAllScopes = missingScopes.length === 0;
-
+    // User has refresh token = authorized and has all scopes
+    // (scopes được verify lúc OAuth, không cần lưu DB)
     return {
       isAuthorized: true,
       isExpired,
-      hasAllScopes,
-      missingScopes,
+      hasAllScopes: true,
+      missingScopes: [],
       expiresAt,
-      userScopes,
+      userScopes: DEFAULT_SCOPES,
     };
   } catch (error) {
     logger.error('Error getting user authorization status:', error);
@@ -108,17 +102,13 @@ export async function checkAuthorization(
     const result = await pool.query(
       `SELECT
         u.id,
-        uo.is_authorized,
-        uo.token_expires_at,
-        uo.scopes
+        uo.refresh_token,
+        uo.token_expires_at
        FROM users u
        LEFT JOIN user_oauth uo ON u.id = uo.user_id
        WHERE u.discord_id = $1`,
       [interaction.user.id]
     );
-
-    // Default scopes required for all commands
-    const DEFAULT_SCOPES = ['identify', 'applications.commands', 'email'];
 
     // User not in database yet
     if (result.rows.length === 0) {
@@ -128,26 +118,16 @@ export async function checkAuthorization(
 
     const user = result.rows[0];
 
-    // User not authorized yet (no OAuth record or not authorized)
-    if (!user.is_authorized) {
+    // User not authorized (no refresh token)
+    if (!user.refresh_token) {
       await sendAuthorizationRequest(interaction);
       return false;
     }
 
-    // Check if token expired
+    // Check if refresh token expired
     if (user.token_expires_at && new Date(user.token_expires_at) < new Date()) {
       logger.warn(`OAuth token expired for user ${interaction.user.tag}`);
       await sendAuthorizationRequest(interaction, true);
-      return false;
-    }
-
-    // Check if user has all default scopes
-    const userScopes = user.scopes ? user.scopes.split(' ') : [];
-    const missingScopes = DEFAULT_SCOPES.filter(scope => !userScopes.includes(scope));
-
-    if (missingScopes.length > 0) {
-      logger.warn(`User ${interaction.user.tag} missing scopes: ${missingScopes.join(', ')}`);
-      await sendAuthorizationRequest(interaction, false, missingScopes);
       return false;
     }
 
@@ -320,28 +300,20 @@ export async function storeOAuthTokens(
 
   const userId = userResult.rows[0].id;
 
-  // Store OAuth tokens in user_oauth table
+  // Store ONLY refresh token (access token không cần lưu)
   await pool.query(
     `INSERT INTO user_oauth (
        user_id,
-       is_authorized,
-       access_token,
        refresh_token,
-       token_expires_at,
-       scopes,
-       terms_accepted_at
+       token_expires_at
      )
-     VALUES ($1, true, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+     VALUES ($1, $2, $3)
      ON CONFLICT (user_id)
      DO UPDATE SET
-       is_authorized = true,
-       access_token = EXCLUDED.access_token,
        refresh_token = EXCLUDED.refresh_token,
        token_expires_at = EXCLUDED.token_expires_at,
-       scopes = EXCLUDED.scopes,
-       terms_accepted_at = CURRENT_TIMESTAMP,
        updated_at = CURRENT_TIMESTAMP`,
-    [userId, accessToken, refreshToken, expiresAt, scopes]
+    [userId, refreshToken, expiresAt]
   );
 
   // Store email in user_profiles if provided
