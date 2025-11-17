@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { exchangeCode, getOAuthUser } from '../../src/utils/oauth';
-import { pool } from '../../src/database/config';
+import { registerUser, storeOAuthTokens } from '../../src/middlewares/authorization';
 import { webLogger } from '../../src/utils/logger';
 
 // Load HTML templates
@@ -39,17 +39,22 @@ router.get('/callback', async (req: Request, res: Response) => {
     const tokenData = await exchangeCode(code);
     const userData = await getOAuthUser(tokenData.access_token);
 
-    // Save user to database (create if not exists, update if exists)
-    await pool.query(
-      `INSERT INTO users (discord_id, username, last_seen)
-       VALUES ($1, $2, NOW())
-       ON CONFLICT (discord_id) DO UPDATE SET
-         username = EXCLUDED.username,
-         last_seen = NOW()`,
-      [
-        userData.id,
-        userData.username,
-      ]
+    // Register user (saves to users + user_profiles tables)
+    await registerUser(
+      userData.id,
+      userData.username,
+      userData.discriminator,
+      userData.avatar
+    );
+
+    // Store OAuth tokens (saves to user_oauth + user_profiles tables)
+    await storeOAuthTokens(
+      userData.id,
+      tokenData.access_token,
+      tokenData.refresh_token,
+      tokenData.expires_in,
+      tokenData.scope,
+      userData.email // Save email if provided by OAuth
     );
 
     webLogger.info(`OAuth callback successful for user ${userData.username}#${userData.discriminator}`);

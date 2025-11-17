@@ -22,6 +22,8 @@ DROP TABLE IF EXISTS transactions CASCADE;
 DROP TABLE IF EXISTS user_economy CASCADE;
 DROP TABLE IF EXISTS currencies CASCADE;
 DROP TABLE IF EXISTS guilds CASCADE;
+DROP TABLE IF EXISTS user_oauth CASCADE;
+DROP TABLE IF EXISTS user_profiles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- @create
@@ -29,11 +31,11 @@ DROP TABLE IF EXISTS users CASCADE;
 -- ==========================================
 -- 1. BẢNG USERS (Người dùng)
 -- ==========================================
--- Lưu thông tin người dùng Discord
+-- Lưu thông tin cơ bản người dùng Discord
 CREATE TABLE IF NOT EXISTS users (
   id BIGSERIAL PRIMARY KEY,
 
-  -- Thông tin Discord
+  -- Thông tin Discord cơ bản
   discord_id VARCHAR(20) UNIQUE NOT NULL,     -- Discord user ID (snowflake)
   username VARCHAR(100) NOT NULL,              -- Tên người dùng Discord
 
@@ -45,6 +47,57 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Index để tìm kiếm nhanh
 CREATE INDEX idx_users_discord_id ON users(discord_id);
+
+-- ==========================================
+-- 1.1. BẢNG USER_PROFILES (Thông tin mở rộng)
+-- ==========================================
+-- Lưu thông tin Discord mở rộng và profile data
+-- Tách biệt để giữ bảng users nhỏ gọn
+CREATE TABLE IF NOT EXISTS user_profiles (
+  user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+  -- Discord extended info
+  discriminator VARCHAR(10),                   -- Discord discriminator (#1234)
+  avatar VARCHAR(100),                         -- Discord avatar hash
+  email VARCHAR(255),                          -- Email (from OAuth scope)
+
+  -- Integrations
+  pterodactyl_user_id INTEGER,                 -- Pterodactyl panel user ID (nếu có)
+
+  -- Metadata
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_user_profiles_email ON user_profiles(email);
+
+-- ==========================================
+-- 1.2. BẢNG USER_OAUTH (OAuth Tokens)
+-- ==========================================
+-- Lưu OAuth2 authorization tokens
+-- Tách biệt để bảo mật tốt hơn và dễ quản lý
+CREATE TABLE IF NOT EXISTS user_oauth (
+  user_id BIGINT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+
+  -- Authorization status
+  is_authorized BOOLEAN DEFAULT false,         -- Đã authorize chưa?
+  scopes TEXT,                                 -- Granted scopes (space-separated)
+
+  -- OAuth2 tokens (nên encrypt trong production)
+  access_token TEXT,                           -- OAuth2 access token
+  refresh_token TEXT,                          -- OAuth2 refresh token
+  token_expires_at TIMESTAMP,                  -- Token expiration time
+
+  -- Compliance
+  terms_accepted_at TIMESTAMP,                 -- Thời điểm chấp nhận điều khoản
+
+  -- Metadata
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_user_oauth_is_authorized ON user_oauth(is_authorized);
+CREATE INDEX idx_user_oauth_token_expires_at ON user_oauth(token_expires_at);
 
 -- ==========================================
 -- 2. BẢNG CURRENCIES (Tiền tệ)
@@ -268,6 +321,12 @@ $$ language 'plpgsql';
 
 -- Áp dụng trigger cho các bảng có cột updated_at
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_user_profiles_updated_at BEFORE UPDATE ON user_profiles
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_user_oauth_updated_at BEFORE UPDATE ON user_oauth
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_user_economy_updated_at BEFORE UPDATE ON user_economy
