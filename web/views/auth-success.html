@@ -12,8 +12,8 @@
     }
 
     body {
-      font-family: 'Courier New', 'Consolas', monospace;
-      background: #0a0a0f;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #0a0e1a 0%, #1a1f3a 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -23,7 +23,7 @@
       overflow: hidden;
     }
 
-    /* Starry sky background */
+    /* Starry sky - simple white dots */
     .stars {
       position: fixed;
       top: 0;
@@ -36,258 +36,131 @@
 
     .star {
       position: absolute;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.8);
       border-radius: 50%;
-      animation: twinkle 3s infinite ease-in-out;
+      animation: gentleTwinkle 4s infinite ease-in-out;
     }
 
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.3); }
+    @keyframes gentleTwinkle {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
     }
 
-    /* Falling code/stars (Matrix style) */
-    .code-rain {
+    /* Soft clouds */
+    .clouds {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 1;
+      z-index: 2;
     }
 
-    .code-char {
+    .cloud {
       position: absolute;
-      color: #667eea;
-      font-size: 14px;
-      opacity: 0.6;
-      animation: fall linear infinite;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      filter: blur(40px);
+      animation: cloudFloat 25s infinite ease-in-out;
     }
 
-    @keyframes fall {
-      0% {
-        transform: translateY(-100%);
-        opacity: 0.8;
-      }
-      100% {
-        transform: translateY(100vh);
-        opacity: 0;
-      }
+    @keyframes cloudFloat {
+      0%, 100% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(30px) translateY(-20px); }
     }
 
-    /* Ground/Landscape */
+    /* Ground silhouette */
     .ground {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 200px;
-      z-index: 2;
+      height: 150px;
+      background: linear-gradient(180deg, transparent 0%, rgba(10, 14, 26, 0.6) 40%, #0a0e1a 100%);
+      z-index: 1;
       pointer-events: none;
     }
 
-    .ground-layer {
+    .ground::after {
+      content: '';
       position: absolute;
       bottom: 0;
       width: 100%;
-      background: linear-gradient(180deg, transparent 0%, #0a0a0f 50%);
-    }
-
-    .ground-silhouette {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 100px;
+      height: 80px;
       background: #000;
+      opacity: 0.5;
       clip-path: polygon(
-        0 100%, 0 60%, 10% 55%, 20% 65%, 30% 50%, 40% 58%, 50% 45%,
-        60% 52%, 70% 40%, 80% 48%, 90% 55%, 100% 50%, 100% 100%
+        0 100%, 0 60%, 15% 55%, 30% 65%, 45% 50%, 60% 58%, 75% 48%, 90% 55%, 100% 50%, 100% 100%
       );
-      opacity: 0.8;
     }
 
-    .ground-silhouette::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg,
-        transparent,
-        #00ff41 20%,
-        #00ff41 80%,
-        transparent
-      );
-      box-shadow: 0 0 10px #667eea;
-    }
-
-    .grid-overlay {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 100px;
-      background-image:
-        linear-gradient(rgba(0, 255, 65, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 65, 0.1) 1px, transparent 1px);
-      background-size: 40px 40px;
-      transform-origin: bottom;
-      transform: perspective(500px) rotateX(60deg);
-      opacity: 0.3;
-    }
-
-    /* Scanlines CRT effect */
-    body::after {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        rgba(102, 126, 234, 0.03) 2px,
-        transparent 4px
-      );
-      pointer-events: none;
-      z-index: 100;
-    }
-
+    /* Main card */
     .container {
-      background: rgba(10, 10, 15, 0.85);
-      backdrop-filter: blur(10px);
-      border: 2px solid rgba(0, 255, 65, 0.3);
-      box-shadow:
-        0 0 30px rgba(0, 255, 65, 0.2),
-        inset 0 0 20px rgba(0, 255, 65, 0.05);
-      max-width: 520px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      max-width: 480px;
       width: 100%;
-      padding: 40px;
+      padding: 48px 40px;
       position: relative;
       z-index: 10;
     }
 
-    /* RGB border animation */
-    .container::before {
-      content: '';
-      position: absolute;
-      top: -3px;
-      left: -3px;
-      right: -3px;
-      bottom: -3px;
-      background: linear-gradient(
-        90deg,
-        #667eea,
-        #06b6d4,
-        #a855f7,
-        #ec4899,
-        #667eea
-      );
-      background-size: 400% 400%;
-      animation: rgbFlow 6s linear infinite;
-      z-index: -1;
-      opacity: 0.5;
-    }
-
-    @keyframes rgbFlow {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 400% 50%; }
-    }
-
-    /* Cat ASCII art */
-    .cat-icon {
-      text-align: center;
-      font-size: 48px;
-      margin-bottom: 24px;
-      color: #667eea;
-      text-shadow:
-        0 0 10px #00ff41,
-        0 0 20px #00ff41,
-        0 0 30px #00ff41;
-      animation: catGlow 2s ease-in-out infinite;
-      line-height: 1.2;
-      white-space: pre;
-    }
-
-    @keyframes catGlow {
-      0%, 100% {
-        text-shadow:
-          0 0 10px #00ff41,
-          0 0 20px #00ff41,
-          0 0 30px #00ff41;
-      }
-      50% {
-        text-shadow:
-          0 0 15px #00ff41,
-          0 0 30px #00ff41,
-          0 0 45px #00ff41;
-      }
+    /* Cat icon - simple */
+    .icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 4px 16px rgba(96, 165, 250, 0.3);
     }
 
     h1 {
       font-size: 24px;
-      font-weight: 700;
-      color: #667eea;
-      margin-bottom: 8px;
+      font-weight: 600;
+      color: #1f2937;
       text-align: center;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-    }
-
-    h1::before {
-      content: '> ';
-      color: #00d4ff;
-    }
-
-    h1::after {
-      content: '_';
-      animation: blink 1s step-end infinite;
-      color: #00d4ff;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
+      margin-bottom: 8px;
     }
 
     .subtitle {
-      font-size: 13px;
-      color: #888;
+      font-size: 15px;
+      color: #6b7280;
       text-align: center;
       margin-bottom: 32px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
+    /* User info */
     .user-info {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(0, 255, 65, 0.2);
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
       padding: 20px;
       margin-bottom: 24px;
-      position: relative;
-      font-size: 13px;
     }
 
-    .user-info::before {
-      content: '[ ACCOUNT DATA ]';
-      position: absolute;
-      top: -10px;
-      left: 12px;
-      background: #0a0a0f;
-      padding: 0 8px;
-      color: #667eea;
-      font-size: 11px;
-      letter-spacing: 1px;
+    .user-info-header {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
     }
 
     .user-info-item {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(0, 255, 65, 0.1);
-      color: #aaa;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #e5e7eb;
     }
 
     .user-info-item:last-child {
@@ -295,187 +168,153 @@
     }
 
     .user-info-label {
-      color: #00d4ff;
-    }
-
-    .user-info-label::before {
-      content: '$ ';
+      font-size: 14px;
+      color: #6b7280;
+      font-weight: 500;
     }
 
     .user-info-value {
-      color: #fff;
-      text-align: right;
+      font-size: 14px;
+      color: #1f2937;
+      font-weight: 600;
     }
 
-    .status-indicator {
+    .status-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: #667eea;
+      background: #ecfdf5;
+      color: #059669;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
     }
 
-    .status-indicator::before {
+    .status-badge::before {
       content: '';
-      width: 8px;
-      height: 8px;
-      background: #667eea;
+      width: 6px;
+      height: 6px;
+      background: #10b981;
       border-radius: 50%;
-      box-shadow: 0 0 10px #667eea;
-      animation: pulse 1.5s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
+    /* Message */
     .message {
-      background: linear-gradient(135deg, rgba(0, 255, 65, 0.05), rgba(0, 212, 255, 0.05));
-      border-left: 3px solid #00ff41;
+      background: #eff6ff;
+      border-left: 3px solid #60a5fa;
+      border-radius: 8px;
       padding: 16px;
       margin-bottom: 24px;
-      color: #ddd;
-      font-size: 13px;
+      font-size: 14px;
+      color: #1e40af;
       line-height: 1.6;
     }
 
-    .message::before {
-      content: '// ';
-      color: #667eea;
-    }
-
+    /* Button */
     .btn {
-      background: linear-gradient(135deg, #667eea, #a855f7);
-      color: #000;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      color: white;
       border: none;
+      border-radius: 10px;
       padding: 14px 28px;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
       width: 100%;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-family: 'Courier New', monospace;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-      transition: left 0.5s;
-    }
-
-    .btn:hover::before {
-      left: 100%;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
     }
 
     .btn:hover {
-      box-shadow:
-        0 0 20px rgba(0, 255, 65, 0.6),
-        0 4px 15px rgba(0, 0, 0, 0.4);
       transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(96, 165, 250, 0.4);
     }
 
     .btn:active {
       transform: translateY(0);
     }
 
+    /* Footer */
     .footer {
       margin-top: 24px;
       text-align: center;
-      font-size: 11px;
-      color: #444;
-      letter-spacing: 1px;
+      font-size: 13px;
+      color: #9ca3af;
     }
 
-    .footer::before {
-      content: '[ ';
-      color: #667eea;
+    /* Data particles animation */
+    .particle {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: #60a5fa;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0;
     }
 
-    .footer::after {
-      content: ' ]';
-      color: #667eea;
-    }
-
-    /* Mobile: Simplified */
+    /* Mobile optimization */
     @media (max-width: 768px) {
-      .code-rain,
-      .grid-overlay {
+      .clouds,
+      .ground {
         display: none;
       }
 
-      .ground {
-        height: 120px;
-      }
-
-      .ground-silhouette {
-        height: 60px;
-      }
-
       .container {
-        padding: 28px 20px;
+        padding: 36px 24px;
       }
 
-      .container::before {
-        display: none; /* No RGB animation on mobile */
-      }
-
-      .cat-icon {
-        font-size: 36px;
-        margin-bottom: 16px;
+      .icon {
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
       }
 
       h1 {
-        font-size: 18px;
+        font-size: 22px;
       }
 
       .subtitle {
-        font-size: 12px;
+        font-size: 14px;
       }
 
       .user-info {
-        display: none; /* Hide on mobile */
+        display: none;
       }
     }
 
-    /* Desktop: Smooth animations */
+    /* Desktop animations */
     @media (min-width: 769px) {
       .container {
-        animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
-      .cat-icon {
-        animation: catGlow 2s ease-in-out infinite, scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s backwards;
+      .icon {
+        animation: iconPop 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
       }
 
       h1, .subtitle {
-        animation: fadeIn 0.8s ease-out 0.5s backwards;
+        animation: fadeIn 0.6s ease-out 0.4s backwards;
       }
 
       .user-info {
-        animation: slideRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.7s backwards;
+        animation: fadeIn 0.6s ease-out 0.6s backwards;
       }
 
       .message {
-        animation: fadeIn 0.8s ease-out 0.9s backwards;
+        animation: fadeIn 0.6s ease-out 0.8s backwards;
       }
 
       .btn {
-        animation: fadeIn 0.8s ease-out 1.1s backwards;
+        animation: fadeIn 0.6s ease-out 1s backwards;
       }
 
       @keyframes slideUp {
         from {
           opacity: 0;
-          transform: translateY(40px);
+          transform: translateY(30px);
         }
         to {
           opacity: 1;
@@ -483,10 +322,10 @@
         }
       }
 
-      @keyframes scaleIn {
+      @keyframes iconPop {
         from {
           opacity: 0;
-          transform: scale(0.5);
+          transform: scale(0.3);
         }
         to {
           opacity: 1;
@@ -498,17 +337,6 @@
         from { opacity: 0; }
         to { opacity: 1; }
       }
-
-      @keyframes slideRight {
-        from {
-          opacity: 0;
-          transform: translateX(-30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
     }
   </style>
 </head>
@@ -516,74 +344,125 @@
   <!-- Stars -->
   <div class="stars" id="starsContainer"></div>
 
-  <!-- Falling code rain -->
-  <div class="code-rain" id="codeRain"></div>
-
-  <!-- Ground landscape -->
-  <div class="ground">
-    <div class="ground-layer"></div>
-    <div class="ground-silhouette"></div>
-    <div class="grid-overlay"></div>
+  <!-- Clouds -->
+  <div class="clouds">
+    <div class="cloud" id="cloud1" style="width: 200px; height: 200px; top: 15%; left: 10%;"></div>
+    <div class="cloud" id="cloud2" style="width: 250px; height: 250px; top: 20%; right: 15%; animation-delay: -5s;"></div>
+    <div class="cloud" id="cloud3" style="width: 180px; height: 180px; top: 50%; left: 20%; animation-delay: -10s;"></div>
   </div>
 
-  <div class="container">
-    <div class="cat-icon">/\_/\
-( o.o )
- > ^ <</div>
+  <!-- Ground -->
+  <div class="ground"></div>
 
-    <h1>Auth Success</h1>
-    <p class="subtitle">Connection established | WhiteCat Bot protocol initiated</p>
+  <div class="container" id="mainCard">
+    <div class="icon">🐱</div>
+
+    <h1>Authorization Successful</h1>
+    <p class="subtitle">Your account has been securely connected to WhiteCat Bot</p>
 
     <div class="user-info" id="userInfo">
+      <div class="user-info-header">Account Details</div>
       <!-- User info will be injected here -->
     </div>
 
     <div class="message">
-      Authorization complete. You may now return to Discord terminal and execute bot commands with elevated privileges.
+      Your data is being synced to WhiteCat Cloud. You can now return to Discord and start using the bot.
     </div>
 
-    <button class="btn" onclick="window.close()">← Return to Discord</button>
+    <button class="btn" onclick="window.close()">Return to Discord</button>
 
-    <div class="footer">Secure Connection Active</div>
+    <div class="footer">You can safely close this window</div>
   </div>
 
   <script>
-    // Create stars
+    // Create simple stars
     (function() {
       const starsContainer = document.getElementById('starsContainer');
-      const starCount = 100;
+      const starCount = 80;
 
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 60 + '%';
-        star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
-        star.style.animationDelay = Math.random() * 3 + 's';
-        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        const size = Math.random() * 2 + 1;
+        star.style.width = star.style.height = size + 'px';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (Math.random() * 3 + 3) + 's';
         starsContainer.appendChild(star);
       }
     })();
 
-    // Create falling code rain (desktop only)
+    // Smooth data upload animation to cloud (desktop only)
     if (window.innerWidth > 768) {
-      (function() {
-        const codeRain = document.getElementById('codeRain');
-        const chars = '01アイウエオカキクケコサシスセソタチツテト0123456789ABCDEF<>/';
-        const columns = Math.floor(window.innerWidth / 20);
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const card = document.getElementById('mainCard');
+          const cloud = document.getElementById('cloud1');
 
-        for (let i = 0; i < columns; i++) {
-          setTimeout(() => {
-            const char = document.createElement('div');
-            char.className = 'code-char';
-            char.textContent = chars[Math.floor(Math.random() * chars.length)];
-            char.style.left = (i * 20) + 'px';
-            char.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            char.style.animationDelay = Math.random() * 2 + 's';
-            codeRain.appendChild(char);
-          }, i * 50);
+          if (!card || !cloud) return;
+
+          const cardRect = card.getBoundingClientRect();
+          const cloudRect = cloud.getBoundingClientRect();
+
+          const startX = cardRect.left + cardRect.width / 2;
+          const startY = cardRect.top + cardRect.height / 2;
+          const endX = cloudRect.left + cloudRect.width / 2;
+          const endY = cloudRect.top + cloudRect.height / 2;
+
+          // Create smooth particle stream
+          for (let i = 0; i < 15; i++) {
+            setTimeout(() => {
+              createParticle(startX, startY, endX, endY);
+            }, i * 150);
+          }
+        }, 1500);
+      });
+
+      function createParticle(startX, startY, endX, endY) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = startX + 'px';
+        particle.style.top = startY + 'px';
+        document.body.appendChild(particle);
+
+        const duration = 2000;
+        const startTime = Date.now();
+
+        function animate() {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Smooth easing
+          const ease = progress < 0.5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+          // Bezier curve path
+          const controlX = (startX + endX) / 2 + (Math.random() - 0.5) * 100;
+          const controlY = (startY + endY) / 2 - 150;
+
+          const x = Math.pow(1 - ease, 2) * startX +
+                    2 * (1 - ease) * ease * controlX +
+                    Math.pow(ease, 2) * endX;
+
+          const y = Math.pow(1 - ease, 2) * startY +
+                    2 * (1 - ease) * ease * controlY +
+                    Math.pow(ease, 2) * endY;
+
+          particle.style.left = x + 'px';
+          particle.style.top = y + 'px';
+          particle.style.opacity = Math.sin(progress * Math.PI);
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            particle.remove();
+          }
         }
-      })();
+
+        requestAnimationFrame(animate);
+      }
     }
   </script>
 </body>
