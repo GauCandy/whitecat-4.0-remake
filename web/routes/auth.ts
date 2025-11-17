@@ -4,6 +4,7 @@ import { join } from 'path';
 import { exchangeCode, getOAuthUser } from '../../src/utils/oauth';
 import { registerUser, storeOAuthTokens } from '../../src/middlewares/authorization';
 import { webLogger } from '../../src/utils/logger';
+import { generateServerInvite } from '../../src/utils/discord';
 
 // Load HTML templates
 const successHtml = readFileSync(join(__dirname, '../views/auth-success.html'), 'utf-8');
@@ -75,8 +76,24 @@ router.get('/callback', async (req: Request, res: Response) => {
       </div>
     `;
 
+    // Generate Discord server invite from GUILD_ID
+    let discordInvite = 'https://discord.gg/your-server-invite';
+
+    try {
+      const guildId = process.env.GUILD_ID;
+      const botToken = process.env.DISCORD_TOKEN;
+
+      if (guildId && botToken) {
+        discordInvite = await generateServerInvite(guildId, botToken);
+      } else {
+        webLogger.warn('GUILD_ID or DISCORD_TOKEN not found in environment variables. Using fallback invite.');
+      }
+    } catch (inviteError) {
+      webLogger.error('Failed to generate server invite, using fallback:', inviteError);
+      // Continue with fallback invite if generation fails
+    }
+
     // Inject user info and Discord invite link
-    const discordInvite = process.env.DISCORD_SUPPORT_SERVER_INVITE || 'https://discord.gg/your-server-invite';
     const finalHtml = successHtml
       .replace('<!-- User info will be injected here -->', userInfoHtml)
       .replace('https://discord.gg/your-server-invite', discordInvite);
