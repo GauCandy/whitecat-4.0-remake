@@ -30,8 +30,6 @@ const command: Command = {
       const userResult = await pool.query(
         `SELECT
           u.id, u.discord_id, u.username, u.created_at, u.last_seen,
-          up.email, up.discriminator, up.pterodactyl_user_id,
-          uo.is_authorized,
           ue.balance
          FROM users u
          LEFT JOIN user_profiles up ON u.id = up.user_id
