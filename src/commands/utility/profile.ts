@@ -26,13 +26,16 @@ const command: Command = {
       const targetUser: User = interaction.options.getUser('user') || interaction.user;
       const isSelf = targetUser.id === interaction.user.id;
 
-      // Get user from database
+      // Get user from database with JOIN to extended tables
       const userResult = await pool.query(
         `SELECT
-          u.id, u.discord_id, u.username, u.discriminator, u.email,
-          u.pterodactyl_user_id, u.is_authorized, u.created_at, u.last_seen,
+          u.id, u.discord_id, u.username, u.created_at, u.last_seen,
+          up.email, up.discriminator, up.pterodactyl_user_id,
+          uo.is_authorized,
           ue.balance
          FROM users u
+         LEFT JOIN user_profiles up ON u.id = up.user_id
+         LEFT JOIN user_oauth uo ON u.id = uo.user_id
          LEFT JOIN user_economy ue ON u.id = ue.user_id AND ue.currency_id = 1
          WHERE u.discord_id = $1`,
         [targetUser.id]

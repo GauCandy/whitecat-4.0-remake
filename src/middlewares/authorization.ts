@@ -29,7 +29,14 @@ export async function getUserAuthorizationStatus(
 
   try {
     const result = await pool.query(
-      'SELECT is_authorized, oauth_token_expires_at, oauth_scopes FROM users WHERE discord_id = $1',
+      `SELECT
+        u.id,
+        uo.is_authorized,
+        uo.token_expires_at,
+        uo.scopes
+       FROM users u
+       LEFT JOIN user_oauth uo ON u.id = uo.user_id
+       WHERE u.discord_id = $1`,
       [discordId]
     );
 
@@ -46,7 +53,7 @@ export async function getUserAuthorizationStatus(
 
     const user = result.rows[0];
 
-    // User not authorized
+    // User not authorized (no OAuth record or not authorized)
     if (!user.is_authorized) {
       return {
         isAuthorized: false,
@@ -58,11 +65,11 @@ export async function getUserAuthorizationStatus(
     }
 
     // Check if token expired
-    const expiresAt = user.oauth_token_expires_at ? new Date(user.oauth_token_expires_at) : undefined;
+    const expiresAt = user.token_expires_at ? new Date(user.token_expires_at) : undefined;
     const isExpired = expiresAt ? expiresAt < new Date() : false;
 
     // Get user scopes
-    const userScopes = user.oauth_scopes ? user.oauth_scopes.split(' ') : [];
+    const userScopes = user.scopes ? user.scopes.split(' ') : [];
 
     // Check if user has ALL default scopes
     const missingScopes = DEFAULT_SCOPES.filter(scope => !userScopes.includes(scope));
@@ -99,7 +106,14 @@ export async function checkAuthorization(
 ): Promise<boolean> {
   try {
     const result = await pool.query(
-      'SELECT is_authorized, oauth_token_expires_at, oauth_scopes FROM users WHERE discord_id = $1',
+      `SELECT
+        u.id,
+        uo.is_authorized,
+        uo.token_expires_at,
+        uo.scopes
+       FROM users u
+       LEFT JOIN user_oauth uo ON u.id = uo.user_id
+       WHERE u.discord_id = $1`,
       [interaction.user.id]
     );
 
@@ -114,21 +128,21 @@ export async function checkAuthorization(
 
     const user = result.rows[0];
 
-    // User not authorized yet
+    // User not authorized yet (no OAuth record or not authorized)
     if (!user.is_authorized) {
       await sendAuthorizationRequest(interaction);
       return false;
     }
 
     // Check if token expired
-    if (user.oauth_token_expires_at && new Date(user.oauth_token_expires_at) < new Date()) {
+    if (user.token_expires_at && new Date(user.token_expires_at) < new Date()) {
       logger.warn(`OAuth token expired for user ${interaction.user.tag}`);
       await sendAuthorizationRequest(interaction, true);
       return false;
     }
 
     // Check if user has all default scopes
-    const userScopes = user.oauth_scopes ? user.oauth_scopes.split(' ') : [];
+    const userScopes = user.scopes ? user.scopes.split(' ') : [];
     const missingScopes = DEFAULT_SCOPES.filter(scope => !userScopes.includes(scope));
 
     if (missingScopes.length > 0) {
@@ -245,16 +259,29 @@ export async function registerUser(
   discriminator: string,
   avatar: string | null
 ): Promise<void> {
-  await pool.query(
-    `INSERT INTO users (discord_id, username, discriminator, avatar, last_seen)
-     VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
+  // Insert/update base user info
+  const userResult = await pool.query(
+    `INSERT INTO users (discord_id, username, last_seen)
+     VALUES ($1, $2, CURRENT_TIMESTAMP)
      ON CONFLICT (discord_id)
      DO UPDATE SET
        username = EXCLUDED.username,
+       last_seen = CURRENT_TIMESTAMP
+     RETURNING id`,
+    [discordId, username]
+  );
+
+  const userId = userResult.rows[0].id;
+
+  // Insert/update user profile (extended info)
+  await pool.query(
+    `INSERT INTO user_profiles (user_id, discriminator, avatar)
+     VALUES ($1, $2, $3)
+     ON CONFLICT (user_id)
+     DO UPDATE SET
        discriminator = EXCLUDED.discriminator,
-       avatar = EXCLUDED.avatar,
-       last_seen = CURRENT_TIMESTAMP`,
-    [discordId, username, discriminator, avatar]
+       avatar = EXCLUDED.avatar`,
+    [userId, discriminator, avatar]
   );
 }
 
@@ -281,18 +308,50 @@ export async function storeOAuthTokens(
 ): Promise<void> {
   const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
-  await pool.query(
-    `UPDATE users
-     SET
-       is_authorized = true,
-       oauth_access_token = $2,
-       oauth_refresh_token = $3,
-       oauth_token_expires_at = $4,
-       oauth_scopes = $5,
-       email = $6,
-       terms_accepted_at = CURRENT_TIMESTAMP,
-       updated_at = CURRENT_TIMESTAMP
-     WHERE discord_id = $1`,
-    [discordId, accessToken, refreshToken, expiresAt, scopes, email || null]
+  // Get user ID
+  const userResult = await pool.query(
+    'SELECT id FROM users WHERE discord_id = $1',
+    [discordId]
   );
+
+  if (userResult.rows.length === 0) {
+    throw new Error(`User not found: ${discordId}`);
+  }
+
+  const userId = userResult.rows[0].id;
+
+  // Store OAuth tokens in user_oauth table
+  await pool.query(
+    `INSERT INTO user_oauth (
+       user_id,
+       is_authorized,
+       access_token,
+       refresh_token,
+       token_expires_at,
+       scopes,
+       terms_accepted_at
+     )
+     VALUES ($1, true, $2, $3, $4, $5, CURRENT_TIMESTAMP)
+     ON CONFLICT (user_id)
+     DO UPDATE SET
+       is_authorized = true,
+       access_token = EXCLUDED.access_token,
+       refresh_token = EXCLUDED.refresh_token,
+       token_expires_at = EXCLUDED.token_expires_at,
+       scopes = EXCLUDED.scopes,
+       terms_accepted_at = CURRENT_TIMESTAMP,
+       updated_at = CURRENT_TIMESTAMP`,
+    [userId, accessToken, refreshToken, expiresAt, scopes]
+  );
+
+  // Store email in user_profiles if provided
+  if (email) {
+    await pool.query(
+      `INSERT INTO user_profiles (user_id, email)
+       VALUES ($1, $2)
+       ON CONFLICT (user_id)
+       DO UPDATE SET email = EXCLUDED.email`,
+      [userId, email]
+    );
+  }
 }
