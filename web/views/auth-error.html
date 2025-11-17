@@ -28,7 +28,20 @@
       overflow: hidden;
     }
 
-    /* Starry sky - dimmer for error state, responsive */
+    /* Vignette effect to focus on center box */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.5) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Starry sky - simplified and dimmer */
     .stars {
       position: fixed;
       top: 0;
@@ -37,22 +50,23 @@
       height: 70%;
       pointer-events: none;
       z-index: 1;
+      opacity: 0.5;
     }
 
     .star {
       position: absolute;
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.4);
       border-radius: 50%;
-      animation: gentleTwinkle 5s infinite ease-in-out;
+      animation: gentleTwinkle 6s infinite ease-in-out;
       /* Size set dynamically via JavaScript with responsive units */
     }
 
     @keyframes gentleTwinkle {
       0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.6; }
+      50% { opacity: 0.5; }
     }
 
-    /* Clouds - darker storm clouds */
+    /* Clouds - simplified darker storm clouds */
     .clouds {
       position: fixed;
       top: 0;
@@ -61,18 +75,19 @@
       height: 100%;
       pointer-events: none;
       z-index: 2;
+      opacity: 0.3;
     }
 
     .cloud {
       position: absolute;
       width: clamp(100px, 10vw, 180px);
       height: clamp(35px, 3.5vw, 65px);
-      animation: cloudFloat 25s infinite ease-in-out;
+      animation: cloudFloat 30s infinite ease-in-out;
     }
 
     .cloud-circle {
       position: absolute;
-      background: rgba(80, 50, 60, 0.2);
+      background: rgba(80, 50, 60, 0.15);
       border-radius: 50%;
       filter: blur(0.8vw);
     }
@@ -118,16 +133,17 @@
       50% { transform: translateX(20px) translateY(-15px); }
     }
 
-    /* Ground silhouette - responsive */
+    /* Ground silhouette - simplified */
     .ground {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
       height: clamp(100px, 12vh, 180px);
-      background: linear-gradient(180deg, transparent 0%, rgba(26, 14, 20, 0.6) 40%, #1a0e14 100%);
+      background: linear-gradient(180deg, transparent 0%, rgba(26, 14, 20, 0.3) 40%, rgba(26, 14, 20, 0.6) 100%);
       z-index: 1;
       pointer-events: none;
+      opacity: 0.4;
     }
 
     .ground::after {
@@ -137,31 +153,50 @@
       width: 100%;
       height: clamp(60px, 7vh, 100px);
       background: #000;
-      opacity: 0.6;
+      opacity: 0.25;
       clip-path: polygon(
         0 100%, 0 65%, 15% 58%, 30% 68%, 45% 55%, 60% 62%, 75% 52%, 90% 58%, 100% 55%, 100% 100%
       );
     }
 
-    /* Main card - elegant gradient with subtle glow */
+    /* Main card - focused with strong glow */
     .container {
       background: linear-gradient(135deg,
-        rgba(255, 255, 255, 0.95) 0%,
-        rgba(248, 250, 252, 0.98) 50%,
-        rgba(241, 245, 249, 0.95) 100%
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(250, 251, 252, 1) 50%,
+        rgba(245, 247, 250, 0.98) 100%
       );
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      border: 2px solid rgba(255, 255, 255, 0.8);
       border-radius: clamp(0.75rem, 1.2rem, 1.5rem);
       box-shadow:
-        0 1.25rem 3.75rem rgba(0, 0, 0, 0.5),
-        0 0 5rem rgba(239, 68, 68, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        0 2rem 5rem rgba(0, 0, 0, 0.7),
+        0 0 8rem rgba(239, 68, 68, 0.4),
+        0 0 3rem rgba(239, 68, 68, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 1);
       max-width: clamp(21rem, 28rem, 36rem);
       width: 90%;
       padding: clamp(2rem, 3rem, 4rem) clamp(1.5rem, 2.5rem, 3.5rem);
       position: relative;
       z-index: 10;
+      animation: subtlePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes subtlePulse {
+      0%, 100% {
+        box-shadow:
+          0 2rem 5rem rgba(0, 0, 0, 0.7),
+          0 0 8rem rgba(239, 68, 68, 0.4),
+          0 0 3rem rgba(239, 68, 68, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 1);
+      }
+      50% {
+        box-shadow:
+          0 2rem 5rem rgba(0, 0, 0, 0.7),
+          0 0 10rem rgba(239, 68, 68, 0.5),
+          0 0 4rem rgba(239, 68, 68, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 1);
+      }
     }
 
     /* Error icon - responsive */
@@ -436,10 +471,10 @@
   </div>
 
   <script>
-    // Create responsive stars (dimmer for error state)
+    // Create simplified stars (dimmer for error state)
     (function() {
       const starsContainer = document.getElementById('starsContainer');
-      const starCount = 60;
+      const starCount = 20; // Reduced for cleaner, more somber background
 
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -448,13 +483,13 @@
         star.style.top = Math.random() * 60 + '%';
 
         // Responsive star sizes using viewport width
-        const minSize = 0.06; // 0.06vw minimum (dimmer/smaller than success page)
-        const maxSize = 0.15; // 0.15vw maximum
+        const minSize = 0.06;
+        const maxSize = 0.14;
         const size = (Math.random() * (maxSize - minSize) + minSize).toFixed(2);
         star.style.width = star.style.height = size + 'vw';
 
-        star.style.animationDelay = Math.random() * 5 + 's';
-        star.style.animationDuration = (Math.random() * 4 + 4) + 's';
+        star.style.animationDelay = Math.random() * 6 + 's';
+        star.style.animationDuration = (Math.random() * 5 + 5) + 's';
         starsContainer.appendChild(star);
       }
     })();
