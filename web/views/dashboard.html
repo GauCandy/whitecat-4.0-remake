@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - WhiteCat Bot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      min-height: 100vh;
+      color: #e2e8f0;
+    }
+
+    .navbar {
+      background: rgba(30, 41, 59, 0.95);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar-brand {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .navbar-user {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-badge {
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+    }
+
+    .guild-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .guild-card {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .guild-card:hover {
+      border-color: rgba(96, 165, 250, 0.5);
+      box-shadow: 0 0 20px rgba(96, 165, 250, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .guild-name {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #f1f5f9;
+    }
+
+    .guild-id {
+      font-size: 0.75rem;
+      color: #64748b;
+      font-family: monospace;
+      margin-bottom: 1rem;
+    }
+
+    .guild-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.875rem;
+      color: #94a3b8;
+    }
+
+    .guild-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #64748b;
+    }
+
+    .empty-state h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <span>🐱</span>
+      <span>WhiteCat Dashboard</span>
+    </div>
+    <div class="navbar-user">
+      <div class="user-badge">
+        <!-- USERNAME --> (<!-- ROLE -->)
+      </div>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Your Servers</h1>
+    <p class="subtitle">Select a server to manage auto-responses</p>
+
+    <div class="guild-grid" id="guildGrid">
+      <!-- Guilds will be rendered here -->
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <h2>No servers found</h2>
+      <p>You don't have access to any servers, or the bot hasn't joined any servers yet.</p>
+    </div>
+  </div>
+
+  <!-- GUILDS_DATA -->
+
+  <script>
+    function logout() {
+      fetch('/dashboard/logout', { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+          window.location.href = data.redirect || '/dashboard/login';
+        })
+        .catch(() => {
+          window.location.href = '/dashboard/login';
+        });
+    }
+
+    function renderGuilds() {
+      const guilds = window.GUILDS || [];
+      const grid = document.getElementById('guildGrid');
+      const emptyState = document.getElementById('emptyState');
+
+      if (guilds.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      grid.innerHTML = guilds.map(guild => `
+        <div class="guild-card" onclick="window.location.href='/dashboard/guild/${guild.guild_id}'">
+          <div class="guild-name">Server #${guild.id}</div>
+          <div class="guild-id">${guild.guild_id}</div>
+          <div class="guild-meta">
+            <span>🌐 ${guild.locale || 'en-US'}</span>
+            <span>⌨️ ${guild.prefix || '!'}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    renderGuilds();
+  </script>
+</body>
+</html>

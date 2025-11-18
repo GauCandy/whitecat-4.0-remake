@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - WhiteCat Bot Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: clamp(14px, 1.2vw, 18px);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #0a0e1a 0%, #1a1f3a 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.25rem;
+    }
+
+    .container {
+      background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.98) 0%,
+        rgba(250, 251, 252, 1) 50%,
+        rgba(245, 247, 250, 0.98) 100%
+      );
+      border-radius: clamp(0.75rem, 1.2rem, 1.5rem);
+      box-shadow:
+        0 2rem 5rem rgba(0, 0, 0, 0.6),
+        0 0 8rem rgba(96, 165, 250, 0.4);
+      max-width: clamp(21rem, 24rem, 28rem);
+      width: 90%;
+      padding: clamp(2rem, 3rem, 4rem) clamp(1.5rem, 2.5rem, 3.5rem);
+    }
+
+    .icon {
+      width: clamp(3.5rem, 4rem, 5rem);
+      height: clamp(3.5rem, 4rem, 5rem);
+      margin: 0 auto clamp(1.25rem, 1.5rem, 2rem);
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.75rem, 2rem, 2.5rem);
+    }
+
+    h1 {
+      font-size: clamp(1.25rem, 1.5rem, 1.875rem);
+      font-weight: 600;
+      color: #1f2937;
+      text-align: center;
+      margin-bottom: clamp(0.5rem, 0.75rem, 1rem);
+    }
+
+    .subtitle {
+      font-size: clamp(0.875rem, 1rem, 1.125rem);
+      color: #6b7280;
+      text-align: center;
+      margin-bottom: clamp(1.5rem, 2rem, 2.5rem);
+    }
+
+    .form-group {
+      margin-bottom: clamp(1rem, 1.25rem, 1.5rem);
+    }
+
+    label {
+      display: block;
+      font-size: clamp(0.8125rem, 0.875rem, 1rem);
+      color: #374151;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    input {
+      width: 100%;
+      padding: clamp(0.75rem, 0.875rem, 1rem);
+      border: 2px solid #e5e7eb;
+      border-radius: clamp(0.5rem, 0.625rem, 0.75rem);
+      font-size: clamp(0.875rem, 0.9375rem, 1rem);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+    }
+
+    .btn {
+      width: 100%;
+      padding: clamp(0.75rem, 0.875rem, 1.125rem);
+      border: none;
+      border-radius: clamp(0.5rem, 0.625rem, 0.875rem);
+      font-size: clamp(0.875rem, 0.9375rem, 1.0625rem);
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      color: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0.5rem 1.25rem rgba(96, 165, 250, 0.4);
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: #dc2626;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🔐</div>
+    <h1>Dashboard Login</h1>
+    <p class="subtitle">Sign in to manage auto-responses</p>
+
+    <div class="error" id="errorMessage"></div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autocomplete="username">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Sign In</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorDiv = document.getElementById('errorMessage');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      errorDiv.classList.remove('show');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in...';
+
+      try {
+        const response = await fetch('/dashboard/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          window.location.href = data.redirect || '/dashboard';
+        } else {
+          errorDiv.textContent = data.error || 'Login failed';
+          errorDiv.classList.add('show');
+        }
+      } catch (error) {
+        errorDiv.textContent = 'Connection error. Please try again.';
+        errorDiv.classList.add('show');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

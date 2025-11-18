@@ -23,7 +23,8 @@
     "db:drop": "ts-node src/database/init.ts drop",
     "db:reset": "ts-node src/database/init.ts reset",
     "db:cleanup": "ts-node src/database/init.ts cleanup",
-    "db:migrate": "psql $DATABASE_URL -f database/migrations/001_simplify_guilds.sql"
+    "db:migrate": "psql $DATABASE_URL -f database/migrations/001_simplify_guilds.sql",
+    "admin:create": "ts-node src/scripts/create-admin.ts"
   },
   "keywords": [
     "discord",
@@ -35,6 +36,8 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^1.13.2",
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
@@ -45,6 +48,8 @@
   },
   "devDependencies": {
     "@types/archiver": "^7.0.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.6",
