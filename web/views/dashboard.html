@@ -42,12 +42,22 @@
       gap: 1rem;
     }
 
-    .user-badge {
-      background: rgba(96, 165, 250, 0.1);
-      border: 1px solid rgba(96, 165, 250, 0.3);
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #475569;
+    }
+
+    .user-name {
       font-size: 0.875rem;
+      color: #e2e8f0;
     }
 
     .btn-logout {
@@ -94,6 +104,9 @@
       padding: 1.5rem;
       transition: all 0.2s;
       cursor: pointer;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
     }
 
     .guild-card:hover {
@@ -102,24 +115,51 @@
       transform: translateY(-2px);
     }
 
+    .guild-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .guild-icon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .guild-info {
+      flex: 1;
+      min-width: 0;
+    }
+
     .guild-name {
-      font-size: 1.125rem;
+      font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
       color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .guild-id {
       font-size: 0.75rem;
       color: #64748b;
       font-family: monospace;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     .guild-meta {
       display: flex;
       gap: 1rem;
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       color: #94a3b8;
     }
 
@@ -149,8 +189,9 @@
       <span>WhiteCat Dashboard</span>
     </div>
     <div class="navbar-user">
-      <div class="user-badge">
-        <!-- USERNAME --> (<!-- ROLE -->)
+      <div class="user-info">
+        <img class="user-avatar" id="userAvatar" src="" alt="Avatar">
+        <span class="user-name"><!-- USERNAME --></span>
       </div>
       <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
@@ -158,7 +199,7 @@
 
   <div class="container">
     <h1>Your Servers</h1>
-    <p class="subtitle">Select a server to manage auto-responses</p>
+    <p class="subtitle">Select a server to manage auto-responses (requires Administrator permission)</p>
 
     <div class="guild-grid" id="guildGrid">
       <!-- Guilds will be rendered here -->
@@ -166,13 +207,24 @@
 
     <div class="empty-state" id="emptyState" style="display: none;">
       <h2>No servers found</h2>
-      <p>You don't have access to any servers, or the bot hasn't joined any servers yet.</p>
+      <p>You need Administrator permission in a server where the bot is present to manage auto-responses.</p>
     </div>
   </div>
 
   <!-- GUILDS_DATA -->
 
   <script>
+    // Set avatar
+    const avatar = '<!-- AVATAR -->';
+    const discordId = '<!-- DISCORD_ID -->';
+    const avatarImg = document.getElementById('userAvatar');
+
+    if (avatar) {
+      avatarImg.src = `https://cdn.discordapp.com/avatars/${discordId}/${avatar}.png?size=64`;
+    } else {
+      avatarImg.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+    }
+
     function logout() {
       fetch('/dashboard/logout', { method: 'POST' })
         .then(res => res.json())
@@ -182,6 +234,17 @@
         .catch(() => {
           window.location.href = '/dashboard/login';
         });
+    }
+
+    function getGuildIconUrl(guildId, icon) {
+      if (icon) {
+        return `https://cdn.discordapp.com/icons/${guildId}/${icon}.png?size=96`;
+      }
+      return null;
+    }
+
+    function getGuildInitial(name) {
+      return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
     }
 
     function renderGuilds() {
@@ -195,16 +258,32 @@
         return;
       }
 
-      grid.innerHTML = guilds.map(guild => `
-        <div class="guild-card" onclick="window.location.href='/dashboard/guild/${guild.guild_id}'">
-          <div class="guild-name">Server #${guild.id}</div>
-          <div class="guild-id">${guild.guild_id}</div>
-          <div class="guild-meta">
-            <span>🌐 ${guild.locale || 'en-US'}</span>
-            <span>⌨️ ${guild.prefix || '!'}</span>
+      grid.innerHTML = guilds.map(guild => {
+        const iconUrl = getGuildIconUrl(guild.guild_id, guild.icon);
+        const iconHtml = iconUrl
+          ? `<img src="${iconUrl}" alt="${guild.name}">`
+          : getGuildInitial(guild.name);
+
+        return `
+          <div class="guild-card" onclick="window.location.href='/dashboard/guild/${guild.guild_id}'">
+            <div class="guild-icon">${iconHtml}</div>
+            <div class="guild-info">
+              <div class="guild-name">${escapeHtml(guild.name)}</div>
+              <div class="guild-id">${guild.guild_id}</div>
+              <div class="guild-meta">
+                <span>🌐 ${guild.locale || 'en-US'}</span>
+                <span>⌨️ ${guild.prefix || '!'}</span>
+              </div>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
     }
 
     renderGuilds();

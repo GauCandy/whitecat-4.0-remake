@@ -7,7 +7,7 @@
 --   Thêm các bảng cho hệ thống auto-response dựa trên keyword
 --   - auto_responses: Lưu từ khóa và phản hồi
 --   - auto_response_blocked_channels: Lưu các kênh bị chặn
---   - web_admins: Quản lý đăng nhập web
+--   - web_sessions: Lưu Discord OAuth sessions
 --
 -- ==========================================
 
@@ -66,40 +66,23 @@ CREATE INDEX idx_blocked_channels_guild_id ON auto_response_blocked_channels(gui
 CREATE INDEX idx_blocked_channels_channel_id ON auto_response_blocked_channels(channel_id);
 
 -- ==========================================
--- 12. BẢNG WEB_ADMINS (Admin Web)
+-- 12. BẢNG WEB_SESSIONS (Phiên đăng nhập Discord OAuth)
 -- ==========================================
--- Quản lý đăng nhập cho web dashboard
-CREATE TABLE IF NOT EXISTS web_admins (
-  id BIGSERIAL PRIMARY KEY,
-
-  -- Thông tin đăng nhập
-  username VARCHAR(50) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,        -- Bcrypt hash
-
-  -- Quyền hạn
-  guild_id BIGINT REFERENCES guilds(id) ON DELETE CASCADE,  -- NULL = admin toàn bộ
-  role VARCHAR(20) DEFAULT 'admin',           -- 'super_admin', 'admin', 'moderator'
-
-  -- Trạng thái
-  is_active BOOLEAN DEFAULT true,
-  last_login TIMESTAMP,
-
-  -- Metadata
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX idx_web_admins_username ON web_admins(username);
-CREATE INDEX idx_web_admins_guild_id ON web_admins(guild_id);
-
--- ==========================================
--- 13. BẢNG WEB_SESSIONS (Phiên đăng nhập)
--- ==========================================
--- Lưu session token cho web dashboard
+-- Lưu session cho web dashboard (đăng nhập qua Discord OAuth)
 CREATE TABLE IF NOT EXISTS web_sessions (
   id BIGSERIAL PRIMARY KEY,
 
-  admin_id BIGINT REFERENCES web_admins(id) ON DELETE CASCADE,
+  -- Discord user info
+  discord_id VARCHAR(20) NOT NULL,            -- Discord user ID
+  discord_username VARCHAR(100),              -- Discord username
+  discord_avatar VARCHAR(255),                -- Avatar hash
+
+  -- OAuth tokens
+  access_token TEXT NOT NULL,                 -- Discord access token
+  refresh_token TEXT,                         -- Discord refresh token
+  token_expires_at TIMESTAMP,                 -- Token expiration
+
+  -- Session
   session_token VARCHAR(255) UNIQUE NOT NULL,
 
   -- Thông tin phiên
@@ -112,14 +95,11 @@ CREATE TABLE IF NOT EXISTS web_sessions (
 );
 
 CREATE INDEX idx_web_sessions_token ON web_sessions(session_token);
-CREATE INDEX idx_web_sessions_admin_id ON web_sessions(admin_id);
+CREATE INDEX idx_web_sessions_discord_id ON web_sessions(discord_id);
 CREATE INDEX idx_web_sessions_expires ON web_sessions(expires_at);
 
 -- Trigger cập nhật updated_at
 CREATE TRIGGER update_auto_responses_updated_at BEFORE UPDATE ON auto_responses
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-
-CREATE TRIGGER update_web_admins_updated_at BEFORE UPDATE ON web_admins
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ==========================================

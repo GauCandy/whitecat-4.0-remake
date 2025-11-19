@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { pool } from '../../src/database/config';
 import { webLogger } from '../../src/utils/logger';
-import { requireAuth } from '../middlewares/webAuth';
+import { requireAuth, getUserGuilds, hasGuildPermission } from '../middlewares/webAuth';
 import { clearAutoResponseCache } from '../../src/handlers/autoResponseHandler';
 
 const router = Router();
@@ -16,6 +16,7 @@ async function checkGuildAccess(
   req: Request,
   guildId: string
 ): Promise<{ allowed: boolean; dbGuildId?: number }> {
+  // Kiểm tra guild tồn tại trong database
   const guildResult = await pool.query(
     'SELECT id FROM guilds WHERE guild_id = $1 AND left_at IS NULL',
     [guildId]
@@ -27,17 +28,15 @@ async function checkGuildAccess(
 
   const dbGuildId = guildResult.rows[0].id;
 
-  // Super admin có quyền truy cập tất cả
-  if (req.session?.role === 'super_admin' || req.session?.guildId === null) {
-    return { allowed: true, dbGuildId };
+  // Kiểm tra user có quyền admin trong guild này không
+  const userGuilds = await getUserGuilds(req.session!.accessToken);
+  const userGuild = userGuilds.find((g) => g.id === guildId);
+
+  if (!userGuild || !hasGuildPermission(userGuild)) {
+    return { allowed: false };
   }
 
-  // Kiểm tra quyền truy cập guild cụ thể
-  if (req.session?.guildId === dbGuildId) {
-    return { allowed: true, dbGuildId };
-  }
-
-  return { allowed: false };
+  return { allowed: true, dbGuildId };
 }
 
 // ==========================================
