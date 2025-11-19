@@ -2,6 +2,7 @@ import { Events, Message, EmbedBuilder, Collection } from 'discord.js';
 import type { ExtendedClient } from '../types/client';
 import { botLogger } from '../utils/logger';
 import { pool } from '../database/config';
+import { handleAutoResponse } from '../handlers/autoResponseHandler';
 
 // Default prefix
 const DEFAULT_PREFIX = '!';
@@ -31,6 +32,9 @@ export default {
 
     // Ignore bot messages and DMs
     if (message.author.bot || !message.guild) return;
+
+    // Check auto-response first
+    await handleAutoResponse(message);
 
     // Get prefix for this guild
     const prefix = await getGuildPrefix(message.guild.id);

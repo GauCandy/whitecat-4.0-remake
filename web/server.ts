@@ -5,8 +5,12 @@
 
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import path from 'path';
 import { webLogger } from '../src/utils/logger';
 import authRoutes from './routes/auth';
+import dashboardRoutes from './routes/dashboard';
+import apiRoutes from './routes/api';
 
 const app = express();
 
@@ -20,6 +24,10 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Request logging
 app.use((req, res, next) => {
@@ -29,6 +37,8 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/dashboard', dashboardRoutes);
+app.use('/api', apiRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
