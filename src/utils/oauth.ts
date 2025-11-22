@@ -42,16 +42,22 @@ export const USER_INSTALL_SCOPES = ['identify', 'email', 'applications.commands'
  */
 export function generateAuthUrl(state: string): string {
   const scopes = USER_AUTH_SCOPES;
+  const redirectUri = buildBotRedirectUri();
 
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
-    redirect_uri: buildBotRedirectUri(),
+    redirect_uri: redirectUri,
     response_type: 'code',
     scope: scopes.join(' '),
     state: state,
   });
 
-  return `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+  const authUrl = `https://discord.com/api/oauth2/authorize?${params.toString()}`;
+  console.log('🔗 Generated Bot OAuth URL:');
+  console.log(`   Redirect URI: ${redirectUri}`);
+  console.log(`   Full URL: ${authUrl}`);
+
+  return authUrl;
 }
 
 /**
@@ -82,13 +88,19 @@ export function generateUserInstallUrl(state: string): string {
  * @returns Token data
  */
 export async function exchangeCode(code: string): Promise<TokenResponse> {
+  const redirectUri = buildBotRedirectUri();
+
   const data = new URLSearchParams({
     client_id: CLIENT_ID,
     client_secret: CLIENT_SECRET,
     grant_type: 'authorization_code',
     code: code,
-    redirect_uri: buildBotRedirectUri(),
+    redirect_uri: redirectUri,
   });
+
+  console.log('🔄 Exchanging OAuth code...');
+  console.log(`   Redirect URI: ${redirectUri}`);
+  console.log(`   Client ID: ${CLIENT_ID}`);
 
   const response = await fetch('https://discord.com/api/v10/oauth2/token', {
     method: 'POST',
@@ -99,9 +111,12 @@ export async function exchangeCode(code: string): Promise<TokenResponse> {
   });
 
   if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    console.error('❌ Token exchange failed:', error);
     throw new Error(`Failed to exchange code: ${response.statusText}`);
   }
 
+  console.log('✅ Token exchange successful');
   return (await response.json()) as TokenResponse;
 }
 

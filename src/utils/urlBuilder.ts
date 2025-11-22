@@ -21,6 +21,31 @@ export function buildBaseUrl(): string {
 }
 
 /**
+ * Log OAuth configuration cho debugging
+ * Gọi function này khi bot start để verify config
+ */
+export function logOAuthConfig(): void {
+  const baseUrl = buildBaseUrl();
+  const botRedirect = buildBotRedirectUri();
+  const dashboardRedirect = buildDashboardRedirectUri();
+
+  console.log('\n🔐 OAuth Configuration:');
+  console.log('─'.repeat(60));
+  console.log(`📍 Base URL:           ${baseUrl}`);
+  console.log(`🤖 Bot Redirect:       ${botRedirect}`);
+  console.log(`🌐 Dashboard Redirect: ${dashboardRedirect}`);
+  console.log('─'.repeat(60));
+
+  // Warning nếu đang dùng localhost
+  if (!process.env.MASK_URI) {
+    console.log('⚠️  Development mode: Dùng localhost');
+  } else {
+    console.log(`✅ Production mode: ${process.env.MASK_URI}`);
+  }
+  console.log('');
+}
+
+/**
  * Build redirect URI cho bot OAuth
  */
 export function buildBotRedirectUri(): string {

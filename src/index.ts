@@ -6,6 +6,7 @@ import { loadTextCommands } from './handlers/textCommandHandler';
 import { loadEvents } from './handlers/eventHandler';
 import { initI18n } from './utils/i18n';
 import { GiveawayManager } from './managers/giveawayManager';
+import { logOAuthConfig } from './utils/urlBuilder';
 import app from '../web/server';
 import type { ExtendedClient } from './types/client';
 import type { Command } from './types/command';
@@ -15,8 +16,8 @@ import type { TextCommand } from './types/textCommand';
 config();
 
 // Web server configuration
-const PORT = parseInt(process.env.API_PORT || '3000', 10);
-const HOST = '0.0.0.0';
+const PORT = parseInt(process.env.ORIGIN_PORT || '2082', 10);
+const HOST = process.env.ORIGIN_URL || '0.0.0.0';
 
 // Create Discord client with intents
 const client = new Client({
@@ -46,6 +47,9 @@ async function start(): Promise<void> {
     app.listen(PORT, HOST, () => {
       webLogger.info(`🌐 OAuth server listening on ${HOST}:${PORT} (http://localhost:${PORT})`);
     });
+
+    // Log OAuth configuration
+    logOAuthConfig();
 
     // Initialize i18n system
     initI18n();
