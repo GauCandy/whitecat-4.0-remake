@@ -62,8 +62,32 @@
     }
 
     @keyframes gentleTwinkle {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.5; }
+      0%, 100% { opacity: 0.2; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    /* Shooting stars */
+    .shooting-star {
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      box-shadow: 0 0 10px 2px rgba(255, 100, 100, 0.6);
+      animation: shoot 3s linear infinite;
+      opacity: 0;
+      z-index: 1;
+    }
+
+    @keyframes shoot {
+      0% {
+        transform: translateX(0) translateY(0);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateX(-300px) translateY(300px);
+        opacity: 0;
+      }
     }
 
     /* Clouds - simplified darker storm clouds */
@@ -474,23 +498,34 @@
     // Create simplified stars (dimmer for error state)
     (function() {
       const starsContainer = document.getElementById('starsContainer');
-      const starCount = 20; // Reduced for cleaner, more somber background
+      const starCount = 40; // Increased for more atmosphere
 
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 60 + '%';
+        star.style.top = Math.random() * 70 + '%';
 
         // Responsive star sizes using viewport width
         const minSize = 0.06;
-        const maxSize = 0.14;
+        const maxSize = 0.16;
         const size = (Math.random() * (maxSize - minSize) + minSize).toFixed(2);
         star.style.width = star.style.height = size + 'vw';
 
         star.style.animationDelay = Math.random() * 6 + 's';
         star.style.animationDuration = (Math.random() * 5 + 5) + 's';
         starsContainer.appendChild(star);
+      }
+
+      // Create shooting stars (with reddish tint for error state)
+      for (let i = 0; i < 2; i++) {
+        const shootingStar = document.createElement('div');
+        shootingStar.className = 'shooting-star';
+        shootingStar.style.top = Math.random() * 50 + '%';
+        shootingStar.style.right = Math.random() * 100 + 'px';
+        shootingStar.style.animationDelay = (Math.random() * 12 + 3) + 's';
+        shootingStar.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+        starsContainer.appendChild(shootingStar);
       }
     })();
   </script>

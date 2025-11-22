@@ -13,18 +13,82 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0f172a;
+      background: linear-gradient(180deg, #0a0e1a 0%, #1a1f3a 50%, #0f172a 100%);
       min-height: 100vh;
       color: #e2e8f0;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Starry sky background */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      animation: twinkle 3s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Shooting stars */
+    .shooting-star {
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+      animation: shoot 3s linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes shoot {
+      0% {
+        transform: translateX(0) translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(-300px) translateY(300px);
+        opacity: 0;
+      }
+    }
+
+    /* Vignette effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     .navbar {
       background: rgba(30, 41, 59, 0.95);
+      backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(148, 163, 184, 0.1);
       padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
+      z-index: 10;
     }
 
     .navbar-brand {
@@ -41,6 +105,8 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
+      position: relative;
+      z-index: 5;
     }
 
     .header {
@@ -133,11 +199,13 @@
     }
 
     .card {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.1);
+      background: rgba(30, 41, 59, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 0.75rem;
       padding: 1.5rem;
       margin-bottom: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
     .table-wrapper {
@@ -244,13 +312,16 @@
     }
 
     .modal {
-      background: #1e293b;
+      background: rgba(30, 41, 59, 0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 0.75rem;
       padding: 1.5rem;
       width: 90%;
       max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
 
     .modal h2 {
@@ -314,6 +385,9 @@
   </style>
 </head>
 <body>
+  <!-- Starry sky -->
+  <div class="stars" id="starsContainer"></div>
+
   <nav class="navbar">
     <a href="/dashboard" class="navbar-brand">
       <span>🐱</span>
@@ -679,6 +753,38 @@
     // Initial load
     loadKeywords();
     loadBlockedChannels();
+
+    // Create stars
+    (function() {
+      const starsContainer = document.getElementById('starsContainer');
+      const starCount = 100;
+
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+
+        const size = Math.random() * 2 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+
+        star.style.animationDelay = Math.random() * 3 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        starsContainer.appendChild(star);
+      }
+
+      // Create shooting stars
+      for (let i = 0; i < 3; i++) {
+        const shootingStar = document.createElement('div');
+        shootingStar.className = 'shooting-star';
+        shootingStar.style.top = Math.random() * 50 + '%';
+        shootingStar.style.right = Math.random() * 100 + 'px';
+        shootingStar.style.animationDelay = (Math.random() * 8 + 2) + 's';
+        shootingStar.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        starsContainer.appendChild(shootingStar);
+      }
+    })();
   </script>
 </body>
 </html>
