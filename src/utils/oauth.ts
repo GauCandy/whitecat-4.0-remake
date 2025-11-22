@@ -1,9 +1,9 @@
 import { config } from 'dotenv';
+import { buildBotRedirectUri } from './urlBuilder';
 config();
 
 const CLIENT_ID = process.env.CLIENT_ID!;
 const CLIENT_SECRET = process.env.CLIENT_SECRET!;
-const REDIRECT_URI = process.env.REDIRECT_URI!;
 
 /**
  * Discord OAuth2 token response
@@ -45,7 +45,7 @@ export function generateAuthUrl(state: string): string {
 
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: buildBotRedirectUri(),
     response_type: 'code',
     scope: scopes.join(' '),
     state: state,
@@ -66,7 +66,7 @@ export function generateUserInstallUrl(state: string): string {
 
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: buildBotRedirectUri(),
     response_type: 'code',
     scope: scopes.join(' '),
     state: state,
@@ -87,7 +87,7 @@ export async function exchangeCode(code: string): Promise<TokenResponse> {
     client_secret: CLIENT_SECRET,
     grant_type: 'authorization_code',
     code: code,
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: buildBotRedirectUri(),
   });
 
   const response = await fetch('https://discord.com/api/v10/oauth2/token', {

@@ -3,6 +3,7 @@ import * as crypto from 'crypto';
 import axios from 'axios';
 import { pool } from '../../src/database/config';
 import { webLogger } from '../../src/utils/logger';
+import { buildDashboardRedirectUri } from '../../src/utils/urlBuilder';
 
 // Extend Express Request để thêm session info
 declare global {
@@ -32,7 +33,7 @@ export function generateSessionToken(): string {
  */
 export function generateDashboardOAuthUrl(): string {
   const clientId = process.env.CLIENT_ID;
-  const redirectUri = process.env.DASHBOARD_REDIRECT_URI || `${process.env.REDIRECT_URI?.replace('/auth/callback', '')}/dashboard/callback`;
+  const redirectUri = buildDashboardRedirectUri();
 
   const params = new URLSearchParams({
     client_id: clientId!,
@@ -53,7 +54,7 @@ export async function exchangeCodeForTokens(code: string): Promise<{
   expires_in: number;
 } | null> {
   try {
-    const redirectUri = process.env.DASHBOARD_REDIRECT_URI || `${process.env.REDIRECT_URI?.replace('/auth/callback', '')}/dashboard/callback`;
+    const redirectUri = buildDashboardRedirectUri();
 
     const response = await axios.post(
       'https://discord.com/api/oauth2/token',

@@ -113,8 +113,8 @@ const command: Command = {
         .setTimestamp();
 
       // Tạo button để mở web dashboard
-      const webUrl = process.env.DASHBOARD_REDIRECT_URI?.replace('/dashboard/callback', '') || 'http://localhost:3000';
-      const dashboardUrl = `${webUrl}/dashboard/guild/${interaction.guild.id}`;
+      const { buildBaseUrl } = await import('../../utils/urlBuilder');
+      const dashboardUrl = `${buildBaseUrl()}/dashboard/guild/${interaction.guild.id}`;
 
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder()
